@@ -1,6 +1,6 @@
 id = "neuro/upbeat"
 name = "Upbeat"
-version = "1.0.0"
+version = "1.0.1"
 min_noctalia = "5.0.0"
 author = "neuro"
 license = "MIT"

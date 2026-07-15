@@ -65,5 +65,43 @@ class AllowedTagsTests(unittest.TestCase):
         self.assertTrue(any("tags[2] must be a non-empty string" in error for error in errors))
 
 
+class PluginConfigAccessorTests(unittest.TestCase):
+    def test_accepts_universal_accessor(self) -> None:
+        self.assertEqual(
+            validate_plugins.obsolete_config_accessors('local value = noctalia.getConfig("key")'),
+            [],
+        )
+
+    def test_rejects_every_entry_specific_alias(self) -> None:
+        source = "\n".join(
+            [
+                'barWidget.getConfig("one")',
+                'desktopWidget.getConfig("two")',
+                'panel . getConfig("three")',
+                'launcher.getConfig("four")',
+            ]
+        )
+        self.assertEqual(
+            validate_plugins.obsolete_config_accessors(source),
+            [
+                ("barWidget.getConfig", 1),
+                ("desktopWidget.getConfig", 2),
+                ("panel.getConfig", 3),
+                ("launcher.getConfig", 4),
+            ],
+        )
+
+    def test_ignores_comments_and_strings(self) -> None:
+        source = "\n".join(
+            [
+                '-- barWidget.getConfig("comment")',
+                '--[[ panel.getConfig("block comment") ]]',
+                'local text = "launcher.getConfig(\\\"string\\\")"',
+                'local block = [[desktopWidget.getConfig("long string")]]',
+            ]
+        )
+        self.assertEqual(validate_plugins.obsolete_config_accessors(source), [])
+
+
 if __name__ == "__main__":
     unittest.main()

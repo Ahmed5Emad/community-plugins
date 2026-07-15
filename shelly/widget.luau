@@ -1,11 +1,11 @@
 --!nonstrict
-local glyph = barWidget.getConfig("glyph")
-local color = barWidget.getConfig("color") or "on_surface"
-local glyphColor = barWidget.getConfig("glyph_color") or color
+local glyph = noctalia.getConfig("glyph")
+local color = noctalia.getConfig("color") or "on_surface"
+local glyphColor = noctalia.getConfig("glyph_color") or color
 local updateError = noctalia.state.get("update_error")
-local notifyOnNewUpdates = barWidget.getConfig("notify")
-local hideWhenUpToDate = barWidget.getConfig("hide_when_up_to_date")
-local click_action = barWidget.getConfig("click_action") or "open_gui"
+local notifyOnNewUpdates = noctalia.getConfig("notify")
+local hideWhenUpToDate = noctalia.getConfig("hide_when_up_to_date")
+local click_action = noctalia.getConfig("click_action") or "open_gui"
 local updates = noctalia.state.get("updates") or { Packages = {}, Aur = {}, Flatpak = {} }
 
 local function countUpdates(scopedUpdates)

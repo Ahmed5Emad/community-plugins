@@ -151,6 +151,9 @@ HTML_RE = re.compile(
 )
 INLINE_CODE_RE = re.compile(r"(?<!`)(`+)(?!`)(.*?)(?<!`)\1(?!`)", re.DOTALL)
 FENCE_OPEN_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
+OBSOLETE_CONFIG_ACCESSOR_RE = re.compile(
+    r"\b(barWidget|desktopWidget|panel|launcher)\s*\.\s*getConfig\b"
+)
 
 
 def is_non_empty_string(value: Any) -> bool:
@@ -206,6 +209,62 @@ def raw_html_line(markdown: str) -> int | None:
     if match is None:
         return None
     return text.count("\n", 0, match.start()) + 1
+
+
+def obsolete_config_accessors(source: str) -> list[tuple[str, int]]:
+    """Find removed entry-specific getConfig aliases outside Luau comments and strings."""
+    visible = list(source)
+    length = len(source)
+    index = 0
+
+    def mask(start: int, end: int) -> None:
+        for offset in range(start, end):
+            if visible[offset] not in "\r\n":
+                visible[offset] = " "
+
+    while index < length:
+        if source.startswith("--[[", index):
+            end = source.find("]]", index + 4)
+            end = length if end == -1 else end + 2
+            mask(index, end)
+            index = end
+            continue
+
+        if source.startswith("--", index):
+            end = source.find("\n", index + 2)
+            end = length if end == -1 else end
+            mask(index, end)
+            index = end
+            continue
+
+        if source.startswith("[[", index):
+            end = source.find("]]", index + 2)
+            end = length if end == -1 else end + 2
+            mask(index, end)
+            index = end
+            continue
+
+        if source[index] in "\"'":
+            quote = source[index]
+            end = index + 1
+            while end < length:
+                if source[end] == "\\" and end + 1 < length:
+                    end += 2
+                    continue
+                end += 1
+                if source[end - 1] == quote:
+                    break
+            mask(index, end)
+            index = end
+            continue
+
+        index += 1
+
+    code = "".join(visible)
+    return [
+        (f"{match.group(1)}.getConfig", code.count("\n", 0, match.start()) + 1)
+        for match in OBSOLETE_CONFIG_ACCESSOR_RE.finditer(code)
+    ]
 
 
 def webp_dimensions(header: bytes) -> tuple[int, int] | None:
@@ -880,6 +939,20 @@ class Validator:
         if line is not None:
             self.add_error(readme, f"raw HTML on line {line} is not allowed; use Markdown instead")
 
+    def validate_luau_api(self, plugin_dir: Path) -> None:
+        for source_path in sorted(plugin_dir.rglob("*.luau")):
+            try:
+                source = source_path.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                self.add_error(source_path, "must be UTF-8 text")
+                continue
+
+            for accessor, line in obsolete_config_accessors(source):
+                self.add_error(
+                    source_path,
+                    f"'{accessor}' on line {line} was removed; use noctalia.getConfig",
+                )
+
     def validate_no_symlinks(self, manifest_path: Path, plugin_dir: Path) -> None:
         for path in plugin_dir.rglob("*"):
             if path.is_symlink():
@@ -897,6 +970,7 @@ class Validator:
         self.validate_required_files(manifest_path, plugin_dir)
         self.validate_thumbnail(manifest_path, plugin_dir)
         self.validate_readme(plugin_dir)
+        self.validate_luau_api(plugin_dir)
         self.validate_no_symlinks(manifest_path, plugin_dir)
 
         if "setting" in manifest:

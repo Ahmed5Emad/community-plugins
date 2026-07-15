@@ -1,6 +1,6 @@
 id           = "gambled23/mangowm-keymode"
 name         = "Mangowm Keymode"
-version      = "1.0.0"
+version      = "1.0.1"
 min_noctalia = "5.0.0"
 author       = "gambled23"
 license = "MIT"

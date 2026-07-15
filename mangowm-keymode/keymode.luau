@@ -1,5 +1,5 @@
-local showText = barWidget.getConfig("show_text")
-local notifyChange = barWidget.getConfig("notify_change")
+local showText = noctalia.getConfig("show_text")
+local notifyChange = noctalia.getConfig("notify_change")
 
 local currentKeymode = "default"
 

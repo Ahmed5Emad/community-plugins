@@ -3,7 +3,7 @@
 -- Right Click: picks a color directly
 -- and copies the hex to clipboard (no panel).
 
-local glyph = barWidget.getConfig("glyph")
+local glyph = noctalia.getConfig("glyph")
 local tr_color_picker = noctalia.tr("color_picker");
 
 local function render()

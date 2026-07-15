@@ -1,7 +1,7 @@
 id           = "joshuaslate/shelly"
 name         = "Shelly"
 icon         = "package"
-version      = "1.0.0"
+version      = "1.0.1"
 min_noctalia = "5.0.0"
 license = "MIT"
 author       = "joshuaslate"
