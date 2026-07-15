@@ -18,7 +18,7 @@ min_noctalia = "5.0.0"
 author = "whyoolw"
 license = "MIT"
 dependencies = ["niri"]
-tags = ["notifications", "privacy", "niri"]
+tags = ["privacy", "niri"]
 icon = "screen-share"
 description = "Enables notification Do Not Disturb while the screen is shared (niri screencast) and turns notifications back on when sharing stops. Requires niri."
 
