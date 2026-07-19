@@ -1,4 +1,4 @@
-local glyph = barWidget.getConfig("glyph")
+local glyph = noctalia.getConfig("glyph")
 
 function update()
   noctalia.setUpdateInterval(60000)
@@ -7,5 +7,5 @@ function update()
 end
 
 function onClick()
-  noctalia.togglePanel("leo/game-launcher:browser")
+  noctalia.togglePanel("alexander/game-launcher:browser")
 end

@@ -1,4 +1,4 @@
-id = "Alexander/game-launcher"
+id = "alexander/game-launcher"
 name = "Game Launcher"
 version = "1.0.0"
 plugin_api = 4
@@ -31,7 +31,7 @@ open_near_click = true
 [[launcher_provider]]
 id = "search"
 entry = "search.luau"
-prefix = "/g"
+prefix = "g"
 glyph = "device-gamepad-2"
 include_in_global_search = true
 debounce_ms = 150

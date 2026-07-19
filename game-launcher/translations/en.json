@@ -1,3 +1,7 @@
 {
-  "settings.glyph.label": "Icon"
+  "settings": {
+    "glyph": {
+      "label": "Icon"
+    }
+  }
 }
