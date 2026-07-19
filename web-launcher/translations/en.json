@@ -1,27 +1,27 @@
 {
-    "settings": {
-        "links": {
-            "label": "Links",
-            "description": "Format: Name|https://url"
-        },
-        "command": {
-            "label": "Command",
-            "description": "Command that launches the website. Example: \"firefox --new-window\""
-        },
-        "notify": {
-            "label": "Notify",
-            "description": "Notify when opening link."
-        },
-        "icon_provider": {
-            "label": "Icon Provider",
-            "description": "Icon download source.",
-            "google": "Google",
-            "duckduckgo": "DuckDuckGo",
-            "direct": "Site's own favicon.ico"
-        }
+  "notify": {
+    "message": "Opening {name}",
+    "title": "Websites"
+  },
+  "settings": {
+    "command": {
+      "description": "Command that launches the website. Example: \"firefox --new-window\"",
+      "label": "Command"
+    },
+    "icon_provider": {
+      "description": "Icon download source.",
+      "direct": "Site's own favicon.ico",
+      "duckduckgo": "DuckDuckGo",
+      "google": "Google",
+      "label": "Icon Provider"
+    },
+    "links": {
+      "description": "Format: Name|https://url",
+      "label": "Links"
     },
     "notify": {
-        "title": "Websites",
-        "message": "Opening {name}"
+      "description": "Notify when opening link.",
+      "label": "Notify"
     }
+  }
 }
