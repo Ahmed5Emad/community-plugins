@@ -312,8 +312,8 @@ tags = ["utility"]
 [[plugin]]
 id = "apex077/eyecare"
 name = "Eye-Care Reminders"
-version = "1.0.0"
-updated_at = 1784415628
+version = "1.0.1"
+updated_at = 1784916698
 added_at = 1784415628
 author = "Apex077"
 license = "MIT"
