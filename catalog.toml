@@ -416,8 +416,8 @@ tags = ["bar", "panel", "service", "hyprland", "niri", "mangowc", "productivity"
 [[plugin]]
 id = "gustav0ar/drive-health"
 name = "Drive Health"
-version = "1.2.1"
-updated_at = 1784655839
+version = "1.2.2"
+updated_at = 1784916797
 added_at = 1784646878
 author = "Drive Health contributors"
 license = "MIT"
