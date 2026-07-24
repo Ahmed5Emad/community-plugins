@@ -16,6 +16,20 @@ OPTIONAL_STRING_FIELDS = ("license", "icon", "description")
 OPTIONAL_BOOL_FIELDS = ("deprecated",)
 
 
+def git_commit_time(path: Path, *extra_args: str) -> int | None:
+    """Commit time in Unix seconds, or None when `path` has no matching commit.
+
+    An uncommitted plugin has no history, so `git log` prints nothing.
+    """
+    stdout = subprocess.run(
+        ["git", "log", "-1", *extra_args, "--format=%ct", "--", path],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+    return int(stdout) if stdout else None
+
+
 def load_plugin_manifest(path: Path) -> dict:
     with path.open("rb") as handle:
         manifest = tomllib.load(handle)
@@ -48,19 +62,13 @@ def load_plugin_manifest(path: Path) -> dict:
                 raise ValueError(f"{path.relative_to(ROOT_DIR)} has invalid {field}; expected bool")
             out[field] = manifest[field]
 
-    out["updated_at"] = int(subprocess.run(
-        ["git", "log", "-1", "--format=%ct", "--", path],
-        capture_output=True,
-        text=True,
-        check=True,
-      ).stdout.strip())
-
-    out["added_at"] = int(subprocess.run(
-        ["git", "log", "-1", "--diff-filter=A", "--format=%ct", "--", path],
-        capture_output=True,
-        text=True,
-        check=True
-      ).stdout.strip())
+    # Git dates a committed plugin, and is stable across checkouts. Anything git cannot date
+    # falls back to the file's mtime: an uncommitted plugin still gets a sensible entry so the
+    # catalog can be generated mid-development. (A rename also breaks the link to the commit
+    # that first added the file, which is why added_at falls back too.)
+    mtime = int(path.stat().st_mtime)
+    out["updated_at"] = git_commit_time(path) or mtime
+    out["added_at"] = git_commit_time(path, "--diff-filter=A") or out["updated_at"]
 
     return out
 
