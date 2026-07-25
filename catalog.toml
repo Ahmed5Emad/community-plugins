@@ -424,8 +424,8 @@ tags = ["bar", "panel", "service", "time", "utility"]
 [[plugin]]
 id = "dotnetrob/cat"
 name = "Cat"
-version = "1.1.2"
-updated_at = 1784595702
+version = "1.2.0"
+updated_at = 1785022475
 added_at = 1784595702
 author = "DotNetRob"
 license = "MIT"
