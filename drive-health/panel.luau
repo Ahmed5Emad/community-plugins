@@ -22,6 +22,8 @@ local criticalDraft = ""
 local lifeDraft = ""
 local alertsDraft = true
 local presenceDraft = false
+local toggleDriveAt
+local dismissAlertAt
 local EDITABLE_PREFERENCE_FIELDS = {
   "alias", "warning_temperature", "critical_temperature", "life_warning_percent",
   "alerts_enabled", "presence_alert_enabled",
@@ -211,12 +213,13 @@ local function alertsCard(issues)
     onClick = "onDismissAllAlertsClicked" }))
   local rows = { ui.row({ gap = 7, align = "center" }, header) }
   for index, issue in ipairs(issues) do
+    local issueIndex = index
     local color = issue.severity == "critical" and "error" or "secondary"
     table.insert(rows, ui.row({ gap = 8, align = "center" }, {
       ui.glyph({ name = issue.severity == "critical" and "alert-octagon" or "alert-circle", size = 13, color = color }),
       ui.label({ text = tostring(issue.message or issue.title), fontSize = 11, color = "on_surface", flexGrow = 1 }),
       ui.button({ glyph = "x", tooltip = noctalia.tr("alerts.dismiss"), variant = "ghost", controlSize = "sm",
-        enabled = index <= 32, onClick = "onDismissAlert" .. tostring(index) .. "Clicked" }),
+        onClick = function() dismissAlertAt(issueIndex) end }),
     }))
   end
 
@@ -875,7 +878,7 @@ local function driveCard(drive, index)
       ui.button({
         glyph = expanded and "chevron-up" or "chevron-down", variant = "ghost", controlSize = "sm",
         tooltip = noctalia.tr(expanded and "panel.collapse" or "panel.expand"),
-        enabled = index <= 32, onClick = "onDrive" .. tostring(index) .. "Clicked",
+        onClick = function() toggleDriveAt(index) end,
       }),
     }),
     ui.row({ gap = 14, align = "center" }, compactMetrics),
@@ -1154,7 +1157,7 @@ noctalia.state.watch("drive_preferences", function(value)
   render()
 end)
 
-local function toggleDriveAt(index)
+toggleDriveAt = function(index)
   local drive = currentDrives[index]
   if drive == nil then
     return
@@ -1170,38 +1173,6 @@ local function toggleDriveAt(index)
   render()
 end
 
-function onDrive1Clicked() toggleDriveAt(1) end
-function onDrive2Clicked() toggleDriveAt(2) end
-function onDrive3Clicked() toggleDriveAt(3) end
-function onDrive4Clicked() toggleDriveAt(4) end
-function onDrive5Clicked() toggleDriveAt(5) end
-function onDrive6Clicked() toggleDriveAt(6) end
-function onDrive7Clicked() toggleDriveAt(7) end
-function onDrive8Clicked() toggleDriveAt(8) end
-function onDrive9Clicked() toggleDriveAt(9) end
-function onDrive10Clicked() toggleDriveAt(10) end
-function onDrive11Clicked() toggleDriveAt(11) end
-function onDrive12Clicked() toggleDriveAt(12) end
-function onDrive13Clicked() toggleDriveAt(13) end
-function onDrive14Clicked() toggleDriveAt(14) end
-function onDrive15Clicked() toggleDriveAt(15) end
-function onDrive16Clicked() toggleDriveAt(16) end
-function onDrive17Clicked() toggleDriveAt(17) end
-function onDrive18Clicked() toggleDriveAt(18) end
-function onDrive19Clicked() toggleDriveAt(19) end
-function onDrive20Clicked() toggleDriveAt(20) end
-function onDrive21Clicked() toggleDriveAt(21) end
-function onDrive22Clicked() toggleDriveAt(22) end
-function onDrive23Clicked() toggleDriveAt(23) end
-function onDrive24Clicked() toggleDriveAt(24) end
-function onDrive25Clicked() toggleDriveAt(25) end
-function onDrive26Clicked() toggleDriveAt(26) end
-function onDrive27Clicked() toggleDriveAt(27) end
-function onDrive28Clicked() toggleDriveAt(28) end
-function onDrive29Clicked() toggleDriveAt(29) end
-function onDrive30Clicked() toggleDriveAt(30) end
-function onDrive31Clicked() toggleDriveAt(31) end
-function onDrive32Clicked() toggleDriveAt(32) end
 
 local function sendDismissRequest(request)
   dismissRequestNonce += 1
@@ -1209,45 +1180,13 @@ local function sendDismissRequest(request)
   noctalia.state.set("dismiss_alert_request", request)
 end
 
-local function dismissAlertAt(index)
+dismissAlertAt = function(index)
   local issue = currentIssues[index]
   if issue ~= nil and issue.id ~= nil then
     sendDismissRequest({ id = tostring(issue.id) })
   end
 end
 
-function onDismissAlert1Clicked() dismissAlertAt(1) end
-function onDismissAlert2Clicked() dismissAlertAt(2) end
-function onDismissAlert3Clicked() dismissAlertAt(3) end
-function onDismissAlert4Clicked() dismissAlertAt(4) end
-function onDismissAlert5Clicked() dismissAlertAt(5) end
-function onDismissAlert6Clicked() dismissAlertAt(6) end
-function onDismissAlert7Clicked() dismissAlertAt(7) end
-function onDismissAlert8Clicked() dismissAlertAt(8) end
-function onDismissAlert9Clicked() dismissAlertAt(9) end
-function onDismissAlert10Clicked() dismissAlertAt(10) end
-function onDismissAlert11Clicked() dismissAlertAt(11) end
-function onDismissAlert12Clicked() dismissAlertAt(12) end
-function onDismissAlert13Clicked() dismissAlertAt(13) end
-function onDismissAlert14Clicked() dismissAlertAt(14) end
-function onDismissAlert15Clicked() dismissAlertAt(15) end
-function onDismissAlert16Clicked() dismissAlertAt(16) end
-function onDismissAlert17Clicked() dismissAlertAt(17) end
-function onDismissAlert18Clicked() dismissAlertAt(18) end
-function onDismissAlert19Clicked() dismissAlertAt(19) end
-function onDismissAlert20Clicked() dismissAlertAt(20) end
-function onDismissAlert21Clicked() dismissAlertAt(21) end
-function onDismissAlert22Clicked() dismissAlertAt(22) end
-function onDismissAlert23Clicked() dismissAlertAt(23) end
-function onDismissAlert24Clicked() dismissAlertAt(24) end
-function onDismissAlert25Clicked() dismissAlertAt(25) end
-function onDismissAlert26Clicked() dismissAlertAt(26) end
-function onDismissAlert27Clicked() dismissAlertAt(27) end
-function onDismissAlert28Clicked() dismissAlertAt(28) end
-function onDismissAlert29Clicked() dismissAlertAt(29) end
-function onDismissAlert30Clicked() dismissAlertAt(30) end
-function onDismissAlert31Clicked() dismissAlertAt(31) end
-function onDismissAlert32Clicked() dismissAlertAt(32) end
 
 function onDismissAllAlertsClicked()
   if #currentIssues > 0 then
