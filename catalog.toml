@@ -621,3 +621,17 @@ icon = "movie"
 description = "A Noctalia widget for applying Wallpaper Engine wallpapers from Steam Workshop with one click"
 plugin_api = 3
 tags = ["wallpaper", "utility"]
+
+[[plugin]]
+id = "k4n4t4/hypr-submap"
+name = "Hyprland Submap"
+version = "1.0.0"
+updated_at = 1785069457
+added_at = 1785069457
+author = "k4n4t4"
+license = "MIT"
+icon = "keyboard"
+description = "Hyprland submap plugin for Noctalia"
+deprecated = false
+plugin_api = 6
+tags = ["hyprland", "bar"]
