@@ -635,3 +635,16 @@ description = "Hyprland submap plugin for Noctalia"
 deprecated = false
 plugin_api = 6
 tags = ["hyprland", "bar"]
+
+[[plugin]]
+id = "yuuto/calculator"
+name = "Calculator"
+version = "1.0.0"
+updated_at = 1785069585
+added_at = 1785069585
+author = "yuuto"
+license = "MIT"
+icon = "calculator"
+description = "A theme-aware calculator with a bar widget and a panel: full expression evaluation, a button grid, and typed input."
+plugin_api = 3
+tags = ["utility", "productivity", "bar", "panel"]
