@@ -265,15 +265,15 @@ rev = "203aaef232cb47ba37c9b32af82f27225ea1916e"
 [[plugin]]
 id = "h465855hgg/lyrics"
 name = "Lyrics"
-version = "1.4.3"
-updated_at = 1784916738
+version = "1.4.4"
+updated_at = 1785024261
 added_at = 1784238037
 author = "h465855hgg"
 license = "MIT"
 icon = "music"
 description = "Synchronized lyrics with karaoke highlighting, animated transitions, and flexible lyric sources."
 plugin_api = 3
-tags = ["bar", "service", "music", "media", "animation"]
+tags = ["bar", "panel", "service", "music", "media", "animation"]
 
 [[plugin]]
 id = "whyoolw/dropwall"
