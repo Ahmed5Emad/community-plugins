@@ -608,3 +608,16 @@ description = "Search and copy password-store entries from the Noctalia launcher
 deprecated = false
 plugin_api = 3
 tags = ["launcher", "privacy", "productivity", "utility"]
+
+[[plugin]]
+id = "tadomika_ari/w-engine"
+name = "W Engine"
+version = "1.0.0"
+updated_at = 1785025372
+added_at = 1785025372
+author = "TadomiKa-Ari"
+license = "MIT"
+icon = "movie"
+description = "A Noctalia widget for applying Wallpaper Engine wallpapers from Steam Workshop with one click"
+plugin_api = 3
+tags = ["wallpaper", "utility"]
