@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
 import tomllib
@@ -109,7 +110,19 @@ ROOT_STRING_FIELDS = (
 ROOT_ARRAY_FIELDS = ("dependencies", "tags")
 ENTRY_TYPES = ("widget", "panel", "shortcut", "desktop_widget", "launcher_provider", "service")
 SETTING_OWNER_TYPES = ("widget", "panel", "desktop_widget", "launcher_provider")
-SETTING_TYPES = {"string", "string_list", "bool", "glyph", "select", "folder", "file", "int", "color"}
+SETTING_TYPES = {
+    "string",
+    "string_list",
+    "string_map",
+    "bool",
+    "glyph",
+    "select",
+    "folder",
+    "file",
+    "int",
+    "double",
+    "color",
+}
 PANEL_PLACEMENTS = {"attached", "floating"}
 PANEL_KEYBOARD_FOCUS = {"on_demand", "exclusive", "none"}
 WIDGET_GESTURES = {
@@ -171,6 +184,7 @@ SETTING_FIELDS = {
     "description_key",
     "default",
     "options",
+    "extensions",
     "min",
     "max",
     "step",
@@ -885,6 +899,7 @@ class Validator:
                         translations,
                         entry["setting"],
                         f"{context}.setting",
+                        manifest.get("plugin_api"),
                     )
 
         if entry_count == 0:
@@ -907,8 +922,23 @@ class Validator:
             return
 
         default = setting["default"]
-        if setting_type in {"string", "folder", "file"} and not isinstance(default, str):
-            self.add_context_error(manifest_path, context, "default must be a string")
+        if setting_type in {"string", "folder", "file"}:
+            if not isinstance(default, str):
+                self.add_context_error(manifest_path, context, "default must be a string")
+        elif setting_type == "double":
+            if not is_number(default) or not math.isfinite(default):
+                self.add_context_error(manifest_path, context, "default must be a finite number")
+        elif setting_type == "string_map":
+            if not isinstance(default, dict):
+                self.add_context_error(manifest_path, context, "default must be a table of string values")
+            else:
+                for key, value in default.items():
+                    if not isinstance(value, str):
+                        self.add_context_error(
+                            manifest_path,
+                            context,
+                            f"default.{key} must be a string",
+                        )
         elif setting_type in {"glyph", "color"} and not is_non_empty_string(default):
             self.add_context_error(manifest_path, context, "default must be a non-empty string")
         elif setting_type == "string_list":
@@ -983,18 +1013,24 @@ class Validator:
 
         return values
 
-    def validate_int_bounds(self, manifest_path: Path, context: str, setting: dict[str, Any]) -> None:
+    def validate_numeric_bounds(self, manifest_path: Path, context: str, setting: dict[str, Any]) -> None:
         setting_type = setting.get("type")
-        bound_values: dict[str, int] = {}
+        bound_values: dict[str, int | float] = {}
 
         for field in ("min", "max", "step"):
             if field not in setting:
                 continue
             value = setting[field]
-            if setting_type != "int":
-                self.add_context_error(manifest_path, context, f"{field} is only valid for int settings")
-            elif not is_int(value):
+            if setting_type not in {"int", "double"}:
+                self.add_context_error(
+                    manifest_path,
+                    context,
+                    f"{field} is only valid for int or double settings",
+                )
+            elif setting_type == "int" and not is_int(value):
                 self.add_context_error(manifest_path, context, f"{field} must be an integer")
+            elif setting_type == "double" and (not is_number(value) or not math.isfinite(value)):
+                self.add_context_error(manifest_path, context, f"{field} must be a finite number")
             else:
                 bound_values[field] = value
 
@@ -1005,7 +1041,10 @@ class Validator:
             self.add_context_error(manifest_path, context, "step must be greater than zero")
 
         default = setting.get("default")
-        if setting_type == "int" and is_int(default):
+        valid_default = (setting_type == "int" and is_int(default)) or (
+            setting_type == "double" and is_number(default) and math.isfinite(default)
+        )
+        if valid_default:
             if "min" in bound_values and default < bound_values["min"]:
                 self.add_context_error(manifest_path, context, "default must be greater than or equal to min")
             if "max" in bound_values and default > bound_values["max"]:
@@ -1049,6 +1088,7 @@ class Validator:
         translations: Any | None,
         settings: Any,
         context_prefix: str,
+        plugin_api: Any,
     ) -> None:
         if not isinstance(settings, list):
             self.add_context_error(manifest_path, context_prefix, "must be an array of tables")
@@ -1100,9 +1140,21 @@ class Validator:
             option_values = self.validate_options(manifest_path, translations, context, setting)
             if setting_type in SETTING_TYPES:
                 self.validate_default(manifest_path, context, setting_type, setting, option_values)
-
-            self.validate_int_bounds(manifest_path, context, setting)
+            self.validate_numeric_bounds(manifest_path, context, setting)
+            if setting_type == "string_map" and (not is_int(plugin_api) or plugin_api < 6):
+                self.add_context_error(manifest_path, context, "string_map requires plugin_api >= 6")
             self.validate_visible_when(manifest_path, context, setting.get("visible_when"))
+
+            if "extensions" in setting:
+                if setting_type != "file":
+                    self.add_context_error(manifest_path, context, "extensions is only valid for file settings")
+                self.validate_string_list(
+                    manifest_path,
+                    context,
+                    "extensions",
+                    setting["extensions"],
+                    allow_empty=True,
+                )
 
             if "advanced" in setting and not isinstance(setting["advanced"], bool):
                 self.add_context_error(manifest_path, context, "advanced must be a bool")
@@ -1315,7 +1367,13 @@ class Validator:
         self.validate_no_symlinks(manifest_path, plugin_dir)
 
         if "setting" in manifest:
-            self.validate_settings(manifest_path, translations, manifest["setting"], "setting")
+            self.validate_settings(
+                manifest_path,
+                translations,
+                manifest["setting"],
+                "setting",
+                manifest.get("plugin_api"),
+            )
 
         self.validate_entries(manifest_path, manifest, translations)
 

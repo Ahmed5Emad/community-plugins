@@ -307,6 +307,73 @@ Configure the update interval in plugin settings.
         self.assertTrue(any("## Settings" in error for error in self.validate_readme(without_settings)))
 
 
+class SettingTypeTests(unittest.TestCase):
+    TRANSLATIONS = {"settings": {"value": {"label": "Value"}}}
+
+    def validate_setting(self, setting: dict, plugin_api: object = 6) -> list[str]:
+        validator = validate_plugins.Validator(Path("/repo"))
+        validator.validate_settings(
+            Path("/repo/example/plugin.toml"),
+            self.TRANSLATIONS,
+            [{"key": "value", "label_key": "settings.value.label", **setting}],
+            "setting",
+            plugin_api,
+        )
+        return validator.errors
+
+    def test_setting_type_catalog_matches_shell_schema(self) -> None:
+        self.assertEqual(
+            validate_plugins.SETTING_TYPES,
+            {
+                "string",
+                "string_list",
+                "string_map",
+                "bool",
+                "int",
+                "double",
+                "select",
+                "file",
+                "folder",
+                "glyph",
+                "color",
+            },
+        )
+
+    def test_accepts_double_with_numeric_bounds(self) -> None:
+        self.assertEqual(
+            self.validate_setting(
+                {"type": "double", "default": 0.5, "min": 0.0, "max": 1.0, "step": 0.05}
+            ),
+            [],
+        )
+
+    def test_rejects_invalid_double_default(self) -> None:
+        errors = self.validate_setting({"type": "double", "default": "fast"})
+        self.assertTrue(any("default must be a finite number" in error for error in errors))
+
+    def test_rejects_invalid_double_range(self) -> None:
+        errors = self.validate_setting(
+            {"type": "double", "default": 0.5, "min": 1.0, "max": 0.0}
+        )
+        self.assertTrue(any("min must be less than or equal to max" in error for error in errors))
+
+    def test_accepts_string_map(self) -> None:
+        self.assertEqual(
+            self.validate_setting(
+                {"type": "string_map", "default": {"eDP-1": "laptop", "DP-1": "monitor"}}
+            ),
+            [],
+        )
+
+    def test_rejects_non_string_map_value(self) -> None:
+        errors = self.validate_setting({"type": "string_map", "default": {"eDP-1": 1}})
+        self.assertTrue(any("default.eDP-1 must be a string" in error for error in errors))
+
+    def test_string_map_requires_plugin_api_6(self) -> None:
+        errors = self.validate_setting({"type": "string_map", "default": {}}, plugin_api=5)
+        self.assertTrue(any("string_map requires plugin_api >= 6" in error for error in errors))
+
+
 class WidgetActionsTests(unittest.TestCase):
     def validate_actions(self, entry: dict, plugin_api: object = 14) -> list[str]:
         validator = validate_plugins.Validator(Path("/repo"))
