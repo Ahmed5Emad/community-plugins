@@ -14,9 +14,6 @@
     "unsynced": "Unsynced"
   },
   "select_lyrics": "Choose lyrics",
-  "shortcut": {
-    "label": "Open lyrics selector"
-  },
   "settings": {
     "active_color": {
       "description": "Color used for the current and already-sung lyric characters. Defaults to the interface text color.",
@@ -307,6 +304,9 @@
         "zh-hant": "Traditional Chinese"
       }
     }
+  },
+  "shortcut": {
+    "label": "Open lyrics selector"
   },
   "source_label": "Lyrics source",
   "title": "Lyrics"
