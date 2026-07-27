@@ -674,3 +674,16 @@ icon = "stack-2"
 description = "Displays populated and currently active Hyprland special workspaces"
 plugin_api = 3
 tags = ["hyprland", "indicator", "bar"]
+
+[[plugin]]
+id = "frai3mega/battery-graph"
+name = "Battery graph"
+version = "1.0.0"
+updated_at = 1785173464
+added_at = 1785173464
+author = "frai3mega"
+license = "MIT"
+icon = "battery"
+description = "Plots battery level on a graph"
+plugin_api = 3
+tags = ["hardware", "utility", "desktop", "panel"]
