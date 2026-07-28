@@ -700,3 +700,16 @@ icon = "router"
 description = "Start and stop a Wi-Fi hotspot from the bar, with connected device list and IPC control."
 plugin_api = 9
 tags = ["network", "bar", "panel", "service", "utility", "system", "indicator"]
+
+[[plugin]]
+id = "yuuto/arch-updater"
+name = "Arch Updater"
+version = "1.0.0"
+updated_at = 1785208995
+added_at = 1785208995
+author = "yuuto"
+license = "MIT"
+icon = "package"
+description = "Check pacman, AUR and Flatpak updates, get an Arch news and reboot heads-up, then upgrade from a terminal."
+plugin_api = 9
+tags = ["arch", "bar", "panel", "launcher", "system", "utility"]
