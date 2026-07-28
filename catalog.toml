@@ -713,3 +713,16 @@ icon = "package"
 description = "Check pacman, AUR and Flatpak updates, get an Arch news and reboot heads-up, then upgrade from a terminal."
 plugin_api = 9
 tags = ["arch", "bar", "panel", "launcher", "system", "utility"]
+
+[[plugin]]
+id = "damian-ds7/battery-threshold"
+name = "Battery Threshold Control"
+version = "1.0.0"
+updated_at = 1785245426
+added_at = 1785245426
+author = "Damian D'Souza"
+license = "MIT"
+icon = "battery-eco"
+description = "Set the battery threshold for laptop batteries to extend battery lifespan"
+plugin_api = 3
+tags = ["hardware", "system", "utility", "bar", "panel"]
