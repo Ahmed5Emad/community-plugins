@@ -17,14 +17,120 @@ body:
         - label: This is a bug in a community plugin, not in Noctalia itself (those belong in the noctalia repo).
           required: true
 
-  - type: input
+  - type: dropdown
     id: plugin-id
     attributes:
       label: Plugin
-      description: The plugin id, as it appears in its plugin.toml.
-      placeholder: "author/plugin"
+      description: The plugin id.
+      options:
+        - mini-docker
+
+        - battery-graph
+
+        - sharednd
+
+        - arch-updater
+
+        - todo
+
+        - prismlauncher-instances
+
+        - daily-wallpaper
+
+        - imagemagick-clock
+
+        - cat
+
+        - game-launcher
+
+        - wl-screen-mirror
+
+        - eyecare
+
+        - battery-threshold
+
+        - audio-switcher
+
+        - keybind-cheatsheet
+
+        - noctwhspr
+
+        - ssh-launcher
+
+        - web-launcher
+
+        - nextboot-selector
+
+        - lyrics
+
+        - bookmarks
+
+        - keymap
+
+        - godot-provider
+
+        - hypr-screen-mirror
+
+        - color_picker
+
+        - portctl
+
+        - topgrade-wrapper
+
+        - calculator
+
+        - drive-health
+
+        - hotspot
+
+        - mangowm-keymode
+
+        - special-workspaces
+
+        - zed-provider
+
+        - pass
+
+        - ideapad-conservation-mode
+
+        - upbeat
+
+        - proton-pass
+
+        - hypr-submap
+
+        - file-search
+
+        - shelly
+
+        - claude-companion
+
+        - ds4-color
+
+        - um5606_fan_state
+
+        - w-engine
+
+        - nix-monitor
+
+        - anilist
+
+        - lid-guard
+
+        - pomodoro
+
+        - dropwall
+
+        - iio_lock
+
+        - mawaqit
+
+        - hassio
+
+      default: 0
     validations:
       required: true
+
 
   - type: input
     id: plugin-version
