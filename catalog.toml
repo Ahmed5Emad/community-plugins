@@ -599,8 +599,8 @@ rev = "0162521282828e0f6313b76bbf45ac919505f251"
 [[plugin]]
 id = "blackbartblues/audio-switcher"
 name = "Audio Switcher"
-version = "0.2.0"
-updated_at = 1785287794
+version = "0.2.1"
+updated_at = 1785354500
 added_at = 1784847459
 author = "blackbartblues"
 license = "MIT"
