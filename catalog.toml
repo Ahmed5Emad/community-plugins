@@ -1,17 +1,18 @@
 # This file is auto-generated. Do not edit manually.
 # Do not include it in your commit.
-# Community Noctalia plugins catalog.
+# Noctalia plugins catalog.
 # Index of every plugin this source ships: the minimum needed to render, search,
 # and compat-check the list. The per-plugin plugin.toml stays authoritative; the
 # host re-reads it on enable. Keep one [[plugin]] row per plugin subdirectory.
 # A [[plugin.release]] row names an older revision for a Noctalia below the tip's
 # plugin_api, so an older release stays installable instead of the plugin vanishing.
+# On every row, updated_at dates the commit that first shipped that row's version.
 
 [[plugin]]
 id = "neuro/upbeat"
 name = "Upbeat"
 version = "1.0.1"
-updated_at = 1784208613
+updated_at = 1784089364
 added_at = 1783912666
 author = "neuro"
 license = "MIT"
@@ -25,7 +26,7 @@ tags = ["fun", "clock", "utility", "time"]
 id = "whyoolw/sharednd"
 name = "ShareDND"
 version = "1.1.1"
-updated_at = 1784208613
+updated_at = 1784171093
 added_at = 1783981733
 author = "whyoolw"
 license = "MIT"
@@ -38,7 +39,7 @@ tags = ["privacy", "niri"]
 id = "nzlov/daily-wallpaper"
 name = "Daily Wallpaper"
 version = "1.0.0"
-updated_at = 1784208613
+updated_at = 1784083114
 added_at = 1784083114
 author = "nzlov"
 license = "MIT"
@@ -51,7 +52,7 @@ tags = ["wallpaper", "desktop"]
 id = "joshuaslate/shelly"
 name = "Shelly"
 version = "1.0.1"
-updated_at = 1784208613
+updated_at = 1784089364
 added_at = 1784084148
 author = "joshuaslate"
 license = "MIT"
@@ -65,7 +66,7 @@ tags = ["system", "arch"]
 id = "lucasoe/proton-pass"
 name = "Proton Pass"
 version = "0.1.0"
-updated_at = 1784208613
+updated_at = 1784084254
 added_at = 1784084254
 author = "LucasOe"
 license = "MIT"
@@ -104,13 +105,14 @@ tags = ["theming", "utility", "bar", "panel"]
 [[plugin.release]]
 plugin_api = 3
 version = "1.0.4"
+updated_at = 1784596047
 rev = "4c45993e7a91e7657b7eb4ac34bbf6f962bed4f7"
 
 [[plugin]]
 id = "nikolaj-zwergius/iio_lock"
 name = "iio-lock"
 version = "1.0.0"
-updated_at = 1784208613
+updated_at = 1784089678
 added_at = 1784089678
 author = "nikolaj-zwergius"
 license = "MIT"
@@ -162,16 +164,19 @@ tags = ["bar", "panel", "productivity"]
 [[plugin.release]]
 plugin_api = 9
 version = "0.0.10"
+updated_at = 1784947118
 rev = "8fefd6c97e9770fbf75c85b7f88c25ecbfd8b3cc"
 
 [[plugin.release]]
 plugin_api = 5
 version = "0.0.9"
+updated_at = 1784916658
 rev = "5e7655dc73968231e9b0cbd69dcde1e2aae2db02"
 
 [[plugin.release]]
 plugin_api = 3
 version = "0.0.7"
+updated_at = 1784158920
 rev = "ef085ecebf96b8d1c6d6dd0ca2cbf8bf910f5151"
 
 [[plugin]]
@@ -190,13 +195,14 @@ tags = ["bar", "panel", "service", "development", "system", "utility"]
 [[plugin.release]]
 plugin_api = 3
 version = "1.0.3"
+updated_at = 1784160253
 rev = "ef085ecebf96b8d1c6d6dd0ca2cbf8bf910f5151"
 
 [[plugin]]
 id = "thatonecalculator/um5606_fan_state"
 name = "ASUS UM5606 Fan State"
 version = "1.0.6"
-updated_at = 1784208613
+updated_at = 1784161522
 added_at = 1784161522
 author = "ThatOneCalculator"
 license = "MIT"
@@ -221,6 +227,7 @@ tags = ["network", "utility", "development", "indicator", "bar", "panel", "servi
 [[plugin.release]]
 plugin_api = 3
 version = "0.2.1"
+updated_at = 1784352155
 rev = "a3287ecc1f2e1f14501aaa2f75bae0fe944d96b3"
 
 [[plugin]]
@@ -265,11 +272,13 @@ tags = ["bar", "launcher", "panel", "utility", "productivity"]
 [[plugin.release]]
 plugin_api = 9
 version = "0.0.11"
+updated_at = 1784947118
 rev = "9410cdfa93608217463032c38be1b5d07e8e885b"
 
 [[plugin.release]]
 plugin_api = 3
 version = "0.0.10"
+updated_at = 1784332445
 rev = "203aaef232cb47ba37c9b32af82f27225ea1916e"
 
 [[plugin]]
@@ -327,6 +336,7 @@ tags = ["bar", "panel", "service", "shortcut", "network", "indicator"]
 [[plugin.release]]
 plugin_api = 4
 version = "2.0.3"
+updated_at = 1784691065
 rev = "ef512945ce288546baff14688884d8ec3a2aa62b"
 
 [[plugin]]
@@ -359,6 +369,7 @@ tags = ["utility"]
 [[plugin.release]]
 plugin_api = 3
 version = "1.0.0"
+updated_at = 1784384359
 rev = "56ccc9e5f48bc29b068dbb6f03a3896b0cbe4a14"
 
 [[plugin]]
@@ -390,6 +401,7 @@ tags = ["gaming", "hardware", "utility", "bar", "panel"]
 [[plugin.release]]
 plugin_api = 3
 version = "0.1.0"
+updated_at = 1784464782
 rev = "5fb0e0f279bad9bd5e1643840649ece7c7b6a6c7"
 
 [[plugin]]
@@ -460,11 +472,13 @@ tags = ["gaming", "launcher", "utility"]
 [[plugin.release]]
 plugin_api = 9
 version = "1.0.1"
+updated_at = 1784947118
 rev = "61d6a0d256abb580fb7463a7c6299c9cd237b497"
 
 [[plugin.release]]
 plugin_api = 4
 version = "1.0.0"
+updated_at = 1784595753
 rev = "5c59d225b811675d858b7f8115c506962438ba2e"
 
 [[plugin]]
@@ -483,6 +497,7 @@ tags = ["bar", "panel", "service", "hyprland", "niri", "mangowc", "productivity"
 [[plugin.release]]
 plugin_api = 5
 version = "1.3.1"
+updated_at = 1784667997
 rev = "7cc2a499e6d90b4f756a606bfaf38f014a465956"
 
 [[plugin]]
@@ -502,11 +517,13 @@ tags = ["bar", "panel", "service", "system", "hardware", "utility"]
 [[plugin.release]]
 plugin_api = 9
 version = "1.2.4"
+updated_at = 1785207817
 rev = "a3ff0954bd7806b07577aecaaee915d0dfdea38a"
 
 [[plugin.release]]
 plugin_api = 3
 version = "1.2.2"
+updated_at = 1784916797
 rev = "ff289e523fb3dca794979dd3476d336642296463"
 
 [[plugin]]
@@ -525,6 +542,7 @@ tags = ["bar", "panel", "utility", "system", "hyprland", "mangowc", "niri"]
 [[plugin.release]]
 plugin_api = 4
 version = "0.2.0"
+updated_at = 1784677847
 rev = "2a1efe0468c8108c7c0f3d93650fbb3641e2b96e"
 
 [[plugin]]
@@ -569,11 +587,13 @@ tags = ["media", "bar", "panel", "service", "network", "productivity"]
 [[plugin.release]]
 plugin_api = 9
 version = "1.0.1"
+updated_at = 1784947118
 rev = "24cab9daa7f7a198f3b83699490a3127da9a8ed6"
 
 [[plugin.release]]
 plugin_api = 3
 version = "1.0.0"
+updated_at = 1784843708
 rev = "0162521282828e0f6313b76bbf45ac919505f251"
 
 [[plugin]]
@@ -592,6 +612,7 @@ tags = ["audio", "bar", "hardware", "panel", "service", "system", "utility"]
 [[plugin.release]]
 plugin_api = 5
 version = "0.1.0"
+updated_at = 1784847459
 rev = "d4467e907cba5eeeb793b2168791fd81be124c9a"
 
 [[plugin]]
