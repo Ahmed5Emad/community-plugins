@@ -804,3 +804,29 @@ icon = "terminal"
 description = "Connect to SSH hosts from ~/.ssh/config via /ssh."
 plugin_api = 3
 tags = ["launcher", "network", "utility", "development"]
+
+[[plugin]]
+id = "dunarand/bookmarks"
+name = "Bookmarks"
+version = "1.2.1"
+updated_at = 1785350683
+added_at = 1785350683
+author = "dunarand"
+license = "MIT"
+icon = "bookmark"
+description = "A user-defined list of bookmarks. Each item has a label, a glyph, and a shell command."
+plugin_api = 13
+tags = ["launcher", "panel", "productivity", "utility"]
+
+[[plugin]]
+id = "dunarand/tmux-provider"
+name = "tmux Provider"
+version = "0.1.0"
+updated_at = 1785351607
+added_at = 1785351607
+author = "dunarand"
+license = "MIT"
+icon = "terminal"
+description = "Find and attach tmux sessions from the launcher. Type /tm to list tmux sessions or tmuxp configurations."
+plugin_api = 3
+tags = ["launcher", "productivity", "development"]
