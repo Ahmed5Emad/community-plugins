@@ -59,6 +59,8 @@ body:
 
         - web-launcher
 
+        - tmux-provider
+
         - nextboot-selector
 
         - lyrics
