@@ -541,15 +541,20 @@ tags = ["bar", "panel", "service", "productivity", "time"]
 [[plugin]]
 id = "cleboost/anilist"
 name = "AniList (UNOFFICIAL)"
-version = "1.0.1"
-updated_at = 1784947118
+version = "1.1.0"
+updated_at = 1785287590
 added_at = 1784843708
-author = "cleboost"
+author = "Cleboost"
 license = "MIT"
 icon = "device-tv"
 description = "Browse and update your AniList anime and manga lists from a quick panel without opening the site."
-plugin_api = 9
+plugin_api = 15
 tags = ["media", "bar", "panel", "service", "network", "productivity"]
+
+[[plugin.release]]
+plugin_api = 9
+version = "1.0.1"
+rev = "24cab9daa7f7a198f3b83699490a3127da9a8ed6"
 
 [[plugin.release]]
 plugin_api = 3
