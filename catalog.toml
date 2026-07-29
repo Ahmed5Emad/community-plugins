@@ -722,8 +722,8 @@ tags = ["arch", "bar", "panel", "launcher", "system", "utility"]
 [[plugin]]
 id = "damian-ds7/battery-threshold"
 name = "Battery Threshold Control"
-version = "1.0.0"
-updated_at = 1785245426
+version = "1.0.1"
+updated_at = 1785287535
 added_at = 1785245426
 author = "Damian D'Souza"
 license = "MIT"
