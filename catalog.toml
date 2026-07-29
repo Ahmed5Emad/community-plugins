@@ -447,15 +447,20 @@ tags = ["bar", "animation", "system", "fun"]
 [[plugin]]
 id = "alexander/game-launcher"
 name = "Game Launcher"
-version = "1.0.1"
-updated_at = 1784947118
+version = "1.1.0"
+updated_at = 1785296847
 added_at = 1784595753
 author = "Alexander"
 license = "MIT"
 icon = "device-gamepad-2"
 description = "Browse and launch games from Steam, Lutris, and Heroic."
-plugin_api = 9
+plugin_api = 13
 tags = ["gaming", "launcher", "utility"]
+
+[[plugin.release]]
+plugin_api = 9
+version = "1.0.1"
+rev = "61d6a0d256abb580fb7463a7c6299c9cd237b497"
 
 [[plugin.release]]
 plugin_api = 4
