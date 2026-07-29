@@ -138,8 +138,8 @@ tags = ["gaming", "launcher"]
 [[plugin]]
 id = "avivbintangaringga/nix-monitor"
 name = "Nix Monitor"
-version = "1.2.0"
-updated_at = 1784359380
+version = "1.3.0"
+updated_at = 1785329349
 added_at = 1784003560
 author = "avivbintangaringga"
 license = "MIT"
