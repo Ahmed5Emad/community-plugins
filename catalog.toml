@@ -785,3 +785,16 @@ icon = "folder-open"
 description = "Open a recent Godot project from the launcher. Type /gd to list your projects."
 plugin_api = 3
 tags = ["launcher", "development", "productivity"]
+
+[[plugin]]
+id = "cleboost/ssh-launcher"
+name = "SSH Launcher"
+version = "1.0.0"
+updated_at = 1785329294
+added_at = 1785329294
+author = "Cleboost"
+license = "MIT"
+icon = "terminal"
+description = "Connect to SSH hosts from ~/.ssh/config via /ssh."
+plugin_api = 3
+tags = ["launcher", "network", "utility", "development"]
