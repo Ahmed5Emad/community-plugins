@@ -1,15 +1,7 @@
 def get_plugins() -> list[str]:
-    import os
+    from pathlib import Path
 
-    subdirectories = [item for item in os.listdir('.') if os.path.isdir(item)]
-
-    plugins = []
-    for dir in subdirectories:
-        # Remove all hidden folders that aren't plugins.
-        if not dir.startswith('.'):
-            plugins.append(dir)
-
-    return plugins
+    return sorted(manifest.parent.name for manifest in Path(".").glob("*/plugin.toml"))
 
 
 def build_dropdown_component(plugins: list[str]) -> str:
@@ -25,7 +17,6 @@ def build_dropdown_component(plugins: list[str]) -> str:
         - {plugin}
 """ for plugin in plugins])
 }
-      default: 0
     validations:
       required: true
 """
