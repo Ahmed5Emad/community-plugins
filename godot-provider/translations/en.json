@@ -2,8 +2,11 @@
   "no-projects-found": "No projects found",
   "no-projects-subtitle": "No godot projects.cfg or empty file",
   "settings": {
+    "godot_command": {
+      "description": "The shell command to open godot.",
+      "label": "Godot command"
+    },
     "history": "History",
-    "usage_count": "Usage count",
     "projects_path": {
       "description": "Path to Godot's projets.cfg file.",
       "label": "Godot projets.cfg path"
@@ -12,9 +15,6 @@
       "description": "Sort by last used or most opened projects.",
       "label": "Sort by"
     },
-    "godot_command": {
-      "description": "The shell command to open godot.",
-      "label": "Godot command"
-    }
+    "usage_count": "Usage count"
   }
 }
