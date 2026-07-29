@@ -483,16 +483,21 @@ rev = "7cc2a499e6d90b4f756a606bfaf38f014a465956"
 [[plugin]]
 id = "gustav0ar/drive-health"
 name = "Drive Health"
-version = "1.2.4"
-updated_at = 1785207817
+version = "1.2.5"
+updated_at = 1785287827
 added_at = 1784646878
 author = "Drive Health contributors"
 license = "MIT"
 icon = "server-2"
 description = "SMART health, temperature, integrity, endurance, and storage monitoring for SSDs and hard drives."
 deprecated = false
-plugin_api = 9
+plugin_api = 17
 tags = ["bar", "panel", "service", "system", "hardware", "utility"]
+
+[[plugin.release]]
+plugin_api = 9
+version = "1.2.4"
+rev = "a3ff0954bd7806b07577aecaaee915d0dfdea38a"
 
 [[plugin.release]]
 plugin_api = 3
