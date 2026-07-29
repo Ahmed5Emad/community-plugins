@@ -751,3 +751,16 @@ icon = "battery-eco"
 description = "Set the battery threshold for laptop batteries to extend battery lifespan"
 plugin_api = 3
 tags = ["hardware", "system", "utility", "bar", "panel"]
+
+[[plugin]]
+id = "ramosdetrigo/godot-provider"
+name = "Godot Provider"
+version = "1.0.0"
+updated_at = 1785299188
+added_at = 1785299188
+author = "ramosdetrigo"
+license = "MIT"
+icon = "folder-open"
+description = "Open a recent Godot project from the launcher. Type /gd to list your projects."
+plugin_api = 3
+tags = ["launcher", "development", "productivity"]
