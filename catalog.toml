@@ -830,3 +830,16 @@ icon = "terminal"
 description = "Find and attach tmux sessions from the launcher. Type /tm to list tmux sessions or tmuxp configurations."
 plugin_api = 3
 tags = ["launcher", "productivity", "development"]
+
+[[plugin]]
+id = "nomadcxx/gslapper"
+name = "gSlapper Wallpaper"
+version = "0.1.1"
+updated_at = 1785373433
+added_at = 1785373433
+author = "Nomadcxx"
+license = "MIT"
+icon = "wallpaper-selector"
+description = "Choose an image or video wallpaper for each output."
+plugin_api = 19
+tags = ["bar", "panel", "service", "video", "wallpaper"]
