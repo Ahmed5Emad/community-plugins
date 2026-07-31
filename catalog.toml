@@ -843,3 +843,17 @@ icon = "wallpaper-selector"
 description = "Choose an image or video wallpaper for each output."
 plugin_api = 19
 tags = ["bar", "panel", "service", "video", "wallpaper"]
+
+[[plugin]]
+id = "shin/lrc"
+name = "LRC"
+version = "1.0.0"
+updated_at = 1785459835
+added_at = 1785459835
+author = "shin"
+license = "MIT"
+icon = "music"
+description = "Displays current song lyrics via lrc_tty."
+deprecated = false
+plugin_api = 3
+tags = ["bar", "music"]
