@@ -40,9 +40,21 @@
   "save_button": "Save",
   "search_placeholder": "Search bookmarks...",
   "settings": {
+    "bk_sort_by": {
+      "description": "How bookmarks are ordered in \"/bk\" results when there's no search text.",
+      "label": "/bk sort order",
+      "options": {
+        "history": "Recently used",
+        "usage_count": "Most used"
+      }
+    },
     "data_path": {
       "description": "Where data.json is stored. Leave empty to use the default plugin data directory.",
       "label": "Data file"
+    },
+    "enable_bk_provider": {
+      "description": "Adds a \"/bk\" launcher command to fuzzy-search and run your bookmarks.",
+      "label": "Enable /bk launcher provider"
     },
     "glyph": {
       "description": "Bar widget's glyph",

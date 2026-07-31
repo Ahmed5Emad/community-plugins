@@ -25,7 +25,7 @@
   "err_save_failed": "Kaydedilemedi: {error}",
   "folder_deleted": "\"{label}\" klasörü ve içeriği silindi",
   "folder_name_field": "Klasör ismi",
-  "glyph_field": "Sembol (ör. bookmark)",
+  "glyph_field": "Simge (ör. bookmark)",
   "hide_controls_tooltip": "Sıralama/düzenleme/silme kontrollerini gizle",
   "info_cmd_line": "Komut: {cmd}",
   "info_description_line": "Açıklama: {description}",
@@ -40,24 +40,32 @@
   "save_button": "Kaydet",
   "search_placeholder": "Yer imlerinde ara...",
   "settings": {
+    "bk_sort_by": {
+      "description": "\"/bk\" sonuçlarının arama yapılmadığı durumda yer imlerini nasıl sıralacağını belirler.",
+      "label": "/bk sıralama önceliği",
+      "options": {
+        "history": "Son kullanılanlar",
+        "usage_count": "En sık kullanılanlar"
+      }
+    },
     "data_path": {
       "description": "data.json dosyasının saklandığı konum. Varsayılan eklenti veri konumunu kullanmak için boş bırakın.",
       "label": "Veri dosyası"
     },
     "glyph": {
-      "description": "Bar aracının sembolü (ör. bookmark)",
-      "label": "Sembol"
+      "description": "Çubuk aracının simgesi (ör. bookmark)",
+      "label": "Simge"
     },
     "show_info_button": {
       "description": "Yer imlerinde (klasörlerde değil) üzerine gelindiğinde açıklamalarını ve komutlarını görüntülemek için bir \"?\" düğmesi göster.",
       "label": "Bilgi butonunu göster"
     },
     "text": {
-      "description": "Bar aracının etiketi. Barda sadece sembolün görünmesi için boş bırakın.",
+      "description": "Çubuk aracının etiketi. Çubukta sadece simgenin görünmesi için boş bırakın.",
       "label": "Yazı"
     },
     "tooltip": {
-      "description": "Bar aracının isim etiketi",
+      "description": "Çubuk aracının isim etiketi",
       "label": "İsim etiketi"
     }
   },
