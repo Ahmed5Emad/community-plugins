@@ -420,15 +420,15 @@ tags = ["clock"]
 [[plugin]]
 id = "lowcache/claude-companion"
 name = "Claude Companion"
-version = "1.0.1"
-updated_at = 1784843659
+version = "1.3.0"
+updated_at = 1785461692
 added_at = 1784465190
 author = "lowcache"
 license = "MIT"
 icon = "robot"
 description = "Claude Code companion: /claude launch + a telemetry-driven attention pulse."
 plugin_api = 3
-tags = ["ai", "productivity", "bar", "desktop", "panel", "launcher", "niri", "hyprland", "sway"]
+tags = ["ai", "productivity", "bar", "desktop", "panel", "launcher"]
 
 [[plugin]]
 id = "ycf/mawaqit"
