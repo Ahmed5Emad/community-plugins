@@ -51,8 +51,8 @@ tags = ["wallpaper", "desktop"]
 [[plugin]]
 id = "joshuaslate/shelly"
 name = "Shelly"
-version = "1.0.1"
-updated_at = 1784089364
+version = "2.0.0"
+updated_at = 1785532712
 added_at = 1784084148
 author = "joshuaslate"
 license = "MIT"
