@@ -42,6 +42,7 @@ body:
         - eyecare
         - file-search
         - game-launcher
+        - gamer-mode
         - godot-provider
         - gslapper
         - hassio
