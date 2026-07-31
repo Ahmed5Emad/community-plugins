@@ -259,8 +259,8 @@ tags = ["audio", "bar", "recording", "utility"]
 [[plugin]]
 id = "nightwatch75/file-search"
 name = "File Search"
-version = "0.0.19"
-updated_at = 1785245767
+version = "0.0.25"
+updated_at = 1785461243
 added_at = 1784296152
 author = "nightwatch75"
 license = "MIT"
