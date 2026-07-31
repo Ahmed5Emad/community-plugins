@@ -658,15 +658,21 @@ tags = ["launcher", "privacy", "productivity", "utility"]
 [[plugin]]
 id = "tadomika_ari/w-engine"
 name = "W Engine"
-version = "1.0.0"
-updated_at = 1785025372
+version = "1.1.0"
+updated_at = 1785460155
 added_at = 1785025372
 author = "TadomiKa-Ari"
 license = "MIT"
 icon = "movie"
-description = "A Noctalia widget for applying Wallpaper Engine wallpapers from Steam Workshop with one click"
+description = "Apply Wallpaper Engine wallpapers from the Steam Workshop, with palette sync and timed cycling"
+plugin_api = 9
+tags = ["wallpaper", "desktop", "theming"]
+
+[[plugin.release]]
 plugin_api = 3
-tags = ["wallpaper", "utility"]
+version = "1.0.0"
+updated_at = 1785025372
+rev = "cd80c56409bbee83f8d033d8753cfb3065069bef"
 
 [[plugin]]
 id = "k4n4t4/hypr-submap"
