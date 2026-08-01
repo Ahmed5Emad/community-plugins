@@ -62,6 +62,7 @@ body:
         - lyrics
         - mangowm-keymode
         - mawaqit
+        - mimir
         - mini-docker
         - nextboot-selector
         - nix-monitor
