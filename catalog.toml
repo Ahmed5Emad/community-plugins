@@ -880,8 +880,8 @@ tags = ["bar", "panel", "service", "gaming", "system", "hardware"]
 [[plugin]]
 id = "icefish/phone-connect"
 name = "Phone Connect"
-version = "0.1.0"
-updated_at = 1785500232
+version = "0.1.1"
+updated_at = 1785589014
 added_at = 1785500232
 author = "icefish"
 license = "MIT"
