@@ -916,3 +916,17 @@ icon = "folder-open"
 description = "Open a recent JetBrains project from the launcher. Type /jb to list your projects."
 plugin_api = 3
 tags = ["launcher", "development", "productivity"]
+
+[[plugin]]
+id = "yocraft/battery-widget"
+name = "Battery Widget"
+version = "1.0.0"
+updated_at = 1785554104
+added_at = 1785554104
+author = "yocraft"
+license = "MIT"
+icon = "battery"
+description = "Desktop/Lockscreen widget to show battery."
+deprecated = false
+plugin_api = 19
+tags = ["desktop", "hardware", "system", "utility"]
