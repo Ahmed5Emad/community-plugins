@@ -1,0 +1,59 @@
+{
+  "title": "Mimir",
+  "tooltip": "Mimir AI — {status}",
+  "input_placeholder": "Ask me anything...",
+  "send": "Send",
+  "clear": "Clear",
+  "status_idle": "Idle",
+  "status_thinking": "Thinking...",
+  "status_tool": "Running command...",
+  "status_error": "Error",
+  "status_online": "Online",
+  "status_offline": "Offline",
+  "settings": {
+    "glyph": { "label": "Bar Icon" },
+    "model_name": {
+      "label": "Model",
+      "description": "OpenCode Go model to use",
+      "deepseek_flash": "DeepSeek V4 Flash (fast, cheap)",
+      "deepseek_pro": "DeepSeek V4 Pro (powerful)",
+      "grok45": "Grok 4.5",
+      "kimi_code": "Kimi K2.7 Code",
+      "glm52": "GLM-5.2"
+    },
+    "api_endpoint": {
+      "label": "API Endpoint",
+      "description": "Base URL for the API (default Ollama uses http://localhost:11434/v1)"
+    },
+    "api_key": {
+      "label": "API Key",
+      "description": "API key for hosted providers (stored locally and never shared)"
+    },
+    "mode": {
+      "label": "Thinking Mode",
+      "description": "How deeply the AI thinks before responding",
+      "fast": "Fast — Quick answers, minimal tools",
+      "normal": "Normal — Balanced reasoning and tools",
+      "deep": "Deep — Exhaustive search, multi-step reasoning"
+    },
+    "tool_permission": {
+      "label": "Tool Permission",
+      "description": "When the AI can run terminal commands",
+      "ask": "Ask — Prompt before every command",
+      "allow": "Allow — Run automatically",
+      "off": "Off — No tools"
+    },
+    "tool_blocklist": {
+      "label": "Blocked Commands",
+      "description": "Comma-separated commands never allowed"
+    },
+    "show_commands": {
+      "label": "Show Commands",
+      "description": "Show executed commands in the chat"
+    },
+    "max_history": {
+      "label": "Max History",
+      "description": "Number of messages to keep in conversation context"
+    }
+  }
+}
