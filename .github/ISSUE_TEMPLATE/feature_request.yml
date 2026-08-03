@@ -54,6 +54,7 @@ body:
         - ideapad-conservation-mode
         - iio_lock
         - imagemagick-clock
+        - ip-monitor
         - jetbrains-provider
         - keybind-cheatsheet
         - keymap
