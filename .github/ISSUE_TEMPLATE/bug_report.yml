@@ -67,6 +67,7 @@ body:
         - mimir
         - mini-docker
         - nextboot-selector
+        - niri-animations
         - nix-monitor
         - noctwhspr
         - pass
