@@ -76,6 +76,7 @@ body:
         - portctl
         - prismlauncher-instances
         - proton-pass
+        - qrcode
         - rss-notifier
         - sharednd
         - shelly
