@@ -70,6 +70,7 @@ body:
         - niri-animations
         - nix-monitor
         - noctwhspr
+        - obs-integration
         - pass
         - phone-connect
         - pomodoro
