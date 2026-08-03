@@ -78,6 +78,7 @@ body:
         - proton-pass
         - qrcode
         - rss-notifier
+        - screen-toolkit
         - sharednd
         - shelly
         - special-workspaces
