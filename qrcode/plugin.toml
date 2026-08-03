@@ -14,6 +14,9 @@ dependencies = [ "qrencode" ]
 id = "widget"
 entry = "widget.luau"
 
+    [widget.actions]
+    left = "panel-toggle yocraft/qrcode:panel"
+
     [[widget.setting]]
     key = "glyph"
     type = "glyph"
