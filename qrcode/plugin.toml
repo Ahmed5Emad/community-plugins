@@ -74,6 +74,13 @@ options = [
 ]
 
 [[setting]]
+key = "keep_on_close"
+type = "bool"
+label_key = "settings.keep_on_close.label"
+description_key = "settings.keep_on_close.description"
+default = false
+
+[[setting]]
 key = "size"
 type = "int"
 label_key = "settings.size.label"
