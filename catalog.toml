@@ -574,8 +574,8 @@ tags = ["bar", "panel", "service", "productivity", "time"]
 [[plugin]]
 id = "cleboost/anilist"
 name = "AniList (UNOFFICIAL)"
-version = "1.1.1"
-updated_at = 1785532344
+version = "1.1.2"
+updated_at = 1785811012
 added_at = 1784843708
 author = "Cleboost"
 license = "MIT"
