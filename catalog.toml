@@ -1064,3 +1064,16 @@ icon = "layout-filled"
 description = "Layout switcher for MangoWC"
 plugin_api = 14
 tags = ["bar", "panel", "mangowc", "utility"]
+
+[[plugin]]
+id = "maddingo/hypr-layout-switcher"
+name = "Hyprland Layout Switcher"
+version = "0.1.0"
+updated_at = 1785812073
+added_at = 1785812073
+author = "maddingo"
+license = "MIT"
+icon = "layout-grid"
+description = "Shows and cycles the active workspace's layout"
+plugin_api = 3
+tags = ["hyprland"]
