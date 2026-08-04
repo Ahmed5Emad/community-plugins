@@ -284,8 +284,8 @@ rev = "203aaef232cb47ba37c9b32af82f27225ea1916e"
 [[plugin]]
 id = "h465855hgg/lyrics"
 name = "Lyrics"
-version = "1.4.4"
-updated_at = 1785024261
+version = "1.4.5"
+updated_at = 1785811198
 added_at = 1784238037
 author = "h465855hgg"
 license = "MIT"
