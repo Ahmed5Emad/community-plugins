@@ -1083,3 +1083,16 @@ icon = "layout-grid"
 description = "Shows and cycles the active workspace's layout"
 plugin_api = 3
 tags = ["hyprland"]
+
+[[plugin]]
+id = "theblackdon/kineticwe-layouts"
+name = "KineticWE Layouts"
+version = "1.0.0"
+updated_at = 1785966525
+added_at = 1785966525
+author = "theblackdon"
+license = "MIT"
+icon = "layout-grid"
+description = "Shows the current KineticWE tiling layout on the bar and switches layouts from a dropdown."
+plugin_api = 9
+tags = ["bar", "indicator", "service", "system"]
