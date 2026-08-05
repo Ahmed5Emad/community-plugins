@@ -19,6 +19,10 @@
             "minimal": "Minimal",
             "none": "None"
         },
+        "keep_on_close": {
+            "label": "Keep on Close",
+            "description": "Keep the input, QR Code, status etc when closing the panel."
+        },
         "size": {
             "label": "QR Code Size",
             "description": "Specify module size in dots (pixels)."
@@ -50,7 +54,8 @@
             "error": "Error: {message}",
             "ready": "QR code ready. Scan it here or click it to copy.",
             "copied": "QR code copied to clipboard.",
-            "idle": "Enter some text, then press Generate."
+            "idle": "Enter some text, then press Generate.",
+            "idlebis": "Enter some text, then press Enter."
         },
         "error": {
             "generate_failed": "failed to generate the QR code.",
