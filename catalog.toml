@@ -1015,8 +1015,8 @@ tags = ["productivity", "service", "utility", "opensuse"]
 [[plugin]]
 id = "yocraft/qrcode"
 name = "QR Code Encoder"
-version = "1.0.0"
-updated_at = 1785759441
+version = "1.0.1"
+updated_at = 1785787564
 added_at = 1785759441
 author = "yocraft"
 license = "MIT"
