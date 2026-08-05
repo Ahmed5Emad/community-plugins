@@ -650,8 +650,8 @@ tags = ["bar", "indicator", "productivity", "service", "shortcut", "system", "ut
 [[plugin]]
 id = "emrtnn/pass"
 name = "Pass"
-version = "0.1.0"
-updated_at = 1785759403
+version = "0.1.1"
+updated_at = 1785966627
 added_at = 1784895988
 author = "emrtnn"
 license = "MIT"
