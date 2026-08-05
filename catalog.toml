@@ -762,8 +762,8 @@ tags = ["network", "bar", "panel", "service", "utility", "system", "indicator"]
 [[plugin]]
 id = "yuuto/arch-updater"
 name = "Arch Updater"
-version = "1.0.0"
-updated_at = 1785208995
+version = "1.0.1"
+updated_at = 1785879615
 added_at = 1785208995
 author = "yuuto"
 license = "MIT"
