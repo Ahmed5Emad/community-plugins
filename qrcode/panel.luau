@@ -51,7 +51,7 @@ local function render()
             placeholder = noctalia.tr("panel.placeholder"),
             onChange = "onTextChange",
             onSubmit = "onTextSubmit",
-            value = keepOnClose and currentText or ""
+            value = currentText
         })
     }
 
@@ -242,6 +242,8 @@ function onClose()
     if not keepOnClose and imagePath ~= nil then
         noctalia.removeFile(imagePath)
         imagePath = nil
+        errorMessage = nil
+        currentText = ""
         render()
         -- calling render() here so it doesn't try to render the image when opening the panel
     end
