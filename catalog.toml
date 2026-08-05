@@ -1109,3 +1109,16 @@ icon = "chart-donut-3"
 description = "A native CodexBar-powered usage meter for enabled AI providers."
 plugin_api = 8
 tags = ["bar", "panel", "ai", "indicator", "utility"]
+
+[[plugin]]
+id = "aristides/udiskie"
+name = "Udiskie Manager"
+version = "0.1.0"
+updated_at = 1785967095
+added_at = 1785967095
+author = "aristides"
+license = "MIT"
+icon = "device-usb"
+description = "Manage USB drives and media with notifications in just one panel."
+plugin_api = 9
+tags = ["bar", "hardware", "panel", "service", "system", "utility"]
