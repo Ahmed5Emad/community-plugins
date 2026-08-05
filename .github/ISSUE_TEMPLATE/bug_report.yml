@@ -93,6 +93,7 @@ body:
         - tmux-provider
         - todo
         - topgrade-wrapper
+        - udiskie
         - um5606_fan_state
         - upbeat
         - w-engine
