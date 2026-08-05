@@ -60,6 +60,7 @@ body:
         - jetbrains-provider
         - keybind-cheatsheet
         - keymap
+        - kineticwe-layouts
         - lid-guard
         - llamanager
         - lrc
