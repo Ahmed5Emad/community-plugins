@@ -89,6 +89,7 @@ body:
         - sharednd
         - shelly
         - special-workspaces
+        - spotify-lyrics
         - ssh-launcher
         - tmux-provider
         - todo
