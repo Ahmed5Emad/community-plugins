@@ -38,6 +38,7 @@ body:
         - claude-companion
         - codexbar-meter
         - color_picker
+        - config-swap
         - daily-wallpaper
         - deepseek_usage
         - drive-health
