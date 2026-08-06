@@ -52,7 +52,7 @@
     "status_loading": "Loading status...",
     "no_builds": "No build results.",
     "status_succeeded": "Succeeded",
-		"status_finished": "Finished",
+    "status_finished": "Finished",
     "status_failed": "Failed",
     "status_unresolvable": "Unresolvable",
     "status_building": "Building",
