@@ -46,7 +46,7 @@
       "label": "Afficher le texte"
     },
     "warning_color": {
-      "description": "Couleur utilisée quand la batterie est en dessous de 20%.",
+      "description": "Couleur utilisée quand le niveau de batterie est en dessous ou égal au seuil d'alerte de Noctalia.",
       "label": "Couleur d'alerte"
     }
   }
