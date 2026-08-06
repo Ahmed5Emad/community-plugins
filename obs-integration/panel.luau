@@ -359,7 +359,7 @@ local STATUS_STYLE = {
 	blocked = { glyph = "clock", color = "on_surface_variant", labelKey = "status_blocked" },
 	excluded = { glyph = "ban", color = "on_surface_variant", labelKey = "status_excluded" },
 	unbuildable = { glyph = "ban", color = "on_surface_variant", labelKey = "status_unbuildable" },
-	finished = { glyph = "check", color = "tertiary", labelKey = "status_finished" },
+	finished = { glyph = "circle-dot", color = "tertiary", labelKey = "status_finished" },
 	unknown = { glyph = "help-circle", color = "on_surface_variant", labelKey = "status_unknown" },
 }
 
