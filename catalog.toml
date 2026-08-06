@@ -1122,3 +1122,16 @@ icon = "device-usb"
 description = "Manage USB drives and media with notifications in just one panel."
 plugin_api = 9
 tags = ["bar", "hardware", "panel", "service", "system", "utility"]
+
+[[plugin]]
+id = "goatnath/spotify-lyrics"
+name = "Spotify Lyrics"
+version = "1.2.0"
+updated_at = 1786025122
+added_at = 1786025122
+author = "goatnath"
+license = "MIT"
+icon = "music"
+description = "Time-synced lyrics panel linked to the media widget."
+plugin_api = 3
+tags = ["music"]
