@@ -1135,3 +1135,16 @@ icon = "music"
 description = "Time-synced lyrics panel linked to the media widget."
 plugin_api = 3
 tags = ["music"]
+
+[[plugin]]
+id = "tadomika_ari/config-swap"
+name = "Config Swap"
+version = "1.0.0"
+updated_at = 1786027394
+added_at = 1786027394
+author = "TadomiKa-Ari"
+license = "MIT"
+icon = "file"
+description = "A Noctalia widget for applying Configuration file with one click"
+plugin_api = 4
+tags = ["utility"]
