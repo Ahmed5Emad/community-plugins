@@ -900,13 +900,13 @@ tags = ["bar", "panel", "service", "media"]
 [[plugin]]
 id = "nilsonlinux/rss-notifier"
 name = "RSS/Atom Notifier"
-version = "1.0.1"
-updated_at = 1785810958
+version = "1.0.2"
+updated_at = 1786025782
 added_at = 1785462185
 author = "Nilsonlinux"
 license = "MIT"
 icon = "rss"
-description = "Acompanha feeds RSS/Atom e notifica quando surgem novos itens."
+description = "Monitors RSS/Atom feeds and notifies you when new items appear."
 plugin_api = 14
 tags = ["utility", "indicator"]
 
