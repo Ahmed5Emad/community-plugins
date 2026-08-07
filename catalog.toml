@@ -1008,8 +1008,8 @@ tags = ["bar", "indicator", "niri"]
 [[plugin]]
 id = "neyfua/obs-integration"
 name = "OBS Integration"
-version = "1.1.0"
-updated_at = 1786027146
+version = "1.1.1"
+updated_at = 1786055239
 added_at = 1785760054
 author = "neyfua"
 license = "MIT"
