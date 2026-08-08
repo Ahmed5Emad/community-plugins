@@ -1193,3 +1193,16 @@ icon = "terminal"
 description = "Run a shell command from the launcher. Type /sh then command open it your default terminal."
 plugin_api = 3
 tags = ["launcher", "productivity", "development"]
+
+[[plugin]]
+id = "weinguyen/9router-control"
+name = "9Router Control"
+version = "0.1.0"
+updated_at = 1786216383
+added_at = 1786216383
+author = "weinguyen"
+license = "MIT"
+icon = "route"
+description = "Manage 9Router model combos from the Noctalia bar — list, reorder chains, edit routing without the web dashboard."
+plugin_api = 3
+tags = ["ai", "productivity", "development", "network", "bar", "panel"]
