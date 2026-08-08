@@ -1180,3 +1180,16 @@ icon = "microphone-2"
 description = "Shows and controls Voxtype's live dictation status from the bar."
 plugin_api = 14
 tags = ["audio", "bar", "indicator", "recording", "utility"]
+
+[[plugin]]
+id = "weinguyen/shell-command"
+name = "Shell Command"
+version = "0.1.0"
+updated_at = 1786216031
+added_at = 1786216031
+author = "weinguyen"
+license = "MIT"
+icon = "terminal"
+description = "Run a shell command from the launcher. Type /sh then command open it your default terminal."
+plugin_api = 3
+tags = ["launcher", "productivity", "development"]
