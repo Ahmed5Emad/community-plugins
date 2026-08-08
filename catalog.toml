@@ -1219,3 +1219,16 @@ icon = "cpu"
 description = "A bottom-style process monitor: live CPU/RAM/swap bars and a sortable, searchable process table with per-process kill."
 plugin_api = 12
 tags = ["bar", "panel", "service", "system", "utility"]
+
+[[plugin]]
+id = "davemhammer/obsidian"
+name = "Obsidian"
+version = "1.0.6"
+updated_at = 1786225739
+added_at = 1786225739
+author = "davemhammer"
+license = "MIT"
+icon = "notebook"
+description = "Daily capture and git status, commit, pull, and push for an Obsidian vault."
+plugin_api = 10
+tags = ["productivity", "utility", "bar", "panel", "service", "launcher"]
