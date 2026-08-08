@@ -1148,3 +1148,16 @@ icon = "file"
 description = "A Noctalia widget for applying Configuration file with one click"
 plugin_api = 4
 tags = ["utility"]
+
+[[plugin]]
+id = "nightwatch75/dns-switcher"
+name = "DNS Switcher"
+version = "0.1.1"
+updated_at = 1786200986
+added_at = 1786200986
+author = "nightwatch75"
+license = "MIT"
+icon = "world"
+description = "Switch the system DNS between popular providers, custom servers, or the ISP default (NetworkManager)."
+plugin_api = 17
+tags = ["bar", "panel", "service", "network", "privacy"]
