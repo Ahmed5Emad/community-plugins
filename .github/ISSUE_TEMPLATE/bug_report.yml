@@ -41,6 +41,7 @@ body:
         - config-swap
         - daily-wallpaper
         - deepseek_usage
+        - dns-switcher
         - drive-health
         - dropwall
         - ds4-color
