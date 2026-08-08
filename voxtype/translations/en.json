@@ -36,14 +36,6 @@
       "description": "Show the active transcription model on the bar.",
       "label": "Show model on bar"
     },
-    "streaming_color": {
-      "description": "Color of the icon while Voxtype is streaming live audio.",
-      "label": "Streaming icon color"
-    },
-    "streaming_glyph": {
-      "description": "Noctalia glyph shown while Voxtype is streaming live audio.",
-      "label": "Streaming icon"
-    },
     "stopped_color": {
       "description": "Color of the icon while Voxtype is not running.",
       "label": "Stopped icon color"
@@ -51,6 +43,14 @@
     "stopped_glyph": {
       "description": "Noctalia glyph shown while Voxtype is not running.",
       "label": "Stopped icon"
+    },
+    "streaming_color": {
+      "description": "Color of the icon while Voxtype is streaming live audio.",
+      "label": "Streaming icon color"
+    },
+    "streaming_glyph": {
+      "description": "Noctalia glyph shown while Voxtype is streaming live audio.",
+      "label": "Streaming icon"
     },
     "transcribing_color": {
       "description": "Color of the icon while Voxtype is transcribing recorded audio.",
