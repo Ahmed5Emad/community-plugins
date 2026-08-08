@@ -89,6 +89,7 @@ body:
         - rss-notifier
         - screen-toolkit
         - sharednd
+        - shell-command
         - shelly
         - special-workspaces
         - spotify-lyrics
