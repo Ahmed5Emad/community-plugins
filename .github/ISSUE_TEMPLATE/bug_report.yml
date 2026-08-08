@@ -99,6 +99,7 @@ body:
         - udiskie
         - um5606_fan_state
         - upbeat
+        - voxtype
         - w-engine
         - web-launcher
         - wl-screen-mirror
