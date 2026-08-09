@@ -375,8 +375,8 @@ rev = "56ccc9e5f48bc29b068dbb6f03a3896b0cbe4a14"
 [[plugin]]
 id = "apex077/eyecare"
 name = "Eye-Care Reminders"
-version = "1.0.1"
-updated_at = 1784916698
+version = "1.0.2"
+updated_at = 1786308581
 added_at = 1784415628
 author = "Apex077"
 license = "MIT"
