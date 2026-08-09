@@ -88,6 +88,7 @@ body:
         - prismlauncher-instances
         - procmon
         - proton-pass
+        - pulsar-mouse
         - qrcode
         - rss-notifier
         - screen-toolkit
