@@ -1210,15 +1210,21 @@ tags = ["ai", "productivity", "development", "network", "bar", "panel"]
 [[plugin]]
 id = "weinguyen/procmon"
 name = "Process Monitor"
-version = "0.3.0"
-updated_at = 1786218032
+version = "0.4.0"
+updated_at = 1786298101
 added_at = 1786218032
 author = "weinguyen"
 license = "MIT"
 icon = "cpu"
 description = "A bottom-style process monitor: live CPU/RAM/swap bars and a sortable, searchable process table with per-process kill."
-plugin_api = 12
+plugin_api = 13
 tags = ["bar", "panel", "service", "system", "utility"]
+
+[[plugin.release]]
+plugin_api = 12
+version = "0.3.0"
+updated_at = 1786218032
+rev = "2b10a25ee03d345d17cf9eae16405c168a75abf8"
 
 [[plugin]]
 id = "davemhammer/obsidian"
