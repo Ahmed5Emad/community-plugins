@@ -67,6 +67,7 @@ body:
         - keymap
         - kineticwe-layouts
         - lid-guard
+        - link-ip-monitor
         - llamanager
         - lrc
         - lyrics
