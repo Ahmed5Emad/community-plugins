@@ -82,6 +82,7 @@ body:
         - noctwhspr
         - obs-integration
         - obsidian
+        - opencode-companion
         - opnsense
         - pass
         - phone-connect
