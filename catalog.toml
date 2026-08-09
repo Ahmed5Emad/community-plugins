@@ -1258,3 +1258,16 @@ icon = "mouse"
 description = "Battery status and quick sensor/lighting/power controls for a Pulsar gaming mouse - bar, desktop, and lock screen."
 plugin_api = 9
 tags = ["hardware", "system"]
+
+[[plugin]]
+id = "davemhammer/k8s-status"
+name = "K8s Status"
+version = "1.1.5"
+updated_at = 1786284828
+added_at = 1786284828
+author = "davemhammer"
+license = "MIT"
+icon = "hexagon"
+description = "Monitor Kubernetes nodes, pods, and deployments; panel and /kube launcher."
+plugin_api = 10
+tags = ["system", "development", "utility", "bar", "panel", "service", "launcher"]
