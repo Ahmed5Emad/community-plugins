@@ -97,6 +97,7 @@ body:
         - special-workspaces
         - spotify-lyrics
         - ssh-launcher
+        - tailscale
         - tmux-provider
         - todo
         - topgrade-wrapper
