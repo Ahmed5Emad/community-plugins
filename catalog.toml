@@ -1297,3 +1297,16 @@ icon = "code-circle"
 description = "Integrate OpenCode AI agent directly into Noctalia bar with native chat panel, session management, and MCP status."
 plugin_api = 3
 tags = ["ai", "productivity", "development", "bar", "panel"]
+
+[[plugin]]
+id = "nilsonlinux/link-ip-monitor"
+name = "Link/IP Monitor"
+version = "1.0.0"
+updated_at = 1786297832
+added_at = 1786297832
+author = "Nilsonlinux"
+license = "MIT"
+icon = "activity"
+description = "It pings a list of IPs, hosts, or links at intervals and notifies you when one goes down (or comes back up)."
+plugin_api = 14
+tags = ["network", "indicator", "bar", "panel", "service"]
