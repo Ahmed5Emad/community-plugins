@@ -1232,3 +1232,16 @@ icon = "notebook"
 description = "Daily capture and git status, commit, pull, and push for an Obsidian vault."
 plugin_api = 10
 tags = ["productivity", "utility", "bar", "panel", "service", "launcher"]
+
+[[plugin]]
+id = "davemhammer/tailscale"
+name = "Tailscale"
+version = "1.0.5"
+updated_at = 1786234935
+added_at = 1786234935
+author = "davemhammer"
+license = "MIT"
+icon = "circles"
+description = "Manage Tailscale connection, peers, exit nodes, and preference toggles."
+plugin_api = 10
+tags = ["network", "utility", "bar", "panel", "service", "launcher"]
