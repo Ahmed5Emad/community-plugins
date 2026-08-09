@@ -1271,3 +1271,16 @@ icon = "hexagon"
 description = "Monitor Kubernetes nodes, pods, and deployments; panel and /kube launcher."
 plugin_api = 10
 tags = ["system", "development", "utility", "bar", "panel", "service", "launcher"]
+
+[[plugin]]
+id = "davemhammer/opnsense"
+name = "OPNsense"
+version = "1.1.6"
+updated_at = 1786285462
+added_at = 1786285462
+author = "davemhammer"
+license = "MIT"
+icon = "shield"
+description = "Monitor OPNsense health, interfaces, gateways, firewall rules, and logs."
+plugin_api = 10
+tags = ["network", "utility", "bar", "panel", "service", "launcher"]
