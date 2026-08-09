@@ -82,6 +82,7 @@ body:
         - noctwhspr
         - obs-integration
         - obsidian
+        - opnsense
         - pass
         - phone-connect
         - pomodoro
