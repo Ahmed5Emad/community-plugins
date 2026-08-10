@@ -1316,3 +1316,16 @@ icon = "activity"
 description = "It pings a list of IPs, hosts, or links at intervals and notifies you when one goes down (or comes back up)."
 plugin_api = 14
 tags = ["network", "indicator", "bar", "panel", "service"]
+
+[[plugin]]
+id = "umedbazarov/ruh-vpn"
+name = "Ruh VPN"
+version = "0.1.0"
+updated_at = 1786323782
+added_at = 1786323782
+author = "Умеджон Базаров"
+license = "MIT"
+icon = "shield-lock"
+description = "VPN/proxy manager (sing-box): SSH, VLESS, VMess, Shadowsocks, SOCKS5, routing rules, kill switch."
+plugin_api = 3
+tags = ["bar", "panel", "service", "shortcut", "network", "privacy"]
