@@ -1329,3 +1329,16 @@ icon = "shield-lock"
 description = "VPN/proxy manager (sing-box): SSH, VLESS, VMess, Shadowsocks, SOCKS5, routing rules, kill switch."
 plugin_api = 3
 tags = ["bar", "panel", "service", "shortcut", "network", "privacy"]
+
+[[plugin]]
+id = "davemhammer/gocryptfs"
+name = "Gocryptfs"
+version = "1.3.0"
+updated_at = 1786324110
+added_at = 1786324110
+author = "davemhammer"
+license = "MIT"
+icon = "lock"
+description = "Mount, unmount, and auto-mount gocryptfs encrypted volumes from Noctalia."
+plugin_api = 10
+tags = ["privacy", "utility", "bar", "panel", "service"]
