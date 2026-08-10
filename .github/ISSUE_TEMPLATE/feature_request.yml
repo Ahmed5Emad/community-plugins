@@ -95,6 +95,7 @@ body:
         - pulsar-mouse
         - qrcode
         - rss-notifier
+        - ruh-vpn
         - screen-toolkit
         - sharednd
         - shell-command
