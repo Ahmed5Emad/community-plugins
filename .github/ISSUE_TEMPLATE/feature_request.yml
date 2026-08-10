@@ -50,6 +50,7 @@ body:
         - file-search
         - game-launcher
         - gamer-mode
+        - gocryptfs
         - godot-provider
         - gslapper
         - hassio
