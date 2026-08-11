@@ -873,8 +873,8 @@ tags = ["bar", "music"]
 [[plugin]]
 id = "nomadcxx/gamer-mode"
 name = "Gamer Mode"
-version = "0.6.4"
-updated_at = 1785465141
+version = "0.7.0"
+updated_at = 1786407979
 added_at = 1785465141
 author = "Nomadcxx"
 license = "MIT"
