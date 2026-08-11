@@ -1255,8 +1255,8 @@ tags = ["network", "utility", "bar", "panel", "service", "launcher"]
 [[plugin]]
 id = "harveywuk/pulsar-mouse"
 name = "Pulsar Mouse"
-version = "1.6.1"
-updated_at = 1786284094
+version = "1.7.0"
+updated_at = 1786462110
 added_at = 1786284094
 author = "harveywuk"
 license = "MIT"
