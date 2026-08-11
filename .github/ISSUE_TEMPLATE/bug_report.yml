@@ -105,6 +105,7 @@ body:
         - spotify-lyrics
         - ssh-launcher
         - tailscale
+        - thinkpad-led
         - tmux-provider
         - todo
         - topgrade-wrapper
