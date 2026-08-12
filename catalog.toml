@@ -926,15 +926,15 @@ tags = ["launcher", "development", "productivity"]
 [[plugin]]
 id = "yocraft/battery-widget"
 name = "Battery Widget"
-version = "1.0.1"
-updated_at = 1785684850
+version = "2.0.0"
+updated_at = 1786541850
 added_at = 1785554104
 author = "yocraft"
 license = "MIT"
 icon = "battery"
 description = "Desktop/Lockscreen widget to show battery."
 deprecated = false
-plugin_api = 19
+plugin_api = 3
 tags = ["desktop", "hardware", "system", "utility"]
 
 [[plugin]]
