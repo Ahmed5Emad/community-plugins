@@ -1242,8 +1242,8 @@ tags = ["productivity", "utility", "bar", "panel", "service", "launcher"]
 [[plugin]]
 id = "davemhammer/tailscale"
 name = "Tailscale"
-version = "1.0.5"
-updated_at = 1786234935
+version = "1.0.6"
+updated_at = 1786729436
 added_at = 1786234935
 author = "davemhammer"
 license = "MIT"
