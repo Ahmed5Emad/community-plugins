@@ -1374,3 +1374,16 @@ icon = "cat"
 description = "Monitor and control Mihomo (Clash Meta) — live traffic, proxy mode, group selection, and connections, local or remote."
 plugin_api = 9
 tags = ["network", "indicator", "utility", "bar", "panel", "service", "shortcut"]
+
+[[plugin]]
+id = "dumbasaroc/bazaarsearch"
+name = "Bazaar Search"
+version = "1.0.0"
+updated_at = 1786712767
+added_at = 1786712767
+author = "DumbAsARoc"
+license = "GPL-3.0"
+icon = "package"
+description = "A launcher plugin to search for Flatpaks through Bazaar"
+plugin_api = 3
+tags = ["launcher", "system", "utility"]
