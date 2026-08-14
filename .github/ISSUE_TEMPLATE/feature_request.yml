@@ -33,6 +33,7 @@ body:
         - battery-graph
         - battery-threshold
         - battery-widget
+        - bazaarsearch
         - bookmarks
         - calculator
         - cat
