@@ -1313,8 +1313,8 @@ rev = "e77d7ef7fbfa7d909e03966e42690a8561f1b190"
 [[plugin]]
 id = "nilsonlinux/link-ip-monitor"
 name = "Link/IP Monitor"
-version = "1.0.0"
-updated_at = 1786297832
+version = "1.0.1"
+updated_at = 1786712102
 added_at = 1786297832
 author = "Nilsonlinux"
 license = "MIT"
