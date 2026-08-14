@@ -1387,3 +1387,16 @@ icon = "package"
 description = "A launcher plugin to search for Flatpaks through Bazaar"
 plugin_api = 3
 tags = ["launcher", "system", "utility"]
+
+[[plugin]]
+id = "decksters-lab/palette-creator"
+name = "Palette Creator"
+version = "1.0.0"
+updated_at = 1786747169
+added_at = 1786747169
+author = "decksters-lab"
+license = "MIT"
+icon = "palette"
+description = "Build a theme by picking each color yourself, even straight off your screen."
+plugin_api = 9
+tags = ["theming", "utility"]
