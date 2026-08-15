@@ -561,15 +561,21 @@ tags = ["utility", "hyprland"]
 [[plugin]]
 id = "thepunkoff/pomodoro"
 name = "Pomodoro Timer"
-version = "1.1.0"
-updated_at = 1785287860
+version = "1.2.0"
+updated_at = 1786801523
 added_at = 1784728810
 author = "thepunkoff"
 license = "MIT"
 icon = "brain"
 description = "Simple pomodoro timer."
-plugin_api = 3
+plugin_api = 20
 tags = ["bar", "panel", "service", "productivity", "time"]
+
+[[plugin.release]]
+plugin_api = 3
+version = "1.1.0"
+updated_at = 1785287860
+rev = "1b223fcf5a0a281f039f409c53a04b61950bd00d"
 
 [[plugin]]
 id = "cleboost/anilist"
