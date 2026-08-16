@@ -111,6 +111,7 @@ body:
         - spotify-lyrics
         - ssh-launcher
         - syncthing
+        - system-updater
         - tailnet
         - tailscale
         - thinkpad-led
