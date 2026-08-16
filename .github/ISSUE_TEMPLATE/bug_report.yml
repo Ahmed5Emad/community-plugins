@@ -27,6 +27,7 @@ body:
       options:
         - --- SELECT ---
         - 9router-control
+        - ai-usagebar
         - anilist
         - arch-updater
         - audio-switcher
