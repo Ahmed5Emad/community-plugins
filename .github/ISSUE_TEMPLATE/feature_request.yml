@@ -83,6 +83,7 @@ body:
         - nextboot-selector
         - niri-active-workspace
         - niri-animations
+        - niri-displays
         - nix-monitor
         - noctwhspr
         - obs-integration
