@@ -111,6 +111,7 @@ body:
         - spotify-lyrics
         - ssh-launcher
         - syncthing
+        - tailnet
         - tailscale
         - thinkpad-led
         - tmux-provider
