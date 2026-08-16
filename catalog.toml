@@ -1432,3 +1432,16 @@ icon = "image"
 description = "Switch to the next wallpaper from a bar widget."
 plugin_api = 3
 tags = ["bar", "shortcut", "wallpaper"]
+
+[[plugin]]
+id = "raycursive/niri-displays"
+name = "Niri Displays"
+version = "0.3.0"
+updated_at = 1786903345
+added_at = 1786903345
+author = "raycursive"
+license = "MIT"
+icon = "device-desktop"
+description = "Inspect connected Niri outputs and temporarily adjust resolution, refresh rate, and scale."
+plugin_api = 9
+tags = ["bar", "niri", "panel", "service", "system", "utility"]
