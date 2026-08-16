@@ -1484,3 +1484,16 @@ icon = "topology-star-3"
 description = "Tailscale status and control: online/offline peers, quick IP/name copy, launcher search, exit nodes, Taildrop."
 plugin_api = 9
 tags = ["bar", "panel", "launcher", "service", "network", "privacy", "utility"]
+
+[[plugin]]
+id = "tordex/system-updater"
+name = "System Updates Manager"
+version = "1.0.0"
+updated_at = 1786923801
+added_at = 1786923801
+author = "tordex"
+license = "MIT"
+icon = "package"
+description = "Manage system updates (PackageKit, Flatpak, Cargo etc.)."
+plugin_api = 20
+tags = ["bar", "panel", "service", "system"]
