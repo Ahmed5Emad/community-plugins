@@ -1471,3 +1471,16 @@ icon = "cloud-network"
 description = "Syncthing status and control: bar widget, detail panel with per-folder pause/rescan, and a global pause shortcut."
 plugin_api = 9
 tags = ["bar", "panel", "service", "network", "utility", "indicator"]
+
+[[plugin]]
+id = "rylos/tailnet"
+name = "Tailnet"
+version = "2.1.0"
+updated_at = 1786904351
+added_at = 1786904351
+author = "Marco Ziliani"
+license = "MIT"
+icon = "topology-star-3"
+description = "Tailscale status and control: online/offline peers, quick IP/name copy, launcher search, exit nodes, Taildrop."
+plugin_api = 9
+tags = ["bar", "panel", "launcher", "service", "network", "privacy", "utility"]
