@@ -1371,8 +1371,8 @@ tags = ["bar", "hardware"]
 [[plugin]]
 id = "mdj2812/mihomo-control"
 name = "Mihomo Control"
-version = "0.1.0"
-updated_at = 1786541657
+version = "0.1.1"
+updated_at = 1786902671
 added_at = 1786541657
 author = "mdj2812"
 license = "MIT"
