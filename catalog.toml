@@ -1458,3 +1458,16 @@ icon = "brain"
 description = "AI plan usage in the bar, powered by the ai-usagebar CLI."
 plugin_api = 9
 tags = ["bar", "panel", "ai", "indicator", "utility"]
+
+[[plugin]]
+id = "rylos/syncthing"
+name = "Syncthing"
+version = "2.1.0"
+updated_at = 1786903866
+added_at = 1786903866
+author = "Marco Ziliani"
+license = "MIT"
+icon = "cloud-network"
+description = "Syncthing status and control: bar widget, detail panel with per-folder pause/rescan, and a global pause shortcut."
+plugin_api = 9
+tags = ["bar", "panel", "service", "network", "utility", "indicator"]
