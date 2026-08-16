@@ -51,6 +51,7 @@ body:
         - file-search
         - game-launcher
         - gamer-mode
+        - github-prs
         - gocryptfs
         - godot-provider
         - gslapper
