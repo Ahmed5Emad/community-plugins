@@ -27,6 +27,44 @@
     "refresh_interval": {
       "label": "刷新间隔",
       "description": "状态轮询间隔（1–60 秒）。"
+    },
+    "panel_placement": {
+      "label": "面板位置",
+      "description": "选择控制面板在屏幕中央浮动显示，或附着在栏组件旁。",
+      "options": {
+        "floating": "浮动",
+        "attached": "附着"
+      }
+    },
+    "label_content": {
+      "label": "组件标签",
+      "description": "选择 Mihomo 图标旁显示的内容。",
+      "options": {
+        "none": "无（仅图标）",
+        "mode": "代理模式",
+        "download": "下载速度",
+        "upload": "上传速度",
+        "traffic": "下载 + 上传",
+        "connections": "连接数",
+        "proxy": "首个策略组所选代理",
+        "latency": "首个策略组延迟"
+      }
+    },
+    "icon_size": {
+      "label": "图标大小",
+      "description": "栏图标的像素大小（10–32）。"
+    },
+    "icon_color_mode": {
+      "label": "图标颜色模式",
+      "description": "根据连接状态为 Mihomo 字形着色，或使用单一自定义颜色。",
+      "options": {
+        "status": "连接状态",
+        "custom": "自定义"
+      }
+    },
+    "icon_color": {
+      "label": "图标颜色",
+      "description": "可着色 Mihomo 字形的颜色。"
     }
   },
   "panel": {
@@ -42,6 +80,7 @@
     "connections": "条连接",
     "memory": "内存",
     "proxy_groups": "策略组",
+    "drag_group": "拖动以重新排序",
     "no_groups": "未找到策略组。",
     "delay_test": "测试延迟",
     "test_all": "全部测试",
@@ -68,7 +107,9 @@
     "status_online_plain": "在线",
     "status_connecting": "连接中",
     "status_offline_with_error": "离线 — {error}",
-    "status_offline_plain": "离线"
+    "status_offline_plain": "离线",
+    "connections_short": "{count} 个连接",
+    "latency_timeout": "超时"
   },
   "shortcut": {
     "label": "Mihomo：{mode}",

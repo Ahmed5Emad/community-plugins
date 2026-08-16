@@ -27,6 +27,44 @@
     "refresh_interval": {
       "label": "Refresh interval",
       "description": "Seconds between status polls (1–60)."
+    },
+    "panel_placement": {
+      "label": "Panel placement",
+      "description": "Choose whether the control panel opens centered on screen or attached to the bar widget.",
+      "options": {
+        "floating": "Floating",
+        "attached": "Attached"
+      }
+    },
+    "label_content": {
+      "label": "Widget label",
+      "description": "Choose what is shown beside the Mihomo icon.",
+      "options": {
+        "none": "None (icon only)",
+        "mode": "Proxy mode",
+        "download": "Download speed",
+        "upload": "Upload speed",
+        "traffic": "Download + upload",
+        "connections": "Connection count",
+        "proxy": "First group selection",
+        "latency": "First group latency"
+      }
+    },
+    "icon_size": {
+      "label": "Icon size",
+      "description": "Size of the bar icon in pixels (10–32)."
+    },
+    "icon_color_mode": {
+      "label": "Icon color mode",
+      "description": "Color the Mihomo glyph by connection status or use one custom color.",
+      "options": {
+        "status": "Connection status",
+        "custom": "Custom"
+      }
+    },
+    "icon_color": {
+      "label": "Icon color",
+      "description": "Color of the tintable Mihomo glyph."
     }
   },
   "panel": {
@@ -42,6 +80,7 @@
     "connections": "connections",
     "memory": "RAM",
     "proxy_groups": "Proxy groups",
+    "drag_group": "Drag to reorder",
     "no_groups": "No proxy groups found.",
     "delay_test": "Test latency",
     "test_all": "Test all",
@@ -68,7 +107,9 @@
     "status_online_plain": "Online",
     "status_connecting": "Connecting",
     "status_offline_with_error": "Offline — {error}",
-    "status_offline_plain": "Offline"
+    "status_offline_plain": "Offline",
+    "connections_short": "{count} conn",
+    "latency_timeout": "timeout"
   },
   "shortcut": {
     "label": "Mihomo: {mode}",

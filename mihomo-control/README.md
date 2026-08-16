@@ -11,19 +11,28 @@ secret.
 | Field   | Value                       |
 | ------- | --------------------------- |
 | ID      | `mdj2812/mihomo-control`    |
-| Entries | Bar widget: `widget`; panel: `panel`; service: `service`; shortcut: `mode` |
+| Entries | Bar widget: `widget`; panels: `panel`, `panel-attached`; service: `service`; shortcut: `mode` |
 
 ## Usage
 
-Add the **Mihomo Control** widget from the Add-widget picker. It shows the
-current proxy mode (rule / global / direct); hover it for the connection
-status, live download and upload rates, connection count and each proxy
-group's current selection. Left-click the widget to toggle the control panel,
-or open it with:
+Add the **Mihomo Control** widget from the Add-widget picker. By default it
+shows the current proxy mode (rule / global / direct). **Widget label** can
+instead show nothing, download speed, upload speed, both rates, or the active
+connection count. It can also show the first visible proxy group's current
+selection or its selected latency, falling back to that group's best known
+member latency. Its size and color presentation are also configurable. Hover it
+for the connection status, live download and upload rates, connection count and
+each proxy group's current selection. Left-click the widget to toggle the
+control panel using the configured **Panel placement**. Both variants can also
+be opened directly:
 
 ```sh
 noctalia msg panel-toggle mdj2812/mihomo-control:panel
+noctalia msg panel-toggle mdj2812/mihomo-control:panel-attached
 ```
+
+The first command opens the centered floating panel; the second opens the
+variant attached to the bar.
 
 The panel lets you switch the proxy mode (rule / global / direct), restart the
 server, refresh the status, and manage every proxy group. Each group card
@@ -33,7 +42,10 @@ shows an overall latency (the selected member's, or the best tested one) right
 in its subtitle, visible without expanding. Member lists are collapsed by
 default; click a group header to expand it. Click a member to select it; the
 current selection is marked with a dot. Use **Test all** next to the Proxy
-groups heading to run a latency test on every group at once.
+groups heading to run a latency test on every group at once. Drag a card by
+its ☰ grip over another card to reorder the groups. The nearest insertion gap
+opens to preview the resulting layout before drop. The custom display order
+survives controller polling and plugin restarts.
 
 Add the **Mihomo: Rule** shortcut from Settings → Control Center shortcuts to
 quickly toggle between rule and global mode.
@@ -52,6 +64,11 @@ all communication with the external controller and streams the traffic data.
 | Allow insecure TLS  | bool    | off          | Skip certificate verification for self-signed TLS controllers.              |
 | Test URL            | string  | `https://www.gstatic.com/generate_204` | URL used for latency tests; empty uses each group's configured test URL. |
 | Refresh interval    | int     | `2`          | Seconds between status polls (1–60); traffic rates stream in real time.     |
+| Panel placement     | select  | `floating`   | Open the control panel centered on screen or attached to the bar widget.    |
+| Widget label        | select  | `mode`       | Show nothing, mode, traffic, connections, or first-group proxy/latency.     |
+| Icon size           | int     | `16`         | Bar icon size in pixels (10–32).                                            |
+| Icon color mode     | select  | `status`     | Color the Mihomo glyph by connection status or use a custom color.          |
+| Icon color          | color   | `primary`    | Color used by the tintable Mihomo glyph.                                    |
 
 ## IPC
 
@@ -64,16 +81,18 @@ noctalia msg plugin mdj2812/mihomo-control:service all cmd '{"op":"mode","mode":
 
 `refresh` re-polls version, config, connections and proxy groups. `cmd` accepts
 the same command tables the panel sends (`mode`, `select`, `delay_test`,
-`delay_test_all`, `restart`, `close_connections`, `refresh`).
+`delay_test_all`, `reorder_group`, `restart`, `close_connections`, `refresh`).
 
 ## Notes
 
 - The plugin only talks HTTP to the configured external controller. It spawns
-  no processes, runs no external commands, and writes no files.
-- The bar widget and card use the Clash cat logo (`icon.png`), the official
-  mascot of the Clash / mihomo project. In the bar widget the cat is tinted by
-  connection status: green online, amber while connecting, red offline; the
-  panel uses the neutral logo next to its own status indicator.
+  no processes and runs no external commands. It writes only the custom
+  proxy-group display order (group names, never the secret) to its Noctalia
+  plugin data directory. Reordering does not modify the Mihomo configuration.
+- The bar widget uses a tintable glyph traced from the Clash cat silhouette. By
+  default it is green online, amber while connecting and red offline; **Icon
+  color mode** can instead apply one custom color. The panel keeps the official
+  neutral logo next to its own status indicator.
 - The traffic rate uses mihomo's streaming `GET /traffic` endpoint; status,
   connections and proxy groups are polled every refresh interval.
 - The secret is stored in your Noctalia config and sent as the standard
@@ -92,4 +111,5 @@ the same command tables the panel sends (`mode`, `select`, `delay_test`,
 - `widget.luau` — bar widget (rates + tooltip).
 - `panel.luau` — control panel.
 - `shortcut.luau` — rule/global mode toggle.
+- `fonts/` — reviewable vector source and generated tintable Mihomo glyph font.
 - `translations/` — user-facing strings.
