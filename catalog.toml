@@ -1419,3 +1419,16 @@ icon = "git-pull-request"
 description = "Track matching GitHub pull requests from the bar, including CI and review status, using the gh CLI."
 plugin_api = 9
 tags = ["bar", "development", "panel", "productivity", "service"]
+
+[[plugin]]
+id = "kavya-nama/wallpaper-switcher"
+name = "Wallpaper Switcher"
+version = "1.0.0"
+updated_at = 1786902385
+added_at = 1786902385
+author = "kavya-nama"
+license = "MIT"
+icon = "image"
+description = "Switch to the next wallpaper from a bar widget."
+plugin_api = 3
+tags = ["bar", "shortcut", "wallpaper"]
