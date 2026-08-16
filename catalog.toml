@@ -1406,3 +1406,16 @@ icon = "palette"
 description = "Build a theme by picking each color yourself, even straight off your screen."
 plugin_api = 9
 tags = ["theming", "utility"]
+
+[[plugin]]
+id = "raycursive/github-prs"
+name = "GitHub Pull Requests"
+version = "0.3.0"
+updated_at = 1786902354
+added_at = 1786902354
+author = "raycursive"
+license = "MIT"
+icon = "git-pull-request"
+description = "Track matching GitHub pull requests from the bar, including CI and review status, using the gh CLI."
+plugin_api = 9
+tags = ["bar", "development", "panel", "productivity", "service"]
