@@ -110,6 +110,7 @@ body:
         - special-workspaces
         - spotify-lyrics
         - ssh-launcher
+        - syncthing
         - tailscale
         - thinkpad-led
         - tmux-provider
