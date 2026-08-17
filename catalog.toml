@@ -1536,3 +1536,16 @@ icon = "car-fan"
 description = "ThinkPad fan speed monitor and manual level control with temperature readout — no root at runtime."
 plugin_api = 3
 tags = ["bar", "panel", "system", "hardware", "indicator", "utility"]
+
+[[plugin]]
+id = "raycursive/discord-voice"
+name = "Discord Voice"
+version = "0.3.2"
+updated_at = 1786971293
+added_at = 1786971293
+author = "raycursive"
+license = "MIT"
+icon = "brand-discord"
+description = "Monitor and control local Discord voice sessions, including participants, volume, speaking, and latency."
+plugin_api = 9
+tags = ["audio", "bar", "network", "panel", "privacy", "service"]
