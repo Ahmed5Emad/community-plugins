@@ -1523,3 +1523,16 @@ icon = "battery-charging"
 description = "Battery widget with live power draw, power-profile switching, and charge-limit control — no root at runtime."
 plugin_api = 3
 tags = ["bar", "panel", "system", "hardware", "indicator", "utility"]
+
+[[plugin]]
+id = "piero-93/thinkpad-fan"
+name = "ThinkPad Fan & Thermal Control"
+version = "1.0.0"
+updated_at = 1786969843
+added_at = 1786969843
+author = "piero-93"
+license = "GPL-3.0"
+icon = "car-fan"
+description = "ThinkPad fan speed monitor and manual level control with temperature readout — no root at runtime."
+plugin_api = 3
+tags = ["bar", "panel", "system", "hardware", "indicator", "utility"]
