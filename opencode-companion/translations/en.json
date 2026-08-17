@@ -106,6 +106,10 @@
       "description": "Messages loaded per session (1–100). Set the slider to its top notch for unlimited. Default: 50.",
       "label": "Max Messages to Load"
     },
+    "notify_on_complete": {
+      "description": "Show a desktop notification when a response completes.",
+      "label": "Notify on Completion"
+    },
     "panel_mode": {
       "description": "Fill right opens a full-height panel pinned to the right edge; Compact shows the original floating panel near the bar click.",
       "label": "Panel Layout",

@@ -44,10 +44,6 @@
       "stopping_title": "Stopping"
     }
   },
-  "shortcut": {
-    "active": "Hotspot on",
-    "inactive": "Hotspot off"
-  },
   "settings": {
     "glyph": {
       "label": "Bar glyph"
@@ -68,6 +64,10 @@
       "description": "Network name broadcast by the hotspot.",
       "label": "Hotspot name"
     }
+  },
+  "shortcut": {
+    "active": "Hotspot on",
+    "inactive": "Hotspot off"
   },
   "title": "Wi-Fi Hotspot",
   "tooltip": {

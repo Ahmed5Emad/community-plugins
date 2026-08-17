@@ -12,27 +12,27 @@
     "no_stage_prov": "No function provided",
     "notify": {
       "activate": {
-        "title": "Bazaar Search Error",
-        "msg": "Selected Flatpak ID failed sanitization check, ignoring launch command."
+        "msg": "Selected Flatpak ID failed sanitization check, ignoring launch command.",
+        "title": "Bazaar Search Error"
       },
       "copy": {
-        "title": "Bazaar Search Error",
-        "msg": "Error message copied to clipboard"
+        "msg": "Error message copied to clipboard",
+        "title": "Bazaar Search Error"
       }
     },
     "report": {
-      "header": "ERROR REPORT",
-      "stage": "Function",
       "command": "Command",
-      "query": "Query",
       "error": "Error",
+      "header": "ERROR REPORT",
+      "query": "Query",
+      "stage": "Function",
       "user_instruction": "Select this to copy an error report for the maintainer."
     }
   },
   "settings": {
     "max_entries": {
-      "label": "Maximum Entries",
-      "description": "The maximum number of Flatpak entries parsed at a time. Too many will make the plugin stop working!"
+      "description": "The maximum number of Flatpak entries parsed at a time. Too many will make the plugin stop working!",
+      "label": "Maximum Entries"
     }
   }
 }

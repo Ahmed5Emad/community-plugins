@@ -1,118 +1,118 @@
 {
-  "settings": {
-    "poll_interval": {
-      "label": "Poll interval (seconds)",
-      "description": "How often the Tailscale status is refreshed."
-    },
-    "hide_mullvad": {
-      "label": "Hide Mullvad exit nodes",
-      "description": "Hide Mullvad VPN exit nodes from the peer list."
-    },
-    "hide_offline": {
-      "label": "Hide offline peers",
-      "description": "Hide offline peers from the panel and launcher lists."
-    },
-    "show_ip": {
-      "label": "Show own IP",
-      "description": "Show this node's Tailscale IP in the bar."
-    },
-    "show_count": {
-      "label": "Show peer count",
-      "description": "Show online/total peers next to the icon."
-    },
-    "taildrop_dir": {
-      "label": "Taildrop download folder",
-      "description": "Where received files are saved. Empty = the XDG download folder."
-    },
-    "ssh_username": {
-      "label": "SSH username",
-      "description": "Username for the SSH button. Empty = system default."
-    },
-    "tailscale_bin": {
-      "label": "Tailscale binary",
-      "description": "Full path to the tailscale command. Empty = look it up on PATH."
-    },
-    "admin_url": {
-      "label": "Admin console URL",
-      "description": "Opened by the admin button. Empty = the Tailscale admin console."
-    }
-  },
-  "state": {
-    "running": "Connected",
-    "stopped": "Disconnected",
-    "needs-login": "Login required",
-    "not-installed": "Tailscale not installed",
-    "error": "Error"
-  },
-  "tooltip": {
-    "state": "State",
-    "self": "This node",
-    "online": "Peers online",
-    "exit-node": "Exit node"
+  "launcher": {
+    "copy-ip": "Enter: copy {value}",
+    "copy-name": "Enter: copy {value}",
+    "offline": "offline",
+    "online": "online",
+    "this-host": "this host"
   },
   "panel": {
-    "title": "Tailnet",
+    "admin": "Open the admin console",
     "connect": "Connect (tailscale up)",
-    "disconnect": "Disconnect (tailscale down)",
-    "refresh": "Refresh",
     "copy-ip": "Copy IP",
-    "copy-name": "Copy name",
     "copy-ip-value": "Copy IP {value}",
+    "copy-name": "Copy name",
     "copy-name-value": "Copy name {value}",
+    "disconnect": "Disconnect (tailscale down)",
     "exit-node-active": "Exit node: {name}",
     "exit-node-clear": "Disable",
     "exit-node-use": "Use as exit node",
     "filter": "Filter {online}/{total} hosts…",
-    "no-peers": "No peers to show.",
-    "needs-login": "Tailscale needs authentication. Open the login page in the browser.",
-    "login": "Log in",
     "last-check-info": "Last check: {value}",
-    "taildrop": "Receive Taildrop files",
+    "login": "Log in",
+    "needs-login": "Tailscale needs authentication. Open the login page in the browser.",
+    "no-peers": "No peers to show.",
     "ping": "Ping",
+    "refresh": "Refresh",
     "ssh": "Open SSH in terminal",
-    "admin": "Open the admin console"
-  },
-  "launcher": {
-    "this-host": "this host",
-    "online": "online",
-    "offline": "offline",
-    "copy-ip": "Enter: copy {value}",
-    "copy-name": "Enter: copy {value}"
-  },
-  "toast": {
-    "title": "Tailnet",
-    "connected": "Connected.",
-    "disconnected": "Disconnected.",
-    "exit-node-enabled": "Exit node enabled.",
-    "exit-node-disabled": "Exit node disabled.",
-    "failed": "Command failed.",
-    "copied-ip": "{host}: IP {value} copied.",
-    "copied-name": "{host}: name {value} copied.",
-    "invalid-username": "Invalid SSH username: use letters, digits, dots, dashes or underscores.",
-    "pref-on": "{name}: enabled.",
-    "pref-off": "{name}: disabled."
-  },
-  "shortcut": {
-    "label": "Tailnet"
+    "taildrop": "Receive Taildrop files",
+    "title": "Tailnet"
   },
   "peer": {
     "last-seen": "seen {value}"
-  },
-  "taildrop": {
-    "received": "{count} file(s) received in {dir}:",
-    "none": "No pending files.",
-    "failed": "Taildrop receive failed (operator mode set?)."
   },
   "ping": {
     "relayed": "No direct connection — traffic is relayed through a DERP server."
   },
   "pref": {
-    "shields-up": "Shields up (block incoming connections)",
     "accept-routes": "Accept subnet routes",
-    "run-ssh": "Tailscale SSH server",
     "advertise-exit-node": "Advertise as exit node",
     "allow-lan-access": "Allow LAN access while using an exit node",
+    "off": "off",
     "on": "on",
-    "off": "off"
+    "run-ssh": "Tailscale SSH server",
+    "shields-up": "Shields up (block incoming connections)"
+  },
+  "settings": {
+    "admin_url": {
+      "description": "Opened by the admin button. Empty = the Tailscale admin console.",
+      "label": "Admin console URL"
+    },
+    "hide_mullvad": {
+      "description": "Hide Mullvad VPN exit nodes from the peer list.",
+      "label": "Hide Mullvad exit nodes"
+    },
+    "hide_offline": {
+      "description": "Hide offline peers from the panel and launcher lists.",
+      "label": "Hide offline peers"
+    },
+    "poll_interval": {
+      "description": "How often the Tailscale status is refreshed.",
+      "label": "Poll interval (seconds)"
+    },
+    "show_count": {
+      "description": "Show online/total peers next to the icon.",
+      "label": "Show peer count"
+    },
+    "show_ip": {
+      "description": "Show this node's Tailscale IP in the bar.",
+      "label": "Show own IP"
+    },
+    "ssh_username": {
+      "description": "Username for the SSH button. Empty = system default.",
+      "label": "SSH username"
+    },
+    "taildrop_dir": {
+      "description": "Where received files are saved. Empty = the XDG download folder.",
+      "label": "Taildrop download folder"
+    },
+    "tailscale_bin": {
+      "description": "Full path to the tailscale command. Empty = look it up on PATH.",
+      "label": "Tailscale binary"
+    }
+  },
+  "shortcut": {
+    "label": "Tailnet"
+  },
+  "state": {
+    "error": "Error",
+    "needs-login": "Login required",
+    "not-installed": "Tailscale not installed",
+    "running": "Connected",
+    "stopped": "Disconnected"
+  },
+  "taildrop": {
+    "failed": "Taildrop receive failed (operator mode set?).",
+    "none": "No pending files.",
+    "received": "{count} file(s) received in {dir}:"
+  },
+  "toast": {
+    "connected": "Connected.",
+    "copied-ip": "{host}: IP {value} copied.",
+    "copied-name": "{host}: name {value} copied.",
+    "disconnected": "Disconnected.",
+    "exit-node-disabled": "Exit node disabled.",
+    "exit-node-enabled": "Exit node enabled.",
+    "failed": "Command failed.",
+    "invalid-username": "Invalid SSH username: use letters, digits, dots, dashes or underscores.",
+    "pref-off": "{name}: disabled.",
+    "pref-on": "{name}: enabled.",
+    "title": "Tailnet"
+  },
+  "tooltip": {
+    "exit-node": "Exit node",
+    "online": "Peers online",
+    "self": "This node",
+    "state": "State"
   }
 }

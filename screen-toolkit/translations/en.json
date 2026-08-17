@@ -101,8 +101,10 @@
       "description": "Layout of the main panel. Standard is the default dense grid; Legacy recreates the Noctalia-v4 layout.",
       "label": "Panel Mode",
       "options": {
-        "standard": "Standard",
-        "legacy": "Legacy"
+        "compact": "Compact",
+        "full": "Full",
+        "legacy": "Legacy",
+        "standard": "Standard"
       }
     },
     "record_audio_in": {
