@@ -45,6 +45,7 @@ body:
         - config-swap
         - daily-wallpaper
         - deepseek_usage
+        - discord-voice
         - dns-switcher
         - drive-health
         - dropwall
