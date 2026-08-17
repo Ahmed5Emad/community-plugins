@@ -116,6 +116,7 @@ body:
         - system-updater
         - tailnet
         - tailscale
+        - thinkpad-fan
         - thinkpad-led
         - tmux-provider
         - todo
