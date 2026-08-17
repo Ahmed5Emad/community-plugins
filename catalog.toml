@@ -1497,3 +1497,16 @@ icon = "package"
 description = "Manage system updates (PackageKit, Flatpak, Cargo etc.)."
 plugin_api = 20
 tags = ["bar", "panel", "service", "system"]
+
+[[plugin]]
+id = "tphilippot/git_companion"
+name = "Git Companion"
+version = "1.0.0"
+updated_at = 1786925440
+added_at = 1786925440
+author = "thomas-philippot"
+license = "MIT"
+icon = "brand-git"
+description = "Monitor your git repositories from the Noctalia bar. See your current PRs/MRs and issues at a glance."
+plugin_api = 23
+tags = ["development", "bar", "panel", "service", "productivity"]
