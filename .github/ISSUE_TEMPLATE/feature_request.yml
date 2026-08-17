@@ -32,6 +32,7 @@ body:
         - arch-updater
         - audio-switcher
         - battery-graph
+        - battery-power-management
         - battery-threshold
         - battery-widget
         - bazaarsearch
