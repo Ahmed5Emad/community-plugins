@@ -20,10 +20,18 @@ end
 local function safeText(value)
     local text = noctalia.string.trim(tostring(value or ""))
     text = text:gsub("%s+", " ")
-    text = text:gsub("([%w_%-]*[Kk][Ee][Yy][%w_%-]*=)[^%s]+", "%1<redacted>")
-    text = text:gsub("([Tt][Oo][Kk][Ee][Nn][%w_%-]*=)[^%s]+", "%1<redacted>")
-    text = text:gsub("([Ss][Ee][Cc][Rr][Ee][Tt][%w_%-]*=)[^%s]+", "%1<redacted>")
-    text = text:gsub("([Bb]earer%s+)[^%s]+", "%1<redacted>")
+    -- `scrub` runs this over ~165 strings per two-vendor read, and four
+    -- backtracking patterns on each one exhaust the callback's CPU budget,
+    -- which costs the whole report. All four need a literal `=` or `earer` to
+    -- match, so a plan name or a percentage skips them.
+    if text:find("=", 1, true) then
+        text = text:gsub("([%w_%-]*[Kk][Ee][Yy][%w_%-]*=)[^%s]+", "%1<redacted>")
+        text = text:gsub("([Tt][Oo][Kk][Ee][Nn][%w_%-]*=)[^%s]+", "%1<redacted>")
+        text = text:gsub("([Ss][Ee][Cc][Rr][Ee][Tt][%w_%-]*=)[^%s]+", "%1<redacted>")
+    end
+    if text:find("earer", 1, true) then
+        text = text:gsub("([Bb]earer%s+)[^%s]+", "%1<redacted>")
+    end
     if #text > 200 then text = string.sub(text, 1, 200) .. "..." end
     return text
 end
@@ -35,6 +43,41 @@ local function scrub(value)
     if type(value) ~= "table" then return value end
     for key, inner in pairs(value) do value[key] = scrub(inner) end
     return value
+end
+
+-- The one place a failure is named. Subscribers translate the code, and the
+-- CLI's own text travels with it as `detail`, redacted like any other string
+-- that reaches the screen.
+local function failure(code, detail)
+    return { code = code, detail = safeText(detail) }
+end
+
+-- The run's outcome as one code. A missing binary is split out from the
+-- generic failure because the panel can offer an install link for that one,
+-- and shells report it as one of two messages. Both arrive with status 127,
+-- which a CLI that merely cannot open its own config file does not use, so the
+-- code has to agree with the message before the install link is offered.
+local function classify(result)
+    if result == nil then return failure("spawn_failed") end
+    if result.timedOut then return failure("timed_out") end
+
+    -- Matched raw. `failure` scrubs what it is given, and scrubbing first would
+    -- mean matching against text already capped at 200 characters, so a noisy
+    -- run could push the message that names the failure out of reach.
+    local stderr = tostring(result.stderr or "")
+    local lower = stderr:lower()
+    if result.exitCode == 127
+        and (lower:find("command not found", 1, true)
+            or lower:find("no such file or directory", 1, true)) then
+        return failure("not_installed", stderr)
+    end
+    if result.exitCode ~= 0 then
+        -- Whitespace-only stderr scrubs down to nothing, so the exit code has
+        -- to answer for it rather than a detail that arrives on screen empty.
+        return failure("failed", stderr:find("%S") and stderr
+            or ("ai-usagebar exited with code " .. tostring(result.exitCode)))
+    end
+    return failure("no_data", stderr)
 end
 
 local inFlight = false
@@ -82,27 +125,18 @@ local function refresh()
             -- A vendor that failed still comes back as an entry with `status =
             -- "error"`, so a non-zero exit is not a reason to drop the report.
             noctalia.state.set("report", scrub(decoded))
-            noctalia.state.set("error", "")
+            noctalia.state.set("error", failure(""))
             return
         end
 
-        local message = "ai-usagebar returned no usage data"
-        if result == nil then
-            message = "could not run ai-usagebar"
-        elseif result.timedOut then
-            message = "ai-usagebar timed out"
-        elseif result.exitCode ~= 0 then
-            local stderr = safeText(result.stderr)
-            message = stderr ~= "" and stderr or ("ai-usagebar exited with code " .. tostring(result.exitCode))
-        end
-        noctalia.state.set("error", message)
+        noctalia.state.set("error", classify(result))
     end, 30000)
 
     -- A refusal to spawn never calls back, and without this the poller would
     -- sit in flight forever and stop asking.
     if not started then
         inFlight = false
-        noctalia.state.set("error", "could not run ai-usagebar")
+        noctalia.state.set("error", failure("spawn_failed"))
         stopPolling()
     end
 end
