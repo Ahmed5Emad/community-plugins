@@ -119,6 +119,7 @@ body:
         - tailscale
         - thinkpad-fan
         - thinkpad-led
+        - thunderbird-companion
         - tmux-provider
         - todo
         - topgrade-wrapper
