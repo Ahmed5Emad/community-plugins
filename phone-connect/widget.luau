@@ -24,7 +24,8 @@ local function panelId()
 end
 
 local function glyphFor(d)
-	if not d or not d.isReachable then return "phone-off" end
+	-- connected = paired AND reachable; reachable alone is mere visibility
+	if not d or not (d.isPaired and d.isReachable) then return "phone-off" end
 	local t = d.type
 	if t == "tablet" then return "device-tablet" end
 	if t == "laptop" then return "device-laptop" end
@@ -75,7 +76,8 @@ local function render()
 				color = "on_surface/0.5" }),
 		}
 	else
-		local reachable = d.isReachable == true
+		-- connected = paired AND reachable; reachable alone is mere visibility
+		local reachable = d.isPaired == true and d.isReachable == true
 		local charge = d.batteryCharge
 		local charging = d.batteryCharging == true
 		local hasCharge = type(charge) == "number" and charge >= 0

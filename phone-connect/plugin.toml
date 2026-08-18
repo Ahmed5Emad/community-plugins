@@ -12,7 +12,7 @@
 
 id = "icefish/phone-connect"
 name = "Phone Connect"
-version = "0.1.2"
+version = "0.2.0"
 plugin_api = 16
 author = "icefish"
 license = "MIT"
@@ -63,20 +63,14 @@ options = [
   { value = "hidden", label_key = "settings.battery_display.hidden" },
 ]
 
+# 头像 (custom_image) 和设备名 (device_alias) 已在面板中直接内联编辑
+# （点击设备卡上的名字/头像），此处仅保留一条说明，不再提供独立设置项。
 [[setting]]
-key = "custom_image"
-type = "file"
-label_key = "settings.custom_image.label"
-description_key = "settings.custom_image.description"
-default = ""
-extensions = [".png", ".jpg", ".jpeg", ".webp", ".svg"]
-
-[[setting]]
-key = "device_alias"
+key = "migrated_notice"
 type = "string"
-label_key = "settings.device_alias.label"
-description_key = "settings.device_alias.description"
-default = "Your-Phone"
+label_key = "settings.migrated.label"
+description_key = "settings.migrated.description"
+default = ""
 
 [[setting]]
 key = "language"
@@ -132,7 +126,7 @@ entry = "tile.luau"
 [[panel]]
 id = "details"
 entry = "panel.luau"
-width = 500
+width = 520
 height = 600
 placement = "attached"
 position = "auto"
@@ -145,7 +139,7 @@ keyboard_focus = "on_demand"
 [[panel]]
 id = "details_floating"
 entry = "panel.luau"
-width = 500
+width = 520
 height = 600
 placement = "floating"
 position = "center"
@@ -157,7 +151,7 @@ keyboard_focus = "on_demand"
 [[panel]]
 id = "details_widget"
 entry = "panel.luau"
-width = 500
+width = 520
 height = 600
 placement = "floating"
 position = "auto"
