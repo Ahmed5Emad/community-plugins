@@ -21,8 +21,8 @@
       "label": "Refresh interval (minutes)"
     },
     "show_feed_images": {
-      "label": "Show feed images",
-      "description": "Show each item's cover image (or the site's favicon as a fallback) in the item list."                  
+      "description": "Show each item's cover image (or the site's favicon as a fallback) in the item list.",
+      "label": "Show feed images"
     }
   }
 }
