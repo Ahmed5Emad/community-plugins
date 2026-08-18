@@ -1449,8 +1449,8 @@ tags = ["bar", "niri", "panel", "service", "system", "utility"]
 [[plugin]]
 id = "felipeartur/ai-usagebar"
 name = "AI Usage"
-version = "1.0.0"
-updated_at = 1786903781
+version = "1.1.0"
+updated_at = 1787016147
 added_at = 1786903781
 author = "felipeartur"
 license = "MIT"
@@ -1549,3 +1549,16 @@ icon = "brand-discord"
 description = "Monitor and control local Discord voice sessions, including participants, volume, speaking, and latency."
 plugin_api = 9
 tags = ["audio", "bar", "network", "panel", "privacy", "service"]
+
+[[plugin]]
+id = "mdj2812/thunderbird-companion"
+name = "Thunderbird Companion"
+version = "0.1.0"
+updated_at = 1787016139
+added_at = 1787016139
+author = "mdj2812"
+license = "MIT"
+icon = "mail"
+description = "Shows Thunderbird unread mail in Noctalia with recent-message actions through a local companion bridge."
+plugin_api = 9
+tags = ["bar", "panel", "service", "productivity", "utility"]
