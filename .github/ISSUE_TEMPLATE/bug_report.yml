@@ -39,6 +39,7 @@ body:
         - bookmarks
         - calculator
         - cat
+        - cider
         - claude-companion
         - codexbar-meter
         - color_picker
