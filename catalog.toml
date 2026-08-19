@@ -1568,3 +1568,16 @@ icon = "mail"
 description = "Shows Thunderbird unread mail in Noctalia with recent-message actions through a local companion bridge."
 plugin_api = 9
 tags = ["bar", "panel", "service", "productivity", "utility"]
+
+[[plugin]]
+id = "dragged/cider"
+name = "Cider"
+version = "1.8.3"
+updated_at = 1787148354
+added_at = 1787148354
+author = "dragged"
+license = "MIT"
+icon = "music"
+description = "Cider now-playing alerts and a sticky karaoke lyrics HUD."
+plugin_api = 23
+tags = ["media", "music", "audio", "bar", "panel", "service"]
