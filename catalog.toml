@@ -1581,3 +1581,16 @@ icon = "music"
 description = "Cider now-playing alerts and a sticky karaoke lyrics HUD."
 plugin_api = 23
 tags = ["media", "music", "audio", "bar", "panel", "service"]
+
+[[plugin]]
+id = "yugaaank/better-clock"
+name = "Better Clock"
+version = "1.0.0"
+updated_at = 1787152728
+added_at = 1787152728
+author = "yugaaank"
+license = "MIT"
+icon = "clock"
+description = "A minimal digital clock desktop widget with customizable format."
+plugin_api = 19
+tags = ["desktop", "clock", "time", "utility"]
