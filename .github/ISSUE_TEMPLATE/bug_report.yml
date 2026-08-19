@@ -99,6 +99,7 @@ body:
         - palette-creator
         - pass
         - phone-connect
+        - phone-operate
         - pomodoro
         - portctl
         - prismlauncher-instances
