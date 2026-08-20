@@ -32,6 +32,7 @@ dependencies = [
   "pkill",
   "xdg-open",
   "hyprctl",
+  "niri",
   "swappy",
   "satty",
   "gimp",
