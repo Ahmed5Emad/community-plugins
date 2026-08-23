@@ -670,8 +670,8 @@ tags = ["launcher", "privacy", "productivity", "utility"]
 [[plugin]]
 id = "tadomika_ari/w-engine"
 name = "W Engine"
-version = "1.3.0"
-updated_at = 1787014958
+version = "1.4.0"
+updated_at = 1787487715
 added_at = 1785025372
 author = "TadomiKa-Ari"
 license = "MIT"
