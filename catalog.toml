@@ -1572,8 +1572,8 @@ tags = ["bar", "panel", "service", "productivity", "utility"]
 [[plugin]]
 id = "dragged/cider"
 name = "Cider"
-version = "1.8.3"
-updated_at = 1787148354
+version = "1.8.4"
+updated_at = 1787488071
 added_at = 1787148354
 author = "dragged"
 license = "MIT"
