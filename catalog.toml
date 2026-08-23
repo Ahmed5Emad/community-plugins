@@ -914,7 +914,7 @@ license = "MIT"
 icon = "rss"
 description = "Monitors RSS/Atom feeds and notifies you when new items appear."
 plugin_api = 14
-tags = ["utility", "indicator"]
+tags = ["utility", "indicator", "panel", "bar", "service"]
 
 [[plugin]]
 id = "cleboost/jetbrains-provider"
