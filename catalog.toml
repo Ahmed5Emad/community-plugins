@@ -1293,8 +1293,8 @@ tags = ["system", "development", "utility", "bar", "panel", "service", "launcher
 [[plugin]]
 id = "davemhammer/opnsense"
 name = "OPNsense"
-version = "1.1.6"
-updated_at = 1786285462
+version = "1.1.7"
+updated_at = 1787487517
 added_at = 1786285462
 author = "davemhammer"
 license = "MIT"
