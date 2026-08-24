@@ -1685,3 +1685,16 @@ icon = "cpu"
 description = "A compact bar widget combining CPU, temperature, memory, disk, and network activity."
 plugin_api = 16
 tags = ["bar", "indicator", "system"]
+
+[[plugin]]
+id = "fel/ocr"
+name = "OCR"
+version = "1.0.3"
+updated_at = 1787615958
+added_at = 1787615958
+author = "Fel"
+license = "MIT"
+icon = "scan"
+description = "Select a screen region and copy its text via tesseract OCR."
+plugin_api = 3
+tags = ["utility", "productivity"]
