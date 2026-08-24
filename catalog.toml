@@ -1620,3 +1620,16 @@ icon = "car-fan"
 description = "Live CPU and GPU fan RPM monitor and profile switcher for ASUS TUF and ROG laptops."
 plugin_api = 9
 tags = ["hardware", "bar", "system", "indicator"]
+
+[[plugin]]
+id = "tordex/nvtop"
+name = "NVTOP"
+version = "1.0.0"
+updated_at = 1787608918
+added_at = 1787608918
+author = "tordex"
+license = "MIT"
+icon = "cpu"
+description = "Monitor real-time information about your GPU status and running processes with nvtop."
+plugin_api = 20
+tags = ["panel", "system"]
