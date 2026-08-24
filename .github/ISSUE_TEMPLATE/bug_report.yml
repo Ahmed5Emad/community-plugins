@@ -93,6 +93,7 @@ body:
         - niri-displays
         - nix-monitor
         - noctwhspr
+        - nvtop
         - obs-integration
         - obsidian
         - opencode-companion
