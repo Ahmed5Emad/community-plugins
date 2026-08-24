@@ -30,6 +30,7 @@ body:
         - ai-usagebar
         - anilist
         - arch-updater
+        - asus-fan
         - audio-switcher
         - battery-graph
         - battery-power-management
