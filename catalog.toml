@@ -1652,3 +1652,17 @@ icon = "brand-openai"
 description = "OpenCodex account, quota, usage, and routing control."
 plugin_api = 24
 tags = ["bar", "panel", "service", "ai", "indicator", "utility"]
+
+[[plugin]]
+id = "yocraft/custom-shortcut"
+name = "Custom Shortcut"
+version = "1.0.0"
+updated_at = 1787609905
+added_at = 1787609905
+author = "yocraft"
+license = "MIT"
+icon = "command"
+description = "Add a custom control center tile."
+deprecated = false
+plugin_api = 3
+tags = ["shortcut", "utility"]
