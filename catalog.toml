@@ -1607,3 +1607,16 @@ icon = "devices"
 description = "Mirror and control Android phones via scrcpy, with KDE Connect device actions."
 plugin_api = 22
 tags = ["bar", "panel", "service", "launcher", "media", "utility", "niri"]
+
+[[plugin]]
+id = "kv7499/asus-fan"
+name = "ASUS TUF Fan Speed and Profile Switcher"
+version = "1.0.0"
+updated_at = 1787608451
+added_at = 1787608451
+author = "kv7499"
+license = "MIT"
+icon = "car-fan"
+description = "Live CPU and GPU fan RPM monitor and profile switcher for ASUS TUF and ROG laptops."
+plugin_api = 9
+tags = ["hardware", "bar", "system", "indicator"]
