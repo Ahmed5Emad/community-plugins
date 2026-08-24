@@ -1170,15 +1170,21 @@ tags = ["utility"]
 [[plugin]]
 id = "nightwatch75/dns-switcher"
 name = "DNS Switcher"
-version = "0.1.2"
-updated_at = 1786283627
+version = "0.3.0"
+updated_at = 1787609248
 added_at = 1786200986
 author = "nightwatch75"
 license = "MIT"
 icon = "world"
 description = "Switch the system DNS between popular providers, custom servers, or the ISP default (NetworkManager)."
-plugin_api = 17
+plugin_api = 28
 tags = ["bar", "panel", "service", "network", "privacy"]
+
+[[plugin.release]]
+plugin_api = 17
+version = "0.1.2"
+updated_at = 1786283627
+rev = "f222cdee2be8a0c9ecfc3890b9f90d377429f534"
 
 [[plugin]]
 id = "gabedunn/voxtype"
