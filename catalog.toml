@@ -92,8 +92,8 @@ tags = ["bar", "mangowc"]
 [[plugin]]
 id = "oldirtty/color_picker"
 name = "Color Picker"
-version = "1.0.5"
-updated_at = 1784947118
+version = "1.0.6"
+updated_at = 1787609577
 added_at = 1784086957
 author = "oldirtty"
 license = "MIT"
