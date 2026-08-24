@@ -1578,15 +1578,21 @@ tags = ["bar", "panel", "service", "productivity", "utility"]
 [[plugin]]
 id = "dragged/cider"
 name = "Cider"
-version = "1.8.4"
-updated_at = 1787488071
+version = "1.9.2"
+updated_at = 1787610333
 added_at = 1787148354
 author = "dragged"
 license = "MIT"
 icon = "music"
 description = "Cider now-playing alerts and a sticky karaoke lyrics HUD."
-plugin_api = 23
+plugin_api = 24
 tags = ["media", "music", "audio", "bar", "panel", "service"]
+
+[[plugin.release]]
+plugin_api = 23
+version = "1.8.4"
+updated_at = 1787488071
+rev = "c27ede7964798534b76405ad50f5b114e453034b"
 
 [[plugin]]
 id = "yugaaank/better-clock"
