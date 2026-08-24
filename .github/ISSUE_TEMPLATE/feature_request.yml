@@ -121,6 +121,7 @@ body:
         - spotify-lyrics
         - ssh-launcher
         - syncthing
+        - system-monitor
         - system-updater
         - tailnet
         - tailscale
