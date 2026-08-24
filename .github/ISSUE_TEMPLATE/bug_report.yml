@@ -46,6 +46,7 @@ body:
         - codexbar-meter
         - color_picker
         - config-swap
+        - custom-shortcut
         - daily-wallpaper
         - deepseek_usage
         - discord-voice
