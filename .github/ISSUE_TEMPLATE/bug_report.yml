@@ -97,6 +97,7 @@ body:
         - obs-integration
         - obsidian
         - opencode-companion
+        - opencodex-bar
         - opnsense
         - palette-creator
         - pass
