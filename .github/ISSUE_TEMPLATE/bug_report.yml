@@ -97,6 +97,7 @@ body:
         - nvtop
         - obs-integration
         - obsidian
+        - ocr
         - opencode-companion
         - opencodex-bar
         - opnsense
