@@ -1672,3 +1672,16 @@ description = "Add a custom control center tile."
 deprecated = false
 plugin_api = 3
 tags = ["shortcut", "utility"]
+
+[[plugin]]
+id = "tmelik/system-monitor"
+name = "System Monitor"
+version = "1.2.0"
+updated_at = 1787614505
+added_at = 1787614505
+author = "TMelik"
+license = "GPL-3.0-only"
+icon = "cpu"
+description = "A compact bar widget combining CPU, temperature, memory, disk, and network activity."
+plugin_api = 16
+tags = ["bar", "indicator", "system"]
