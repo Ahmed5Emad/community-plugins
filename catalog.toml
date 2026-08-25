@@ -1157,8 +1157,8 @@ tags = ["music"]
 [[plugin]]
 id = "tadomika_ari/config-swap"
 name = "Config Swap"
-version = "1.0.0"
-updated_at = 1786027394
+version = "1.1.0"
+updated_at = 1787663144
 added_at = 1786027394
 author = "TadomiKa-Ari"
 license = "MIT"
