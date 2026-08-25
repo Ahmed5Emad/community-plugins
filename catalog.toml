@@ -1695,8 +1695,8 @@ tags = ["bar", "indicator", "system"]
 [[plugin]]
 id = "fel/ocr"
 name = "OCR"
-version = "1.0.3"
-updated_at = 1787615958
+version = "1.0.4"
+updated_at = 1787696511
 added_at = 1787615958
 author = "Fel"
 license = "MIT"
