@@ -1461,15 +1461,21 @@ tags = ["bar", "niri", "panel", "service", "system", "utility"]
 [[plugin]]
 id = "felipeartur/ai-usagebar"
 name = "AI Usage"
-version = "1.1.0"
-updated_at = 1787016147
+version = "2.0.0"
+updated_at = 1787690403
 added_at = 1786903781
 author = "felipeartur"
 license = "MIT"
 icon = "brain"
 description = "AI plan usage in the bar, powered by the ai-usagebar CLI."
-plugin_api = 9
+plugin_api = 22
 tags = ["bar", "panel", "ai", "indicator", "utility"]
+
+[[plugin.release]]
+plugin_api = 9
+version = "1.1.0"
+updated_at = 1787016147
+rev = "bc77e4ef1dc366d379a689bb57e3d860c9e92b8f"
 
 [[plugin]]
 id = "rylos/syncthing"
