@@ -484,8 +484,8 @@ rev = "5c59d225b811675d858b7f8115c506962438ba2e"
 [[plugin]]
 id = "blackbartblues/keymap"
 name = "Keymap"
-version = "1.4.0"
-updated_at = 1786200344
+version = "1.5.0"
+updated_at = 1787627868
 added_at = 1784597775
 author = "blackbartblues"
 license = "MIT"
