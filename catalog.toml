@@ -1743,3 +1743,29 @@ icon = "brand-youtube"
 description = "Latest videos from your Vidi subscription feed."
 plugin_api = 24
 tags = ["bar", "media", "video"]
+
+[[plugin]]
+id = "emiliovenegas/omp-launcher"
+name = "Oh My Pi Launcher"
+version = "1.1.0"
+updated_at = 1787691029
+added_at = 1787691029
+author = "emiliovenegas"
+license = "MIT"
+icon = "math"
+description = "Native Oh My Pi (omp) launcher with active session indicator, popup panel, and project discovery."
+plugin_api = 3
+tags = ["bar", "launcher", "panel", "ai", "productivity", "development"]
+
+[[plugin]]
+id = "azokyen/spotify-media"
+name = "Spotify Media"
+version = "0.1.0"
+updated_at = 1787691018
+added_at = 1787691018
+author = "azokyen"
+license = "MIT"
+icon = "brand-spotify"
+description = "Compact Spotify now-playing widget with playback controls."
+plugin_api = 24
+tags = ["bar", "media", "music", "hyprland"]
