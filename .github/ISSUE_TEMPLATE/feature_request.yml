@@ -99,6 +99,7 @@ body:
         - obs-integration
         - obsidian
         - ocr
+        - omp-launcher
         - opencode-companion
         - opencodex-bar
         - opnsense
@@ -121,6 +122,7 @@ body:
         - shelly
         - special-workspaces
         - spotify-lyrics
+        - spotify-media
         - ssh-launcher
         - syncthing
         - system-monitor
