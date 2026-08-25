@@ -1698,3 +1698,16 @@ icon = "scan"
 description = "Select a screen region and copy its text via tesseract OCR."
 plugin_api = 3
 tags = ["utility", "productivity"]
+
+[[plugin]]
+id = "gustav0ar/wireview-pro-ii"
+name = "WireView Pro II"
+version = "0.3.0"
+updated_at = 1787627526
+added_at = 1787627526
+author = "Gustavo"
+license = "MIT"
+icon = "bolt"
+description = "Live WireView Pro II telemetry and controls. Requires wireviewd: https://github.com/Gustav0ar/wireview-pro-ii"
+plugin_api = 9
+tags = ["bar", "panel", "service", "system", "hardware", "utility"]
