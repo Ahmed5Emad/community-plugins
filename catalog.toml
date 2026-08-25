@@ -1730,3 +1730,16 @@ icon = "brand-github"
 description = "A native GitHub contribution calendar for your Noctalia bar."
 plugin_api = 24
 tags = ["bar", "panel", "service", "development", "productivity", "utility", "network", "hyprland", "arch"]
+
+[[plugin]]
+id = "fel/vidi"
+name = "Vidi"
+version = "0.3.0"
+updated_at = 1787690492
+added_at = 1787690492
+author = "fel"
+license = "MIT"
+icon = "brand-youtube"
+description = "Latest videos from your Vidi subscription feed."
+plugin_api = 24
+tags = ["bar", "media", "video"]
