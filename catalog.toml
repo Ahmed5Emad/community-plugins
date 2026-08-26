@@ -1682,15 +1682,21 @@ tags = ["shortcut", "utility"]
 [[plugin]]
 id = "tmelik/system-monitor"
 name = "System Monitor"
-version = "1.2.0"
-updated_at = 1787614505
+version = "1.5.1"
+updated_at = 1787746877
 added_at = 1787614505
 author = "TMelik"
 license = "GPL-3.0-only"
 icon = "cpu"
-description = "A compact bar widget combining CPU, temperature, memory, disk, and network activity."
-plugin_api = 16
+description = "A compact bar widget combining CPU, optional GPU, memory, disk, and network activity."
+plugin_api = 26
 tags = ["bar", "indicator", "system"]
+
+[[plugin.release]]
+plugin_api = 16
+version = "1.2.0"
+updated_at = 1787614505
+rev = "7dd1b1c49b4d6c8fe7732934442e21bb63bf3b86"
 
 [[plugin]]
 id = "fel/ocr"
