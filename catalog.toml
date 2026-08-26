@@ -1098,8 +1098,8 @@ tags = ["bar", "panel", "mangowc", "utility"]
 [[plugin]]
 id = "maddingo/hypr-layout-switcher"
 name = "Hyprland Layout Switcher"
-version = "0.1.0"
-updated_at = 1785812073
+version = "0.1.1"
+updated_at = 1787781204
 added_at = 1785812073
 author = "maddingo"
 license = "MIT"
