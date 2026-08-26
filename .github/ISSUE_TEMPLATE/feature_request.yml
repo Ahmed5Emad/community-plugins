@@ -28,6 +28,7 @@ body:
         - --- SELECT ---
         - 9router-control
         - ai-usagebar
+        - airpods
         - anilist
         - arch-updater
         - asus-fan
