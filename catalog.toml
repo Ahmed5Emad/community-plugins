@@ -1781,3 +1781,16 @@ icon = "brand-spotify"
 description = "Compact Spotify now-playing widget with playback controls."
 plugin_api = 24
 tags = ["bar", "media", "music", "hyprland"]
+
+[[plugin]]
+id = "harveywuk/airpods"
+name = "AirPods"
+version = "1.0.0"
+updated_at = 1787781769
+added_at = 1787781769
+author = "harveywuk"
+license = "MIT"
+icon = "device-airpods"
+description = "AirPods battery, listening mode, adaptive noise, Conversation Awareness, One-Bud ANC and ear detection in the bar."
+plugin_api = 24
+tags = ["audio", "bar", "panel", "service", "hardware", "indicator"]
