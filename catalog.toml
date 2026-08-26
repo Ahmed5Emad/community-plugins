@@ -1766,8 +1766,8 @@ tags = ["bar", "launcher", "panel", "ai", "productivity", "development"]
 [[plugin]]
 id = "azokyen/spotify-media"
 name = "Spotify Media"
-version = "0.1.0"
-updated_at = 1787691018
+version = "0.1.1"
+updated_at = 1787773258
 added_at = 1787691018
 author = "azokyen"
 license = "MIT"
