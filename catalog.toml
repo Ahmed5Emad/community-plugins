@@ -1794,3 +1794,16 @@ icon = "device-airpods"
 description = "AirPods battery, listening mode, adaptive noise, Conversation Awareness, One-Bud ANC and ear detection in the bar."
 plugin_api = 24
 tags = ["audio", "bar", "panel", "service", "hardware", "indicator"]
+
+[[plugin]]
+id = "arrifat346afs/systempulse"
+name = "SystemPulse"
+version = "1.1.0"
+updated_at = 1787832988
+added_at = 1787832988
+author = "arrifat346afs "
+license = "MIT"
+icon = "cpu"
+description = "A bar widget that displays system stats and opens a detailed SystemPulse panel."
+plugin_api = 22
+tags = ["system", "hardware", "utility"]
