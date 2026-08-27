@@ -1807,3 +1807,16 @@ icon = "cpu"
 description = "A bar widget that displays system stats and opens a detailed SystemPulse panel."
 plugin_api = 22
 tags = ["system", "hardware", "utility"]
+
+[[plugin]]
+id = "teagar/omniroute-quota"
+name = "OmniRoute Quota"
+version = "0.1.0"
+updated_at = 1787833165
+added_at = 1787833165
+author = "Teagar"
+license = "MIT"
+icon = "route"
+description = "Monitor Codex 5-hour and weekly quotas for every OmniRoute account."
+plugin_api = 22
+tags = ["ai", "bar", "panel", "service", "indicator", "utility"]
