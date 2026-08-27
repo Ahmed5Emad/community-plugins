@@ -35,12 +35,12 @@
     "updated_today": "Heute aktualisiert"
   },
   "caption_checked": "geprüft {time}",
-  "changelog_empty": "Kein Changelog verfügbar",
-  "changelog_title": "Was ist neu",
   "caption_ignored": {
     "one": "1 Paket ignoriert",
     "other": "{count} Pakete ignoriert"
   },
+  "changelog_empty": "Kein Changelog verfügbar",
+  "changelog_title": "Was ist neu",
   "err_check_timeout": "Zeitüberschreitung beim Prüfen auf Updates",
   "err_no_checkupdates": "checkupdates nicht gefunden, pacman-contrib installieren und PATH prüfen",
   "err_no_pkexec": "pkexec nicht gefunden, Polkit ist nicht installiert",
@@ -48,8 +48,8 @@
   "err_no_xdg_open": "xdg-open nicht gefunden, Paketseite kann nicht geöffnet werden",
   "err_polkit_install": "Polkit regeln können nicht installiert werden, Details im Systemlog prüfen",
   "err_run_failed": "Update fehlgeschlagen (exit {code}), versuche es erneut im Terminal oder prüfe die Log-Datei",
-  "err_terminal_closed": "Das Terminal-Fenster wurde geschlossen, bevor das Update fertig war. Versuche es erneut im Terminal oder prüfe die Log-Datei",
   "err_spawn": "checkupdates konnte nicht gestartet werden",
+  "err_terminal_closed": "Das Terminal-Fenster wurde geschlossen, bevor das Update fertig war. Versuche es erneut im Terminal oder prüfe die Log-Datei",
   "history_rollback_tag": "Rollback",
   "history_title": "Verlauf aktualisieren",
   "hover_hint": "Zeigt beim Überfahren eines Pakets die vollständigen Versionen",

@@ -1,7 +1,7 @@
 {
   "common": {
-    "on": "On",
-    "off": "Off"
+    "off": "Off",
+    "on": "On"
   },
   "errors": {
     "ctl_rejected": "librepods-ctl rejected the command"

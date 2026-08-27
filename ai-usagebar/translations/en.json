@@ -18,8 +18,8 @@
       "description": "Which side of the reading the icon sits on.",
       "label": "Icon position",
       "option": {
-        "before": "Before",
-        "after": "After"
+        "after": "After",
+        "before": "Before"
       }
     },
     "provider_limit": {
@@ -41,6 +41,16 @@
     "show_value": {
       "description": "The percentage as text. Off leaves the gauge to say it.",
       "label": "Show value"
+    },
+    "style": {
+      "description": "How this capsule looks in the bar.",
+      "label": "Style",
+      "option": {
+        "gauge": "Gauge and percentage",
+        "label": "Name, gauge and percentage",
+        "meter": "Segments",
+        "pill": "Percentage"
+      }
     },
     "vendor": {
       "description": "Which plan this capsule tracks. Add the widget twice to watch two.",
@@ -92,6 +102,7 @@
     "hidden_label": "Not shown",
     "hidden_value": "{count} more, click to open the panel",
     "install": "Install page",
+    "loading": "Loading…",
     "no_usage": "No usage reported",
     "not_configured": "`{vendor}` is not configured in ai-usagebar",
     "now": "now",

@@ -1,61 +1,91 @@
 {
   "settings": {
-    "show_cpu_usage": { "label": "CPU usage" },
-    "show_cpu_temperature": { "label": "CPU temperature" },
-    "show_gpu_usage": {
-      "label": "GPU usage",
-      "description": "Auto shows this when a GPU reporting usage is detected."
-    },
-    "show_gpu_temperature": {
-      "label": "GPU temperature",
-      "description": "Auto shows this when a GPU reporting temperature is detected."
-    },
-    "show_gpu_vram": {
-      "label": "GPU VRAM usage",
-      "description": "Auto shows this when a GPU reporting VRAM usage is detected."
-    },
-    "show_ram": { "label": "RAM usage" },
-    "show_swap": { "label": "Swap usage" },
-    "show_disk": { "label": "Disk usage" },
-    "show_download": { "label": "Download rate" },
-    "show_upload": { "label": "Upload rate" },
-    "highlight_values": { "label": "Highlight active values" },
-    "activity_color": { "label": "Activity color" },
-    "critical_color": { "label": "Critical color" },
-    "hide_unavailable": { "label": "Hide unavailable metrics" },
-    "show_separators": { "label": "Category separators" },
-    "show_tooltip": { "label": "Detailed tooltip" },
-    "show_cpu_details_in_tooltip": {
-      "label": "CPU details in tooltip",
-      "description": "Show CPU usage, temperature, frequency, and load in the tooltip. Off by default since the bar already shows enabled CPU metrics."
-    },
-    "show_top_processes": {
-      "label": "Top processes in tooltip",
-      "description": "Show the highest CPU and RAM consumers reported by ps."
+    "activity_color": {
+      "label": "Activity color"
     },
     "compact_network": {
-      "label": "Compact network units",
-      "description": "Use short labels such as M/s instead of MB/s."
+      "description": "Use short labels such as M/s instead of MB/s.",
+      "label": "Compact network units"
     },
-    "network_interface": {
-      "label": "Network interface",
-      "description": "Exact interface name to monitor. Leave empty for total non-loopback traffic."
+    "critical_color": {
+      "label": "Critical color"
     },
-    "ram_display_mode": { "label": "RAM display" },
-    "disk_display_mode": { "label": "Disk display" },
-    "display_mode": {
-      "percentage": "Percentage",
-      "used": "Used",
-      "available": "Available"
+    "disk_display_mode": {
+      "label": "Disk display"
     },
     "disk_path": {
-      "label": "Disk path",
-      "description": "Filesystem path whose disk usage should be displayed."
+      "description": "Filesystem path whose disk usage should be displayed.",
+      "label": "Disk path"
+    },
+    "display_mode": {
+      "available": "Available",
+      "percentage": "Percentage",
+      "used": "Used"
+    },
+    "hide_unavailable": {
+      "label": "Hide unavailable metrics"
+    },
+    "highlight_values": {
+      "label": "Highlight active values"
+    },
+    "network_interface": {
+      "description": "Exact interface name to monitor. Leave empty for total non-loopback traffic.",
+      "label": "Network interface"
+    },
+    "ram_display_mode": {
+      "label": "RAM display"
+    },
+    "show_cpu_details_in_tooltip": {
+      "description": "Show CPU usage, temperature, frequency, and load in the tooltip. Off by default since the bar already shows enabled CPU metrics.",
+      "label": "CPU details in tooltip"
+    },
+    "show_cpu_temperature": {
+      "label": "CPU temperature"
+    },
+    "show_cpu_usage": {
+      "label": "CPU usage"
+    },
+    "show_disk": {
+      "label": "Disk usage"
+    },
+    "show_download": {
+      "label": "Download rate"
+    },
+    "show_gpu_temperature": {
+      "description": "Auto shows this when a GPU reporting temperature is detected.",
+      "label": "GPU temperature"
+    },
+    "show_gpu_usage": {
+      "description": "Auto shows this when a GPU reporting usage is detected.",
+      "label": "GPU usage"
+    },
+    "show_gpu_vram": {
+      "description": "Auto shows this when a GPU reporting VRAM usage is detected.",
+      "label": "GPU VRAM usage"
+    },
+    "show_ram": {
+      "label": "RAM usage"
+    },
+    "show_separators": {
+      "label": "Category separators"
+    },
+    "show_swap": {
+      "label": "Swap usage"
+    },
+    "show_tooltip": {
+      "label": "Detailed tooltip"
+    },
+    "show_top_processes": {
+      "description": "Show the highest CPU and RAM consumers reported by ps.",
+      "label": "Top processes in tooltip"
+    },
+    "show_upload": {
+      "label": "Upload rate"
     },
     "tri_state": {
       "auto": "Auto",
-      "on": "On",
-      "off": "Off"
+      "off": "Off",
+      "on": "On"
     }
   }
 }

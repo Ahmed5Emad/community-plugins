@@ -1,21 +1,21 @@
 {
   "settings": {
+    "display_mode": {
+      "description": "Whether to display live RPM, active profile, or both",
+      "label": "Display Mode",
+      "options": {
+        "both": "Both",
+        "profile": "Profile Name",
+        "rpm": "Live RPM"
+      }
+    },
     "poll_interval_ms": {
-      "label": "Polling Interval (ms)",
-      "description": "How often to read hardware fan sensors"
+      "description": "How often to read hardware fan sensors",
+      "label": "Polling Interval (ms)"
     },
     "show_label": {
-      "label": "Show Label",
-      "description": "Show RPM or profile text next to the fan icon"
-    },
-    "display_mode": {
-      "label": "Display Mode",
-      "description": "Whether to display live RPM, active profile, or both",
-      "options": {
-        "rpm": "Live RPM",
-        "profile": "Profile Name",
-        "both": "Both"
-      }
+      "description": "Show RPM or profile text next to the fan icon",
+      "label": "Show Label"
     }
   },
   "tooltip": {

@@ -1,28 +1,28 @@
 {
-  "title": "OCR",
   "settings": {
+    "copy_to_clipboard": {
+      "label": "Copy result to clipboard"
+    },
+    "glyph": {
+      "label": "Glyph"
+    },
     "languages": {
-      "label": "Tesseract languages",
-      "description": "Language codes passed to tesseract -l, joined with + (e.g. eng+deu). Each needs its tessdata package installed."
+      "description": "Language codes passed to tesseract -l, joined with + (e.g. eng+deu). Each needs its tessdata package installed.",
+      "label": "Tesseract languages"
     },
     "psm": {
-      "label": "Page segmentation",
       "description": "How tesseract segments the capture. Uniform block suits most screen regions.",
+      "label": "Page segmentation",
       "options": {
         "auto": "Automatic",
         "block": "Uniform block of text",
         "line": "Single line"
       }
     },
-    "copy_to_clipboard": {
-      "label": "Copy result to clipboard"
-    },
     "show_notification": {
-      "label": "Show result notification",
-      "description": "Show a notification with a preview of the recognized text."
-    },
-    "glyph": {
-      "label": "Glyph"
+      "description": "Show a notification with a preview of the recognized text.",
+      "label": "Show result notification"
     }
-  }
+  },
+  "title": "OCR"
 }
