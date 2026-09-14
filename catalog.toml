@@ -2632,3 +2632,16 @@ icon = "bookmarks"
 description = "Save articles, books, and images locally with collections, reading progress, sharing, and Obsidian-friendly notes."
 plugin_api = 26
 tags = ["bar", "panel", "service", "productivity", "utility"]
+
+[[plugin]]
+id = "tordex/processes"
+name = "Processes"
+version = "1.0.0"
+updated_at = 1789389846
+added_at = 1789389846
+author = "tordex"
+license = "MIT"
+icon = "device-desktop-analytics"
+description = "Monitor processes CPU, Memory, Disk read/write metrics"
+plugin_api = 24
+tags = ["panel", "service", "system"]
