@@ -2645,3 +2645,16 @@ icon = "device-desktop-analytics"
 description = "Monitor processes CPU, Memory, Disk read/write metrics"
 plugin_api = 24
 tags = ["panel", "service", "system"]
+
+[[plugin]]
+id = "shangshui0302/github-kanban"
+name = "Github Kanban"
+version = "0.1.0"
+updated_at = 1789390542
+added_at = 1789390542
+author = "Shangshui0302"
+license = "MIT"
+icon = "brand-github"
+description = "A read-only GitHub dashboard for activity, notifications, work, repositories, and Actions."
+plugin_api = 24
+tags = ["bar", "panel", "service", "development", "productivity", "network", "utility"]
