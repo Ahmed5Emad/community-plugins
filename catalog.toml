@@ -2467,15 +2467,15 @@ tags = ["ai", "development", "bar", "panel", "service", "productivity"]
 [[plugin]]
 id = "muhammadessam/umbriel-monitor-control"
 name = "Umbriel Monitor Control"
-version = "0.1.5"
-updated_at = 1789146573
+version = "0.2.0"
+updated_at = 1789389999
 added_at = 1789146573
 author = "muhammadessam"
 license = "MIT"
 icon = "device-desktop"
 description = "Umbriel: place monitors left/right/above/below and set resolution and refresh rate; saved to the config."
 plugin_api = 24
-tags = ["bar", "panel", "service", "system", "utility", "hardware", "umbriel"]
+tags = ["bar", "panel", "service", "shortcut", "system", "utility", "hardware", "umbriel"]
 
 [[plugin]]
 id = "grassyloki/kwallet-secrets"
