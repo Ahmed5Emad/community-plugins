@@ -100,30 +100,42 @@ local function triggerBatchThumbnails()
   if #missing == 0 then return end
   batchRunning = true
 
-  local scriptParts = {
-    "[ -d " .. shellQuote(cacheDir) .. " ] || mkdir -p " .. shellQuote(cacheDir) .. "; ",
-    "if command -v magick >/dev/null 2>&1; then GEN=magick; ",
-    "elif command -v convert >/dev/null 2>&1; then GEN=convert; ",
-    "elif command -v ffmpeg >/dev/null 2>&1; then GEN=ffmpeg; ",
-    "else exit 0; fi; ",
-  }
+  local chunkSize = 25
+  local chunkIndex = 1
 
-  for _, item in ipairs(missing) do
-    local src, dst = item.src, item.dst
-    table.insert(scriptParts, string.format(
-      'if [ ! -f %s ]; then if [ "$GEN" = "ffmpeg" ]; then nice -n 19 ffmpeg -y -i %s -vf "scale=512:288:force_original_aspect_ratio=decrease" %s >/dev/null 2>&1; else nice -n 19 "$GEN" %s -thumbnail 512x288\\> %s >/dev/null 2>&1; fi; fi; ',
-      shellQuote(dst), shellQuote(src), shellQuote(dst), shellQuote(src), shellQuote(dst)
-    ))
+  local function processNextChunk()
+    if chunkIndex > #missing then
+      batchRunning = false
+      return
+    end
+
+    local scriptParts = {
+      "[ -d " .. shellQuote(cacheDir) .. " ] || mkdir -p " .. shellQuote(cacheDir) .. "; ",
+      "if command -v magick >/dev/null 2>&1; then GEN=magick; ",
+      "elif command -v convert >/dev/null 2>&1; then GEN=convert; ",
+      "elif command -v ffmpeg >/dev/null 2>&1; then GEN=ffmpeg; ",
+      "else exit 0; fi; ",
+      "gen() { if [ ! -f \"$2\" ]; then if [ \"$GEN\" = \"ffmpeg\" ]; then nice -n 19 ffmpeg -y -i \"$1\" -vf \"scale=512:288:force_original_aspect_ratio=decrease\" \"$2\" >/dev/null 2>&1; else nice -n 19 \"$GEN\" \"$1\" -thumbnail 512x288\\> \"$2\" >/dev/null 2>&1; fi; fi; }; ",
+    }
+
+    local chunkEnd = math.min(chunkIndex + chunkSize - 1, #missing)
+    for i = chunkIndex, chunkEnd do
+      local item = missing[i]
+      table.insert(scriptParts, string.format("gen %s %s; ", shellQuote(item.src), shellQuote(item.dst)))
+    end
+
+    chunkIndex = chunkEnd + 1
+    local batchCmd = table.concat(scriptParts)
+
+    noctalia.runAsync(batchCmd, function()
+      if isOpen and render then
+        render()
+      end
+      processNextChunk()
+    end)
   end
 
-  local batchCmd = table.concat(scriptParts)
-
-  noctalia.runAsync(batchCmd, function()
-    batchRunning = false
-    if isOpen and render then
-      render()
-    end
-  end)
+  processNextChunk()
 end
 
 local function getWallpaperDir()

@@ -1,6 +1,6 @@
 id = "ashur-d/wallpaper-widget"
 name = "Wallpaper Widget"
-version = "1.0.0"
+version = "1.0.1"
 plugin_api = 15
 author = "ashur-d"
 license = "MIT"
