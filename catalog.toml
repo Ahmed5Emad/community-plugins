@@ -2597,8 +2597,8 @@ tags = ["bar", "desktop", "panel", "service", "ai", "productivity"]
 [[plugin]]
 id = "ashur-d/wallpaper-widget"
 name = "Wallpaper Widget"
-version = "1.0.0"
-updated_at = 1789339202
+version = "1.0.1"
+updated_at = 1789389873
 added_at = 1789339202
 author = "ashur-d"
 license = "MIT"
