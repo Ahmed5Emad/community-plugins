@@ -5,17 +5,17 @@
 # `umbriel outputs --json`, applies changes by patching [output.*] sections in
 # the Umbriel config (validated with `umbriel validate`, restored on failure),
 # then triggers `umbriel msg config-reload` so the change persists across
-# reboots. The bar [[widget]] and [[panel]] are thin clients on the plugin's
-# shared state channels.
+# reboots. The bar [[widget]], the control-center [[shortcut]] and the [[panel]]
+# are thin clients on the plugin's shared state channels.
 
 id = "muhammadessam/umbriel-monitor-control"
 name = "Umbriel Monitor Control"
-version = "0.1.5"
+version = "0.2.0"
 plugin_api = 24
 author = "muhammadessam"
 license = "MIT"
 dependencies = ["umbriel"]
-tags = ["bar", "panel", "service", "system", "utility", "hardware", "umbriel"]
+tags = ["bar", "panel", "service", "shortcut", "system", "utility", "hardware", "umbriel"]
 icon = "device-desktop"
 description = "Umbriel: place monitors left/right/above/below and set resolution and refresh rate; saved to the config."
 
@@ -56,6 +56,12 @@ entry = "bar.luau"
   type = "glyph"
   label_key = "settings.glyph.label"
   default = "device-desktop"
+
+# Control-center tile: the display glyph on its own; click opens the panel.
+# Add it from Settings -> Control Center -> Shortcuts.
+[[shortcut]]
+id = "display"
+entry = "shortcut.luau"
 
 # Display settings surface. Open with:
 #   noctalia msg panel-toggle muhammadessam/umbriel-monitor-control:panel

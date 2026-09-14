@@ -4,7 +4,8 @@ Place and tune your monitors from the Noctalia bar: move a display left,
 right, above or below the others, and change its resolution and refresh rate.
 Every change is written into the Umbriel config file (validated before it
 lands, restored if invalid) and reloaded live, so settings persist across
-reboots.
+reboots. The same panel is one click away from the control center, through the
+plugin's `display` tile.
 
 **Umbriel only.** This plugin drives the Umbriel compositor through its CLI and
 its config file; it does nothing under niri, Hyprland, Sway or any other
@@ -15,7 +16,7 @@ compositor, and hides its widget outside an Umbriel session.
 | Field | Value |
 | --- | --- |
 | ID | `muhammadessam/umbriel-monitor-control` |
-| Entries | Bar widget: `monitor`; panel: `panel`; service: `service` |
+| Entries | Bar widget: `monitor`; shortcut: `display`; panel: `panel`; service: `service` |
 
 ## Requirements
 
@@ -32,6 +33,10 @@ mode; click opens the panel. Or open the panel directly:
 ```sh
 noctalia msg panel-toggle muhammadessam/umbriel-monitor-control:panel
 ```
+
+The control center can carry a way into the same panel: add the `display` tile
+in **Settings → Control Center → Shortcuts**. It is the display glyph on its
+own — no caption — and opens the panel when clicked.
 
 The panel opens with an **arrangement map**: every enabled output drawn as a
 rectangle where the compositor actually has it, scaled to keep its real

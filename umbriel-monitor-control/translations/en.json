@@ -49,6 +49,9 @@
       "label": "Show mode text"
     }
   },
+  "shortcut": {
+    "unavailable": "No Umbriel"
+  },
   "title": "Umbriel Monitor Control",
   "tooltip": {
     "mode": "Mode",
