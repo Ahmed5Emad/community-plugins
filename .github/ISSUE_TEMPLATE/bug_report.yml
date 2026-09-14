@@ -147,6 +147,7 @@ body:
         - portctl
         - printers
         - prismlauncher-instances
+        - processes
         - procmon
         - proton-pass
         - pulsar-mouse
