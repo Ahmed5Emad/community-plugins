@@ -2671,3 +2671,16 @@ icon = "apps"
 description = "View and change your default applications (browser, mail, files, media, and more)."
 plugin_api = 24
 tags = ["utility", "system"]
+
+[[plugin]]
+id = "fel/agent-glow"
+name = "Agent Glow"
+version = "0.1.0"
+updated_at = 1789560902
+added_at = 1789560902
+author = "Fel"
+license = "MIT"
+icon = "sparkles"
+description = "Make the desktop react while coding agents work: a pulsing wallpaper glow plus a bar indicator."
+plugin_api = 26
+tags = ["ai", "wallpaper", "desktop"]
