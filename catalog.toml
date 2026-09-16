@@ -2558,10 +2558,10 @@ tags = ["audio", "utility", "bar", "panel", "service"]
 [[plugin]]
 id = "luochen1990/niri-ribbon"
 name = "Niri Ribbon"
-version = "0.1.0"
-updated_at = 1789261589
+version = "0.2.0"
+updated_at = 1789560941
 added_at = 1789261589
-author = "luochen1990"
+author = "luochen1990, thatonecalculator"
 license = "MIT"
 icon = "view-column"
 description = "Viewport position indicator for niri scrollable-tiling layout."
