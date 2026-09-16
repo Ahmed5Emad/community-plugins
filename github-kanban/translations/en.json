@@ -4,20 +4,115 @@
     "open": "Open on GitHub",
     "refresh": "Refresh"
   },
+  "contributions": {
+    "best_streak": "Best streak",
+    "current_streak": "Current streak",
+    "last_year": {
+      "one": "{count} contribution in the last year",
+      "other": "{count} contributions in the last year"
+    },
+    "selected_day": {
+      "one": "{date} · {count} contribution",
+      "other": "{date} · {count} contributions"
+    },
+    "this_year": "This year",
+    "today": "Today"
+  },
+  "events": {
+    "activity": "Activity",
+    "branch_created": "Created branch",
+    "branch_deleted": "Deleted branch",
+    "collaborators_updated": "Updated collaborators",
+    "commit_comment": "Commented on a commit",
+    "created": "Created something",
+    "deleted": "Deleted something",
+    "forked": "Forked repository",
+    "issue_comment": "Commented on an issue",
+    "issue_updated": "Updated issue",
+    "made_public": "Made public",
+    "pull_request_reviewed": "Reviewed pull request",
+    "pull_request_updated": "Updated pull request",
+    "pushed": "Pushed changes",
+    "release": "Release",
+    "release_published": "Published release",
+    "repository_created": "Created repository",
+    "review_comment": "Commented on a review",
+    "starred": "Starred",
+    "summary": {
+      "created_branch": "Created {ref} branch",
+      "created_reference": "Created {ref} reference",
+      "created_repository": "Created the repository",
+      "created_tag": "Created {ref} tag",
+      "deleted_branch": "Deleted {ref} branch",
+      "deleted_reference": "Deleted {ref} reference",
+      "deleted_repository": "Deleted the repository",
+      "deleted_tag": "Deleted {ref} tag",
+      "pushed_commits": "Pushed new commits",
+      "starred_repository": "Starred this repository",
+      "updated_branch": "Updated {ref} branch"
+    },
+    "tag_created": "Created tag",
+    "tag_deleted": "Deleted tag",
+    "wiki_updated": "Updated wiki"
+  },
+  "fallback": {
+    "github": "GitHub",
+    "github_activity": "GitHub activity",
+    "github_repository": "GitHub repository",
+    "github_user": "GitHub user",
+    "repository": "Repository",
+    "untitled": "Untitled"
+  },
   "filter": {
     "all": "All",
+    "assigned": "Assigned",
     "assigned_to_me": "Assigned to me",
+    "attention": "Attention",
+    "closed": "Closed",
     "created_by_me": "Created by me",
+    "open": "Open",
+    "read": "Read",
     "repositories": "Repositories",
     "review_requested": "Review requested",
-    "users": "People",
     "unread": "Unread",
-    "read": "Read",
-    "attention": "Attention",
-    "assigned": "Assigned",
     "updates": "Updates",
-    "open": "Open",
-    "closed": "Closed"
+    "users": "People"
+  },
+  "github": {
+    "reason": {
+      "assign": "Assigned",
+      "author": "Author",
+      "ci_activity": "CI activity",
+      "comment": "Comment",
+      "invitation": "Invitation",
+      "manual": "Manual",
+      "mention": "Mention",
+      "review_requested": "Review requested",
+      "security_alert": "Security alert",
+      "state_change": "State change",
+      "subscribed": "Subscribed",
+      "team_mention": "Team mention"
+    },
+    "status": {
+      "action_required": "Action required",
+      "cancelled": "Cancelled",
+      "closed": "Closed",
+      "completed": "Completed",
+      "failure": "Failure",
+      "in_progress": "In progress",
+      "neutral": "Neutral",
+      "open": "Open",
+      "pending": "Pending",
+      "queued": "Queued",
+      "skipped": "Skipped",
+      "stale": "Stale",
+      "success": "Success",
+      "timed_out": "Timed out"
+    }
+  },
+  "heatmap": {
+    "less": "Less",
+    "more": "More"
   },
   "panel": {
     "actions": "Actions",
@@ -25,17 +120,27 @@
     "contributions": "Contributions",
     "feed": "Following",
     "issues": "Issues",
-    "show_more": {
-      "one": "Show {count} more · {remaining} remaining",
-      "other": "Show {count} more · {remaining} remaining"
-    },
     "notifications": "Notifications",
     "overview": "Overview",
     "profile": "Profile",
     "pull_requests": "Pull requests",
     "repositories": "Repositories",
     "reviews": "Reviews",
+    "show_more": {
+      "one": "Show {count} more · {remaining} remaining",
+      "other": "Show {count} more · {remaining} remaining"
+    },
     "title": "GitHub Kanban"
+  },
+  "profile": {
+    "contributions": "Contributions",
+    "followers": "Followers",
+    "following": "Following",
+    "repositories": "Repositories"
+  },
+  "repository": {
+    "forks": "Forks {count}",
+    "stars": "★ {count}"
   },
   "settings": {
     "activity": {
@@ -43,17 +148,251 @@
         "description": "Only show pull requests, reviews, issues, and Actions from this many recent days.",
         "label": "Activity · History range (days)"
       },
+      "issue_default_filter": {
+        "description": "Source filter selected for issues when the Activity dashboard opens.",
+        "label": "Activity · Default issue filter"
+      },
+      "pr_default_filter": {
+        "description": "Source filter selected for pull requests when the Activity dashboard opens.",
+        "label": "Activity · Default pull request filter"
+      },
       "show": {
         "description": "Show the Activity dashboard tab.",
         "label": "Activity · Show dashboard"
+      }
+    },
+    "appearance": {
+      "activity_repository_emphasis": {
+        "description": "Give repository names stronger visual emphasis in Activity items.",
+        "label": "Appearance · Activity · Emphasize repository names"
       },
-      "pr_default_filter": {
-        "label": "Activity · Default pull request filter",
-        "description": "Source filter selected for pull requests when the Activity dashboard opens."
+      "activity_show_status_badges": {
+        "description": "Show status badges on Activity items.",
+        "label": "Appearance · Activity · Status badges"
       },
-      "issue_default_filter": {
-        "label": "Activity · Default issue filter",
-        "description": "Source filter selected for issues when the Activity dashboard opens."
+      "activity_show_type_icons": {
+        "description": "Show icons indicating the Activity item type.",
+        "label": "Appearance · Activity · Type icons"
+      },
+      "appearance_animations": {
+        "description": "Enable live hover feedback on dashboard cards.",
+        "label": "Appearance · Animations"
+      },
+      "appearance_avatar_shape": {
+        "description": "Choose the shape of profile avatars.",
+        "label": "Appearance · Avatar shape",
+        "options": {
+          "circle": "Circle",
+          "rounded": "Rounded"
+        }
+      },
+      "appearance_avatar_size": {
+        "description": "Choose the size of profile avatars.",
+        "label": "Appearance · Avatar size",
+        "options": {
+          "large": "Large",
+          "medium": "Medium",
+          "small": "Small"
+        }
+      },
+      "appearance_card_background": {
+        "description": "Choose a transparent, lightly tinted, or denser translucent theme background for cards.",
+        "label": "Appearance · Card background",
+        "options": {
+          "solid": "Solid",
+          "tinted": "Tinted",
+          "transparent": "Transparent"
+        }
+      },
+      "appearance_card_border": {
+        "description": "Choose how card borders are displayed.",
+        "label": "Appearance · Card border",
+        "options": {
+          "accent": "Accent",
+          "none": "None",
+          "subtle": "Subtle"
+        }
+      },
+      "appearance_card_radius": {
+        "description": "Corner rounding applied to cards.",
+        "label": "Appearance · Card corner radius"
+      },
+      "appearance_card_spacing": {
+        "description": "Space between cards.",
+        "label": "Appearance · Card spacing"
+      },
+      "appearance_density": {
+        "description": "Choose the overall spacing and information density.",
+        "label": "Appearance · Content density",
+        "options": {
+          "comfortable": "Comfortable",
+          "compact": "Compact",
+          "standard": "Standard"
+        }
+      },
+      "appearance_font_scale": {
+        "description": "Scale text throughout the dashboard.",
+        "label": "Appearance · Font scale"
+      },
+      "appearance_hover_effect": {
+        "description": "Choose the visual effect shown when hovering over cards.",
+        "label": "Appearance · Hover effect",
+        "options": {
+          "background": "Background",
+          "border": "Border",
+          "none": "None"
+        }
+      },
+      "appearance_icon_style": {
+        "description": "Choose the appearance of dashboard icons.",
+        "label": "Appearance · Icon style",
+        "options": {
+          "color": "Color",
+          "muted": "Muted",
+          "theme": "Theme"
+        }
+      },
+      "appearance_secondary_text": {
+        "description": "Choose how secondary text is displayed.",
+        "label": "Appearance · Secondary text",
+        "options": {
+          "full": "Show in full",
+          "hidden": "Hide",
+          "truncate": "Truncate"
+        }
+      },
+      "appearance_show_empty_illustration": {
+        "description": "Show an illustration when a section has no items.",
+        "label": "Appearance · Empty-state illustration"
+      },
+      "appearance_time_format": {
+        "description": "Choose how dates and times are formatted.",
+        "label": "Appearance · Time format",
+        "options": {
+          "iso": "ISO 8601",
+          "local": "Local time",
+          "relative": "Relative"
+        }
+      },
+      "following_content_lines": {
+        "description": "Maximum number of content lines shown for Following events.",
+        "label": "Appearance · Following · Content lines"
+      },
+      "following_event_spacing": {
+        "description": "Space between events in the Following view.",
+        "label": "Appearance · Following · Event spacing"
+      },
+      "heatmap_cell_gap": {
+        "description": "Space between contribution calendar cells.",
+        "label": "Appearance · Heatmap · Cell gap"
+      },
+      "heatmap_cell_radius": {
+        "description": "Corner rounding applied to contribution calendar cells.",
+        "label": "Appearance · Heatmap · Cell corner radius"
+      },
+      "heatmap_cell_size": {
+        "description": "Size of each contribution calendar cell.",
+        "label": "Appearance · Heatmap · Cell size"
+      },
+      "heatmap_color_mode": {
+        "description": "Choose the contribution heatmap color source.",
+        "label": "Appearance · Heatmap · Color mode",
+        "options": {
+          "custom": "Custom",
+          "github": "GitHub",
+          "noctalia": "Noctalia theme"
+        }
+      },
+      "heatmap_custom_level_0": {
+        "description": "Hex color in #RRGGBB format. Leave blank to follow the theme.",
+        "label": "Appearance · Heatmap · Custom level 0"
+      },
+      "heatmap_custom_level_1": {
+        "description": "Hex color in #RRGGBB format. Leave blank to follow the theme.",
+        "label": "Appearance · Heatmap · Custom level 1"
+      },
+      "heatmap_custom_level_2": {
+        "description": "Hex color in #RRGGBB format. Leave blank to follow the theme.",
+        "label": "Appearance · Heatmap · Custom level 2"
+      },
+      "heatmap_custom_level_3": {
+        "description": "Hex color in #RRGGBB format. Leave blank to follow the theme.",
+        "label": "Appearance · Heatmap · Custom level 3"
+      },
+      "heatmap_custom_level_4": {
+        "description": "Hex color in #RRGGBB format. Leave blank to follow the theme.",
+        "label": "Appearance · Heatmap · Custom level 4"
+      },
+      "heatmap_empty_style": {
+        "description": "Use the standard subtle cell border or a stronger outline for days with no contributions.",
+        "label": "Appearance · Heatmap · Empty cell style",
+        "options": {
+          "background": "Background",
+          "outline": "Outline"
+        }
+      },
+      "heatmap_levels": {
+        "description": "Choose the number of contribution intensity levels.",
+        "label": "Appearance · Heatmap · Activity levels",
+        "options": {
+          "4": "4 levels",
+          "5": "5 levels",
+          "five": "5 levels",
+          "four": "4 levels"
+        }
+      },
+      "heatmap_show_legend": {
+        "description": "Show the contribution intensity legend.",
+        "label": "Appearance · Heatmap · Show intensity legend"
+      },
+      "heatmap_show_months": {
+        "description": "Show month labels above the contribution calendar.",
+        "label": "Appearance · Heatmap · Show month labels"
+      },
+      "heatmap_show_total": {
+        "description": "Show the annual contribution total.",
+        "label": "Appearance · Heatmap · Show contribution total"
+      },
+      "heatmap_show_weekdays": {
+        "description": "Show weekday labels beside the contribution calendar.",
+        "label": "Appearance · Heatmap · Show weekday labels"
+      },
+      "notification_read_opacity": {
+        "description": "Opacity used for read notification cards.",
+        "label": "Appearance · Notifications · Read card opacity"
+      },
+      "notification_unread_border": {
+        "description": "Highlight unread notification cards with a border.",
+        "label": "Appearance · Notifications · Unread card border"
+      },
+      "notification_unread_dot": {
+        "description": "Show a dot on unread notification cards.",
+        "label": "Appearance · Notifications · Unread status dot"
+      },
+      "overview_stats_layout": {
+        "description": "Choose how Overview statistics are arranged.",
+        "label": "Appearance · Overview · Statistics layout",
+        "options": {
+          "columns4": "Four columns",
+          "compact": "Compact",
+          "grid": "Grid"
+        }
+      },
+      "repositories_layout": {
+        "description": "Choose how repository cards are arranged.",
+        "label": "Appearance · Repositories · Repository layout",
+        "options": {
+          "grid": "Grid",
+          "list": "List"
+        }
+      },
+      "repositories_show_language": {
+        "description": "Show each repository’s primary language.",
+        "label": "Appearance · Repositories · Show repository language"
+      },
+      "repositories_show_stats": {
+        "description": "Show repository star and fork counts.",
+        "label": "Appearance · Repositories · Show repository statistics"
       }
     },
     "following": {
@@ -61,53 +400,72 @@
         "description": "Maximum height of each grouped Following card in pixels.",
         "label": "Following · Card maximum height"
       },
+      "events_per_user": {
+        "description": "Maximum number of recent public events requested for each person.",
+        "label": "Following · Events per person"
+      },
+      "hide_bots": {
+        "description": "Hide events from GitHub bot accounts.",
+        "label": "Following · Hide bots"
+      },
       "history_days": {
         "description": "Only show Following activity from this many recent days.",
         "label": "Following · History range (days)"
+      },
+      "ignored_repositories": {
+        "description": "Repositories to omit as owner/name, matched without regard to letter case.",
+        "label": "Following · Ignored repositories"
+      },
+      "ignored_users": {
+        "description": "GitHub logins to omit from Following, matched without regard to letter case.",
+        "label": "Following · Ignored users"
+      },
+      "include_prereleases": {
+        "description": "Include prereleases such as nightly and release candidate builds.",
+        "label": "Following · Include prereleases"
       },
       "show": {
         "description": "Show the Following dashboard tab.",
         "label": "Following · Show dashboard"
       },
-      "user_limit": {
-        "label": "Following · People to fetch",
-        "description": "Maximum number of followed people whose public events are fetched."
-      },
-      "events_per_user": {
-        "label": "Following · Events per person",
-        "description": "Maximum number of recent public events requested for each person."
-      },
       "starred_repository_limit": {
-        "label": "Following · Starred repositories to scan",
-        "description": "Maximum number of recently starred repositories checked for releases."
-      },
-      "include_prereleases": {
-        "label": "Following · Include prereleases",
-        "description": "Include prereleases such as nightly and release candidate builds."
-      },
-      "hide_bots": {
-        "label": "Following · Hide bots",
-        "description": "Hide events from GitHub bot accounts."
+        "description": "Maximum number of recently starred repositories checked for releases.",
+        "label": "Following · Starred repositories to scan"
       },
       "types": {
-        "stars": "Following · Show stars",
-        "pushes": "Following · Show pushes",
-        "issues": "Following · Show issues and comments",
-        "pull_requests": "Following · Show pull requests and reviews",
-        "releases": "Following · Show releases",
         "forks": "Following · Show forks",
-        "other": "Following · Show other events"
+        "issues": "Following · Show issues and comments",
+        "other": "Following · Show other events",
+        "pull_requests": "Following · Show pull requests and reviews",
+        "pushes": "Following · Show pushes",
+        "releases": "Following · Show releases",
+        "stars": "Following · Show stars"
       },
-      "ignored_users": {
-        "label": "Following · Ignored users",
-        "description": "GitHub logins to omit from Following, matched without regard to letter case."
+      "user_limit": {
+        "description": "Maximum number of followed people whose public events are fetched.",
+        "label": "Following · People to fetch"
+      }
+    },
+    "general": {
+      "bar_display_mode": {
+        "description": "Choose whether the bar widget shows the GitHub icon, unread count, or both.",
+        "label": "General · Bar display",
+        "options": {
+          "both": "Icon and unread count",
+          "count": "Unread count",
+          "icon": "Icon"
+        }
       },
-      "ignored_repositories": {
-        "label": "Following · Ignored repositories",
-        "description": "Repositories to omit as owner/name, matched without regard to letter case."
+      "default_dashboard": {
+        "description": "Dashboard shown when GitHub Kanban opens.",
+        "label": "General · Default dashboard"
       }
     },
     "notifications": {
+      "default_filter": {
+        "description": "Status filter selected when the Notifications dashboard opens.",
+        "label": "Notifications · Default status filter"
+      },
       "history_days": {
         "description": "Only show notifications updated within this many recent days.",
         "label": "Notifications · History range (days)"
@@ -115,10 +473,6 @@
       "show": {
         "description": "Show the Notifications dashboard tab.",
         "label": "Notifications · Show dashboard"
-      },
-      "default_filter": {
-        "label": "Notifications · Default status filter",
-        "description": "Status filter selected when the Notifications dashboard opens."
       }
     },
     "overview": {
@@ -141,395 +495,41 @@
         "description": "Show the Repositories dashboard tab.",
         "label": "Repositories · Show dashboard"
       }
-    },
-    "general": {
-      "default_dashboard": {
-        "label": "General · Default dashboard",
-        "description": "Dashboard shown when GitHub Kanban opens."
-      },
-      "bar_display_mode": {
-        "label": "General · Bar display",
-        "description": "Choose whether the bar widget shows the GitHub icon, unread count, or both.",
-        "options": {
-          "icon": "Icon",
-          "count": "Unread count",
-          "both": "Icon and unread count"
-        }
-      }
-    },
-    "appearance": {
-      "appearance_density": {
-        "label": "Appearance · Content density",
-        "description": "Choose the overall spacing and information density.",
-        "options": {
-          "compact": "Compact",
-          "standard": "Standard",
-          "comfortable": "Comfortable"
-        }
-      },
-      "appearance_card_radius": {
-        "label": "Appearance · Card corner radius",
-        "description": "Corner rounding applied to cards."
-      },
-      "appearance_card_spacing": {
-        "label": "Appearance · Card spacing",
-        "description": "Space between cards."
-      },
-      "appearance_card_border": {
-        "label": "Appearance · Card border",
-        "description": "Choose how card borders are displayed.",
-        "options": {
-          "none": "None",
-          "subtle": "Subtle",
-          "accent": "Accent"
-        }
-      },
-      "appearance_card_background": {
-        "label": "Appearance · Card background",
-        "description": "Choose a transparent, lightly tinted, or denser translucent theme background for cards.",
-        "options": {
-          "transparent": "Transparent",
-          "tinted": "Tinted",
-          "solid": "Solid"
-        }
-      },
-      "appearance_hover_effect": {
-        "label": "Appearance · Hover effect",
-        "description": "Choose the visual effect shown when hovering over cards.",
-        "options": {
-          "none": "None",
-          "background": "Background",
-          "border": "Border"
-        }
-      },
-      "appearance_font_scale": {
-        "label": "Appearance · Font scale",
-        "description": "Scale text throughout the dashboard."
-      },
-      "appearance_secondary_text": {
-        "label": "Appearance · Secondary text",
-        "description": "Choose how secondary text is displayed.",
-        "options": {
-          "full": "Show in full",
-          "truncate": "Truncate",
-          "hidden": "Hide"
-        }
-      },
-      "appearance_time_format": {
-        "label": "Appearance · Time format",
-        "description": "Choose how dates and times are formatted.",
-        "options": {
-          "relative": "Relative",
-          "local": "Local time",
-          "iso": "ISO 8601"
-        }
-      },
-      "appearance_avatar_size": {
-        "label": "Appearance · Avatar size",
-        "description": "Choose the size of profile avatars.",
-        "options": {
-          "small": "Small",
-          "medium": "Medium",
-          "large": "Large"
-        }
-      },
-      "appearance_avatar_shape": {
-        "label": "Appearance · Avatar shape",
-        "description": "Choose the shape of profile avatars.",
-        "options": {
-          "circle": "Circle",
-          "rounded": "Rounded"
-        }
-      },
-      "appearance_icon_style": {
-        "label": "Appearance · Icon style",
-        "description": "Choose the appearance of dashboard icons.",
-        "options": {
-          "color": "Color",
-          "theme": "Theme",
-          "muted": "Muted"
-        }
-      },
-      "appearance_show_empty_illustration": {
-        "label": "Appearance · Empty-state illustration",
-        "description": "Show an illustration when a section has no items."
-      },
-      "appearance_animations": {
-        "label": "Appearance · Animations",
-        "description": "Enable live hover feedback on dashboard cards."
-      },
-      "heatmap_cell_size": {
-        "label": "Appearance · Heatmap · Cell size",
-        "description": "Size of each contribution calendar cell."
-      },
-      "heatmap_cell_gap": {
-        "label": "Appearance · Heatmap · Cell gap",
-        "description": "Space between contribution calendar cells."
-      },
-      "heatmap_cell_radius": {
-        "label": "Appearance · Heatmap · Cell corner radius",
-        "description": "Corner rounding applied to contribution calendar cells."
-      },
-      "heatmap_levels": {
-        "label": "Appearance · Heatmap · Activity levels",
-        "description": "Choose the number of contribution intensity levels.",
-        "options": {
-          "4": "4 levels",
-          "5": "5 levels",
-          "four": "4 levels",
-          "five": "5 levels"
-        }
-      },
-      "heatmap_show_months": {
-        "label": "Appearance · Heatmap · Show month labels",
-        "description": "Show month labels above the contribution calendar."
-      },
-      "heatmap_show_weekdays": {
-        "label": "Appearance · Heatmap · Show weekday labels",
-        "description": "Show weekday labels beside the contribution calendar."
-      },
-      "heatmap_show_total": {
-        "label": "Appearance · Heatmap · Show contribution total",
-        "description": "Show the annual contribution total."
-      },
-      "heatmap_show_legend": {
-        "label": "Appearance · Heatmap · Show intensity legend",
-        "description": "Show the contribution intensity legend."
-      },
-      "heatmap_empty_style": {
-        "label": "Appearance · Heatmap · Empty cell style",
-        "description": "Use the standard subtle cell border or a stronger outline for days with no contributions.",
-        "options": {
-          "background": "Background",
-          "outline": "Outline"
-        }
-      },
-      "heatmap_color_mode": {
-        "label": "Appearance · Heatmap · Color mode",
-        "description": "Choose the contribution heatmap color source.",
-        "options": {
-          "noctalia": "Noctalia theme",
-          "github": "GitHub",
-          "custom": "Custom"
-        }
-      },
-      "notification_unread_dot": {
-        "label": "Appearance · Notifications · Unread status dot",
-        "description": "Show a dot on unread notification cards."
-      },
-      "notification_unread_border": {
-        "label": "Appearance · Notifications · Unread card border",
-        "description": "Highlight unread notification cards with a border."
-      },
-      "notification_read_opacity": {
-        "label": "Appearance · Notifications · Read card opacity",
-        "description": "Opacity used for read notification cards."
-      },
-      "activity_show_status_badges": {
-        "label": "Appearance · Activity · Status badges",
-        "description": "Show status badges on Activity items."
-      },
-      "activity_show_type_icons": {
-        "label": "Appearance · Activity · Type icons",
-        "description": "Show icons indicating the Activity item type."
-      },
-      "activity_repository_emphasis": {
-        "label": "Appearance · Activity · Emphasize repository names",
-        "description": "Give repository names stronger visual emphasis in Activity items."
-      },
-      "following_event_spacing": {
-        "label": "Appearance · Following · Event spacing",
-        "description": "Space between events in the Following view."
-      },
-      "following_content_lines": {
-        "label": "Appearance · Following · Content lines",
-        "description": "Maximum number of content lines shown for Following events."
-      },
-      "repositories_layout": {
-        "label": "Appearance · Repositories · Repository layout",
-        "description": "Choose how repository cards are arranged.",
-        "options": {
-          "list": "List",
-          "grid": "Grid"
-        }
-      },
-      "repositories_show_language": {
-        "label": "Appearance · Repositories · Show repository language",
-        "description": "Show each repository’s primary language."
-      },
-      "repositories_show_stats": {
-        "label": "Appearance · Repositories · Show repository statistics",
-        "description": "Show repository star and fork counts."
-      },
-      "overview_stats_layout": {
-        "label": "Appearance · Overview · Statistics layout",
-        "description": "Choose how Overview statistics are arranged.",
-        "options": {
-          "columns4": "Four columns",
-          "grid": "Grid",
-          "compact": "Compact"
-        }
-      },
-      "heatmap_custom_level_0": {
-        "label": "Appearance · Heatmap · Custom level 0",
-        "description": "Hex color in #RRGGBB format. Leave blank to follow the theme."
-      },
-      "heatmap_custom_level_1": {
-        "label": "Appearance · Heatmap · Custom level 1",
-        "description": "Hex color in #RRGGBB format. Leave blank to follow the theme."
-      },
-      "heatmap_custom_level_2": {
-        "label": "Appearance · Heatmap · Custom level 2",
-        "description": "Hex color in #RRGGBB format. Leave blank to follow the theme."
-      },
-      "heatmap_custom_level_3": {
-        "label": "Appearance · Heatmap · Custom level 3",
-        "description": "Hex color in #RRGGBB format. Leave blank to follow the theme."
-      },
-      "heatmap_custom_level_4": {
-        "label": "Appearance · Heatmap · Custom level 4",
-        "description": "Hex color in #RRGGBB format. Leave blank to follow the theme."
-      }
     }
   },
   "status": {
     "auth_error": "GitHub CLI needs authentication: gh auth login -h github.com",
+    "cli_start_failed": "Could not start GitHub CLI.",
     "empty": "Nothing to show here.",
+    "gh_request_failed": "GitHub CLI request failed.",
+    "invalid_json": "GitHub returned invalid JSON.",
     "loading": "Loading GitHub data…",
     "missing_gh": "GitHub CLI (gh) is required.",
     "missing_xdg_open": "xdg-open is required to open GitHub.",
+    "preparing_contribution_calendar": "Preparing contribution calendar…",
     "request_error": "Some GitHub data could not be refreshed.",
     "stale": "Showing the latest cached data.",
-    "preparing_contribution_calendar": "Preparing contribution calendar…",
-    "unexpected_data": "GitHub returned unexpected data.",
-    "cli_start_failed": "Could not start GitHub CLI.",
-    "gh_request_failed": "GitHub CLI request failed.",
-    "invalid_json": "GitHub returned invalid JSON."
-  },
-  "widget": {
-    "tooltip": {
-      "one": "GitHub Kanban\n{count} unread notification",
-      "other": "GitHub Kanban\n{count} unread notifications"
-    }
-  },
-  "fallback": {
-    "untitled": "Untitled",
-    "repository": "Repository",
-    "github": "GitHub",
-    "github_activity": "GitHub activity",
-    "github_user": "GitHub user",
-    "github_repository": "GitHub repository"
+    "unexpected_data": "GitHub returned unexpected data."
   },
   "time": {
-    "just_now": "Just now",
-    "minutes_ago": {
-      "one": "{count} minute ago",
-      "other": "{count} minutes ago"
+    "days_ago": {
+      "one": "{count} day ago",
+      "other": "{count} days ago"
     },
     "hours_ago": {
       "one": "{count} hour ago",
       "other": "{count} hours ago"
     },
-    "days_ago": {
-      "one": "{count} day ago",
-      "other": "{count} days ago"
+    "just_now": "Just now",
+    "minutes_ago": {
+      "one": "{count} minute ago",
+      "other": "{count} minutes ago"
     }
   },
-  "profile": {
-    "followers": "Followers",
-    "following": "Following",
-    "repositories": "Repositories",
-    "contributions": "Contributions"
-  },
-  "contributions": {
-    "last_year": {
-      "one": "{count} contribution in the last year",
-      "other": "{count} contributions in the last year"
-    },
-    "selected_day": {
-      "one": "{date} · {count} contribution",
-      "other": "{date} · {count} contributions"
-    },
-    "today": "Today",
-    "current_streak": "Current streak",
-    "best_streak": "Best streak",
-    "this_year": "This year"
-  },
-  "heatmap": {
-    "less": "Less",
-    "more": "More"
-  },
-  "repository": {
-    "stars": "★ {count}",
-    "forks": "Forks {count}"
-  },
-  "events": {
-    "activity": "Activity",
-    "release": "Release",
-    "commit_comment": "Commented on a commit",
-    "created": "Created something",
-    "deleted": "Deleted something",
-    "forked": "Forked repository",
-    "wiki_updated": "Updated wiki",
-    "issue_comment": "Commented on an issue",
-    "issue_updated": "Updated issue",
-    "collaborators_updated": "Updated collaborators",
-    "made_public": "Made public",
-    "pull_request_updated": "Updated pull request",
-    "pull_request_reviewed": "Reviewed pull request",
-    "review_comment": "Commented on a review",
-    "pushed": "Pushed changes",
-    "release_published": "Published release",
-    "starred": "Starred",
-    "branch_created": "Created branch",
-    "tag_created": "Created tag",
-    "repository_created": "Created repository",
-    "branch_deleted": "Deleted branch",
-    "tag_deleted": "Deleted tag",
-    "summary": {
-      "starred_repository": "Starred this repository",
-      "updated_branch": "Updated {ref} branch",
-      "pushed_commits": "Pushed new commits",
-      "created_branch": "Created {ref} branch",
-      "created_tag": "Created {ref} tag",
-      "created_reference": "Created {ref} reference",
-      "deleted_branch": "Deleted {ref} branch",
-      "deleted_tag": "Deleted {ref} tag",
-      "deleted_reference": "Deleted {ref} reference",
-      "created_repository": "Created the repository",
-      "deleted_repository": "Deleted the repository"
-    }
-  },
-  "github": {
-    "status": {
-      "open": "Open",
-      "closed": "Closed",
-      "queued": "Queued",
-      "in_progress": "In progress",
-      "completed": "Completed",
-      "success": "Success",
-      "failure": "Failure",
-      "cancelled": "Cancelled",
-      "neutral": "Neutral",
-      "skipped": "Skipped",
-      "timed_out": "Timed out",
-      "action_required": "Action required",
-      "stale": "Stale",
-      "pending": "Pending"
-    },
-    "reason": {
-      "assign": "Assigned",
-      "author": "Author",
-      "comment": "Comment",
-      "ci_activity": "CI activity",
-      "invitation": "Invitation",
-      "manual": "Manual",
-      "mention": "Mention",
-      "review_requested": "Review requested",
-      "security_alert": "Security alert",
-      "state_change": "State change",
-      "subscribed": "Subscribed",
-      "team_mention": "Team mention"
+  "widget": {
+    "tooltip": {
+      "one": "GitHub Kanban\n{count} unread notification",
+      "other": "GitHub Kanban\n{count} unread notifications"
     }
   }
 }

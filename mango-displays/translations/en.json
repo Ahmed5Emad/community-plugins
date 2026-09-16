@@ -1,4 +1,17 @@
 {
+  "action": {
+    "apply": "Apply",
+    "apply_custom_mode": "Apply custom mode",
+    "cancel": "No",
+    "overwrite": "Overwrite"
+  },
+  "advanced": {
+    "color": "Color profile",
+    "hdr": "HDR",
+    "picture": "Picture",
+    "title": "Advanced display",
+    "unset": "Unset"
+  },
   "card": {
     "mirror": "Mirror",
     "mode": "Mode",
@@ -6,21 +19,21 @@
     "scale": "Scale"
   },
   "field": {
-    "enabled": "On",
-    "last_output": "Last output",
-    "refresh": "Refresh rate",
-    "resolution": "Resolution",
     "custom": "Custom mode",
+    "enabled": "On",
     "hdr": "HDR",
     "hdr_force": "Force HDR",
     "hdr_max_avg_lum": "Max average luminance",
     "hdr_max_lum": "Peak luminance",
     "hdr_min_lum": "Minimum luminance",
+    "height": "Height",
     "icc": "ICC profile",
+    "last_output": "Last output",
+    "refresh": "Refresh rate",
+    "resolution": "Resolution",
     "rr": "Rotation",
     "vrr": "Variable refresh rate",
-    "width": "Width",
-    "height": "Height"
+    "width": "Width"
   },
   "mirror": {
     "explain": "{source} is copied onto {destination}",
@@ -66,33 +79,20 @@
     "off": "Currently off"
   },
   "status": {
+    "invalid_mode": "Custom mode must be width 1-9999, height 1-9999 and refresh 0.001-9999.",
+    "invalid_value": "{field} must be a number from 0 to 10000.",
     "mirror_failed": "Could not start the mirror.",
     "missing_tool": "wlr-randr is not installed.",
     "no_outputs": "No enabled outputs.",
     "no_profile_path": "No monitor rules path configured.",
+    "overwrite_required": "Monitor rules file contains other config. Overwrite it with generated monitor rules only?",
     "query_failed": "wlr-randr could not list outputs.",
     "save_failed": "Applied, but not saved: {error}",
     "saved": "Applied and saved to mango.",
-    "toggle_failed": "mango could not toggle the monitor.",
-    "invalid_mode": "Custom mode must be width 1-9999, height 1-9999 and refresh 0.001-9999.",
-    "invalid_value": "{field} must be a number from 0 to 10000.",
-    "overwrite_required": "Monitor rules file contains other config. Overwrite it with generated monitor rules only?"
+    "toggle_failed": "mango could not toggle the monitor."
   },
   "title": "Display",
   "widget": {
     "tooltip": "Display (right-click to arrange)"
-  },
-  "action": {
-    "apply": "Apply",
-    "apply_custom_mode": "Apply custom mode",
-    "cancel": "No",
-    "overwrite": "Overwrite"
-  },
-  "advanced": {
-    "color": "Color profile",
-    "hdr": "HDR",
-    "picture": "Picture",
-    "title": "Advanced display",
-    "unset": "Unset"
   }
 }

@@ -1,5 +1,13 @@
 {
   "settings": {
+    "active_window_color": {
+      "description": "Solid color of the active window marker.",
+      "label": "Active Window Color"
+    },
+    "animation_speed": {
+      "description": "Animation speed multiplier: 1 is normal, higher is faster, and 0 disables animations.",
+      "label": "Animation Speed"
+    },
     "bar_color": {
       "description": "Color of the ribbon track (the non-visible area).",
       "label": "Background Color"
@@ -11,6 +19,10 @@
     "radius": {
       "description": "Corner radius of the viewport highlight (logical pixels).",
       "label": "Corner Radius"
+    },
+    "show_active_window": {
+      "description": "Show the active tiled window inside the viewport highlight with a solid color.",
+      "label": "Show Active Window"
     },
     "thickness": {
       "description": "Vertical thickness of the ribbon (logical pixels).",
@@ -27,18 +39,6 @@
         "center": "Center (niri: always)",
         "fit": "Fit (niri: never)"
       }
-    },
-    "show_active_window": {
-      "label": "Show Active Window",
-      "description": "Show the active tiled window inside the viewport highlight with a solid color."
-    },
-    "active_window_color": {
-      "label": "Active Window Color",
-      "description": "Solid color of the active window marker."
-    },
-    "animation_speed": {
-      "label": "Animation Speed",
-      "description": "Animation speed multiplier: 1 is normal, higher is faster, and 0 disables animations."
     }
   }
 }
