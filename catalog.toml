@@ -2736,3 +2736,16 @@ icon = "book"
 description = "Quickly search and open books in Calibre library. Type /cb in the launcher."
 plugin_api = 24
 tags = ["launcher", "utility"]
+
+[[plugin]]
+id = "cwhirly/lunar-calendar"
+name = "Lunar Calendar"
+version = "1.0.0"
+updated_at = 1789562527
+added_at = 1789562527
+author = "cwhirly"
+license = "MIT"
+icon = "calendar-event"
+description = "Chinese lunisolar calendar: Gregorian date, weekday, lunar date, 24 solar terms, festivals and CN statutory holidays."
+plugin_api = 22
+tags = ["clock", "time", "bar", "panel", "utility"]
