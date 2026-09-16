@@ -2684,3 +2684,16 @@ icon = "sparkles"
 description = "Make the desktop react while coding agents work: a pulsing wallpaper glow plus a bar indicator."
 plugin_api = 26
 tags = ["ai", "wallpaper", "desktop"]
+
+[[plugin]]
+id = "nilsonlinux/world-radio"
+name = "World Radio"
+version = "1.0.0"
+updated_at = 1789561212
+added_at = 1789561212
+author = "Nilsonlinux"
+license = "MIT"
+icon = "radio"
+description = "Browse thousands of radio stations from around the world with country flags."
+plugin_api = 24
+tags = ["audio", "music", "network", "panel", "bar", "utility"]
