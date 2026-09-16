@@ -2710,3 +2710,16 @@ icon = "radio"
 description = "Browse radio-browser.info stations and play them headless via mpv."
 plugin_api = 9
 tags = ["bar", "panel", "launcher", "service", "audio", "music", "media", "network"]
+
+[[plugin]]
+id = "fel/podcasts"
+name = "Podcasts"
+version = "0.1.0"
+updated_at = 1789561605
+added_at = 1789561605
+author = "fel"
+license = "MIT"
+icon = "rss"
+description = "Subscribe to podcasts via RSS or iTunes search and play episodes headless via mpv."
+plugin_api = 22
+tags = ["bar", "panel", "launcher", "service", "audio", "media", "utility"]
