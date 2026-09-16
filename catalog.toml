@@ -2723,3 +2723,16 @@ icon = "rss"
 description = "Subscribe to podcasts via RSS or iTunes search and play episodes headless via mpv."
 plugin_api = 22
 tags = ["bar", "panel", "launcher", "service", "audio", "media", "utility"]
+
+[[plugin]]
+id = "congluantran/calibre"
+name = "Calibre"
+version = "0.1.0"
+updated_at = 1789562203
+added_at = 1789562203
+author = "CongLuanTran"
+license = "MIT"
+icon = "book"
+description = "Quickly search and open books in Calibre library. Type /cb in the launcher."
+plugin_api = 24
+tags = ["launcher", "utility"]
