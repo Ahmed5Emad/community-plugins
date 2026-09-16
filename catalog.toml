@@ -1668,8 +1668,8 @@ tags = ["hardware", "bar", "system", "indicator"]
 [[plugin]]
 id = "tordex/nvtop"
 name = "NVTOP"
-version = "2.0.0"
-updated_at = 1788119564
+version = "2.1.0"
+updated_at = 1789561057
 added_at = 1787608918
 author = "tordex"
 license = "MIT"
