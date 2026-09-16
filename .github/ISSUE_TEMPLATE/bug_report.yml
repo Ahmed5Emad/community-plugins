@@ -64,6 +64,7 @@ body:
         - custom-shortcut
         - daily-wallpaper
         - deepseek_usage
+        - default-apps
         - desktop-launcher
         - discord-voice
         - dns-switcher
