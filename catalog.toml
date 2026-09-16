@@ -2610,8 +2610,8 @@ tags = ["bar", "panel", "shortcut", "wallpaper"]
 [[plugin]]
 id = "estvoid/sony_headphones"
 name = "Sony Headphones"
-version = "0.1.1"
-updated_at = 1789389960
+version = "0.1.2"
+updated_at = 1789560657
 added_at = 1789339826
 author = "estvoid"
 license = "MIT"
