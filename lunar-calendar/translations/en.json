@@ -1,0 +1,102 @@
+{
+  "settings": {
+    "week_start": {
+      "label": "Week starts on",
+      "description": "First day of the week in the month panel.",
+      "options": {
+        "monday": "Monday",
+        "sunday": "Sunday",
+        "saturday": "Saturday"
+      }
+    },
+    "holiday_source": {
+      "label": "Holiday data source",
+      "description": "CN statutory holidays and make-up work days come from holiday-cn (MIT). Falls back to the local cache when offline.",
+      "options": {
+        "auto": "Automatic (CDN first)",
+        "jsdelivr": "jsDelivr CDN",
+        "github": "GitHub Raw",
+        "off": "Offline only"
+      }
+    },
+    "primary": {
+      "label": "Primary label",
+      "description": "What the first text of the bar widget shows.",
+      "options": {
+        "solar": "Gregorian date (Sep 16)",
+        "lunar": "Lunar date (八月初六)",
+        "both": "Gregorian + lunar"
+      }
+    },
+    "secondary": {
+      "label": "Secondary label",
+      "description": "The second text drawn after the primary label.",
+      "options": {
+        "lunar_plus": "Lunar date + term/festival/holiday",
+        "auto": "Term/festival/holiday first",
+        "lunar": "Lunar date only",
+        "none": "Hidden"
+      }
+    },
+    "show_weekday": {
+      "label": "Show weekday",
+      "description": "Append the weekday to the Gregorian date."
+    },
+    "show_glyph": {
+      "label": "Show glyph"
+    },
+    "glyph": {
+      "label": "Widget glyph",
+      "description": "A Tabler / Nerd Font glyph name, e.g. calendar-event or calendar-month."
+    }
+  },
+  "panel": {
+    "today": "Today",
+    "festival": "Festival",
+    "next_holiday": "Next day off",
+    "prev_year": "Previous year",
+    "prev_month": "Previous month",
+    "next_month": "Next month",
+    "next_year": "Next year",
+    "lunar": "Lunar",
+    "term": "Solar term",
+    "off": "off",
+    "work": "make-up work day",
+    "ganzhi": "Stems and branches",
+    "none": "none",
+    "unknown": "unknown"
+  },
+  "status": {
+    "ok": "holidays synced",
+    "cached": "holidays cached",
+    "offline": "holidays offline",
+    "disabled": "holidays off",
+    "loading": "holidays loading…",
+    "nodata": "holidays not announced"
+  },
+  "notify": {
+    "title": "Lunar Calendar"
+  },
+  "widget": {
+    "refreshing": "Refreshing holiday data…",
+    "gregorian": "Gregorian",
+    "lunar": "Lunar",
+    "ganzhi": "Stems and branches",
+    "term": "Solar term",
+    "next_term": "Next term",
+    "festival": "Festival",
+    "holiday": "Day off",
+    "workday": "Make-up work day",
+    "next_holiday": "Next day off",
+    "holidays": "Statutory holidays",
+    "loading": "loading…",
+    "offline": "no data (offline)",
+    "disabled": "disabled in settings",
+    "on_leave": "day off",
+    "working": "working",
+    "workday_short": "work"
+  },
+  "service": {
+    "cache_cleared": "Holiday cache cleared"
+  }
+}
