@@ -2648,9 +2648,9 @@ tags = ["panel", "service", "system"]
 
 [[plugin]]
 id = "shangshui0302/github-kanban"
-name = "Github Kanban"
-version = "0.1.0"
-updated_at = 1789390542
+name = "GitHub Kanban"
+version = "0.1.1"
+updated_at = 1789560721
 added_at = 1789390542
 author = "Shangshui0302"
 license = "MIT"
