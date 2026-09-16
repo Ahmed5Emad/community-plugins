@@ -2658,3 +2658,16 @@ icon = "brand-github"
 description = "A read-only GitHub dashboard for activity, notifications, work, repositories, and Actions."
 plugin_api = 24
 tags = ["bar", "panel", "service", "development", "productivity", "network", "utility"]
+
+[[plugin]]
+id = "thaer99ob/default-apps"
+name = "Default Apps"
+version = "1.0.0"
+updated_at = 1789560555
+added_at = 1789560555
+author = "Thaer99ob"
+license = "MIT"
+icon = "apps"
+description = "View and change your default applications (browser, mail, files, media, and more)."
+plugin_api = 24
+tags = ["utility", "system"]
