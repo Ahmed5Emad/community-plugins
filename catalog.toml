@@ -1733,8 +1733,8 @@ rev = "7dd1b1c49b4d6c8fe7732934442e21bb63bf3b86"
 [[plugin]]
 id = "fel/ocr"
 name = "OCR"
-version = "1.0.4"
-updated_at = 1787696511
+version = "1.0.5"
+updated_at = 1789560977
 added_at = 1787615958
 author = "Fel"
 license = "MIT"
