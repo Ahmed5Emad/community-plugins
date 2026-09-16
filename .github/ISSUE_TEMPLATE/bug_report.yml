@@ -27,6 +27,7 @@ body:
       options:
         - --- SELECT ---
         - 9router-control
+        - agent-glow
         - agentik
         - ai-usagebar
         - airpods
