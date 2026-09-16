@@ -146,6 +146,7 @@ body:
         - pass
         - phone-connect
         - phone-operate
+        - podcasts
         - pomodoro
         - portctl
         - printers
