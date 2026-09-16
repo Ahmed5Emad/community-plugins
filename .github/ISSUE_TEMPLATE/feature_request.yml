@@ -50,6 +50,7 @@ body:
         - bookmarks
         - calculator
         - calculator-plus
+        - calibre
         - case-convert
         - cat
         - cider
