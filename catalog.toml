@@ -2376,8 +2376,8 @@ tags = ["bar", "panel", "service", "hardware", "mangowc"]
 [[plugin]]
 id = "nilsonlinux/speedtest-meter"
 name = "Speedtest Meter"
-version = "1.4.5"
-updated_at = 1789089632
+version = "1.5.1"
+updated_at = 1789651065
 added_at = 1788806018
 author = "Nilsonlinux"
 license = "MIT"
