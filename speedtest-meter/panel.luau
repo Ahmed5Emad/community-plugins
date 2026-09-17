@@ -48,6 +48,19 @@ local liveServerId: string? = nil
 local animatedDownloadMbps = 0
 local animatedUploadMbps = 0
 local testLogs: any = {}
+-- Circular speedometer gauge (Python worker + Pillow, same rendering core as
+-- the official "processes" plugin). Falls back to plain circles when python3
+-- or Pillow is unavailable.
+local downGaugePath: string? = nil
+local upGaugePath: string? = nil
+local gaugeReady = false
+local gaugeKey = 0
+local gaugeWorkerPid: number? = nil
+local gaugeWorkerStarted = false
+local gaugeForceWrite = false
+local lastGaugeWriteMs = 0
+local lastGaugeDownPct = -1
+local lastGaugeUpPct = -1
 local finishingResult = false
 local metadataReady = false
 local metadataInFlight = false
@@ -81,6 +94,7 @@ local startTest, proceedWithLegacyOrError, runOoklaBackend, runLegacyBackend, on
 local normalizeOokla, normalizeLegacy
 local saveLastResult, loadLastResult, loadHistory, addHistory
 local detectPackageManager
+local startGaugeWorker, stopGaugeWorker, writeGaugeInput, maybeRefreshGauges, renderGauge, ensureGaugeWorker
 
 -- ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -114,6 +128,33 @@ end
 
 local function fixedSpace(size: number)
 	return ui.box({ width = 1, height = size })
+end
+
+local gaugeBase: string? = nil
+local function gaugeBasePath()
+	if gaugeBase == nil then
+		local dir = noctalia.getenv("XDG_RUNTIME_DIR")
+		if not dir or dir == "" then
+			dir = noctalia.getenv("TMPDIR")
+		end
+		if not dir or dir == "" then
+			dir = "/tmp"
+		end
+		gaugeBase = dir .. "/noctalia_nilsonlinux_speedtest"
+	end
+	return gaugeBase
+end
+
+local function gaugeLivePath()
+	return gaugeBasePath() .. "_live.json"
+end
+
+local function gaugeDownloadPath()
+	return gaugeBasePath() .. "_download.png"
+end
+
+local function gaugeUploadPath()
+	return gaugeBasePath() .. "_upload.png"
 end
 
 metricRow = function(labelKey: string, value: string, glyphName: string?)
@@ -372,6 +413,166 @@ renderLiveInfoCards = function()
 		borderWidth = 0,
 		radius = 0,
 	}, { row1, row2 })
+end
+
+-- ── Circular speedometer (Pillow-rendered dial, processes plugin core) ─────
+
+local function normalizeGaugeMax(value: number): number
+	if value <= 0 then
+		return 100
+	end
+	if value <= 10 then
+		return 10
+	end
+	return math.max(50, math.ceil(value / 50) * 50)
+end
+
+local function currentGaugeValues(): (number, number, number)
+	local down = animatedDownloadMbps
+	local up = animatedUploadMbps
+	if state == "done" and result then
+		down = result.downloadMbps or 0
+		up = result.uploadMbps or 0
+	end
+	local max = math.max(gaugeMax, down, up)
+	return down, up, normalizeGaugeMax(max)
+end
+
+writeGaugeInput = function()
+	local down, up, max = currentGaugeValues()
+	local payload = {
+		download = {
+			percent = math.max(0, math.min(100, down / max * 100)),
+			value_text = string.format("%.1f", down),
+			unit = noctalia.tr("unit_mbps"),
+			label = noctalia.tr("metric_download"),
+			accent = "120,180,255",
+		},
+		upload = {
+			percent = math.max(0, math.min(100, up / max * 100)),
+			value_text = string.format("%.1f", up),
+			unit = noctalia.tr("unit_mbps"),
+			label = noctalia.tr("metric_upload"),
+			accent = "255,185,120",
+		},
+		max_label = string.format("%d", math.floor(max)),
+	}
+	local encoded = noctalia.json.encode(payload, false)
+	if encoded then
+		noctalia.writeFile(gaugeLivePath(), encoded)
+	end
+end
+
+startGaugeWorker = function()
+	if gaugeWorkerStarted then
+		return
+	end
+	local dir = noctalia.pluginDir()
+	if not dir or not noctalia.commandExists("python3") or not noctalia.fileExists(dir .. "/scripts/speed_gauge.py") then
+		return
+	end
+	local skin = noctalia.isDarkMode() and "dark" or "light"
+	local cmd = "python3 " .. dir .. "/scripts/speed_gauge.py " .. gaugeLivePath() .. " " .. gaugeDownloadPath() .. " " .. gaugeUploadPath() .. " " .. skin
+	local started = noctalia.runStream(cmd, function(line: string)
+		local trimmed = noctalia.string.trim(line)
+		local pidText = string.match(trimmed, "speedtest%-gauge:pid:(%d+)")
+		if pidText then
+			gaugeWorkerPid = tonumber(pidText)
+			return
+		end
+		local readyPath = string.match(trimmed, "speedtest%-gauge:ready:(.+)")
+		if readyPath then
+			if readyPath == gaugeDownloadPath() then
+				downGaugePath = readyPath
+			elseif readyPath == gaugeUploadPath() then
+				upGaugePath = readyPath
+			end
+			if downGaugePath and upGaugePath then
+				gaugeReady = true
+			end
+			gaugeKey = noctalia.nowMs()
+			render()
+		end
+	end)
+	if started then
+		gaugeWorkerStarted = true
+	end
+end
+
+stopGaugeWorker = function()
+	if not gaugeWorkerStarted and not gaugeWorkerPid then
+		return
+	end
+	if gaugeWorkerPid then
+		noctalia.runAsync("kill " .. tostring(gaugeWorkerPid))
+	end
+	gaugeWorkerPid = nil
+	gaugeWorkerStarted = false
+	gaugeReady = false
+	downGaugePath = nil
+	upGaugePath = nil
+	gaugeKey = 0
+	local paths = { gaugeLivePath(), gaugeDownloadPath(), gaugeUploadPath() }
+	for _, path in ipairs(paths) do
+		pcall(noctalia.removeFile, path)
+	end
+end
+
+ensureGaugeWorker = function()
+	if gaugeWorkerStarted then
+		return
+	end
+	if state == "running" or state == "done" then
+		startGaugeWorker()
+		writeGaugeInput()
+		gaugeForceWrite = true
+	end
+end
+
+maybeRefreshGauges = function()
+	if not gaugeWorkerStarted or gaugeForceWrite then
+		if gaugeForceWrite then
+			gaugeForceWrite = false
+			writeGaugeInput()
+		end
+		return
+	end
+	if state == "idle" or state == "error" then
+		return
+	end
+	local down, up, max = currentGaugeValues()
+	local downPct = math.max(0, math.min(100, down / max * 100))
+	local upPct = math.max(0, math.min(100, up / max * 100))
+	local now = noctalia.nowMs()
+	-- Track the exact (non-floored) eased percentages so the animating
+	-- needle gets fed near-continuously, and settle to a slow refresh rate
+	-- (1.5 s) while the values sit still.
+	local wobble = math.abs(downPct - lastGaugeDownPct) >= 0.15 or math.abs(upPct - lastGaugeUpPct) >= 0.15
+	if now - lastGaugeWriteMs >= 60 and (wobble or now - lastGaugeWriteMs >= 1500) then
+		lastGaugeDownPct = downPct
+		lastGaugeUpPct = upPct
+		lastGaugeWriteMs = now
+		writeGaugeInput()
+	end
+end
+
+renderGauge = function(labelKey: string, value: number, accent: string, soft: string, arrowGlyph: string, kind: string, active: boolean)
+	-- If the gauge worker is running but images are not ready yet, show a
+	-- transparent placeholder instead of the fallback circle to avoid a
+	-- visible flash of the old circle before the speedometer appears.
+	if gaugeWorkerStarted and not gaugeReady then
+		return ui.box({ width = 160, height = 160, fill = "#00000000" })
+	end
+	local path = gaugeReady and (kind == "download" and downGaugePath or upGaugePath) or nil
+	if path and noctalia.fileExists(path) then
+		return ui.image({
+			key = "gauge-" .. kind .. "-" .. tostring(gaugeKey),
+			path = path,
+			width = 160,
+			height = 160,
+		})
+	end
+	return liveMetricCircle(labelKey, value, accent, soft, arrowGlyph, active)
 end
 
 -- ── Package manager detection (for install instructions) ──────────────────
@@ -969,6 +1170,7 @@ startTest = function()
 	timerRunning = true
 	state = "running"
 	panel.setNeedsFrameTick(true)
+	ensureGaugeWorker()
 	render()
 
 	-- A binary named `speedtest` isn't proof it's the Ookla CLI: on Arch (and
@@ -1085,6 +1287,7 @@ runLegacyBackend = function()
 			saveLastResult(result)
 			addHistory(result)
 			fetchLegacyServerMetadataAfterTest()
+			writeGaugeInput()
 			render()
 			return
 		end
@@ -1142,6 +1345,7 @@ onSpeedtestLine = function(line: string)
 		timerRunning = false
 		saveLastResult(result)
 		addHistory(result)
+		writeGaugeInput()
 		render()
 	elseif t == "error" then
 		state = "error"
@@ -1323,8 +1527,8 @@ renderRunning = function()
 			ui.label({ text = noctalia.tr(phaseKey), fontSize = 11, color = "on_surface_variant", textAlign = "center" }),
 		}),
 		ui.row({ gap = 10, align = "center", justify = "center" }, {
-			liveMetricCircle("metric_download", animatedDownloadMbps, "primary", "primary/0.12", "arrow-down", phase == "download"),
-			liveMetricCircle("metric_upload", animatedUploadMbps, "secondary", "secondary/0.12", "arrow-up", phase == "upload"),
+			renderGauge("metric_download", animatedDownloadMbps, "primary", "primary/0.12", "arrow-down", "download", phase == "download"),
+			renderGauge("metric_upload", animatedUploadMbps, "secondary", "secondary/0.12", "arrow-up", "upload", phase == "upload"),
 		}),
 		renderLiveInfoCards(),
 		ui.column({
@@ -1371,8 +1575,8 @@ renderDone = function()
 		titleBlock(),
 		ui.separator({ thickness = 1, color = "outline", spacing = 4 }),
 		ui.row({ gap = 10, align = "center", justify = "center" }, {
-			liveMetricCircle("metric_download", r.downloadMbps or 0, "primary", "primary/0.12", "arrow-down", true),
-			liveMetricCircle("metric_upload", r.uploadMbps or 0, "secondary", "secondary/0.12", "arrow-up", true),
+			renderGauge("metric_download", r.downloadMbps or 0, "primary", "primary/0.12", "arrow-down", "download", true),
+			renderGauge("metric_upload", r.uploadMbps or 0, "secondary", "secondary/0.12", "arrow-up", "upload", true),
 		}),
 		ui.row({
 			width = 312,
@@ -1466,12 +1670,14 @@ function onOpen(context: any)
 		-- this branch is skipped) — resume the pulse/elapsed-timer ticks.
 		panel.setNeedsFrameTick(true)
 	end
+	ensureGaugeWorker()
 	render()
 end
 
 function onClose()
 	panelActive = false
 	panel.setNeedsFrameTick(false)
+	stopGaugeWorker()
 end
 
 function onFrameTick(deltaMs: number)
@@ -1514,6 +1720,7 @@ function onFrameTick(deltaMs: number)
 			timerRunning = false
 			animatedDownloadMbps = result.downloadMbps or animatedDownloadMbps
 			animatedUploadMbps = result.uploadMbps or animatedUploadMbps
+			writeGaugeInput()
 		elseif finalizingElapsed >= 10.0 then
 			finishingResult = false
 			state = "done"
@@ -1521,7 +1728,9 @@ function onFrameTick(deltaMs: number)
 			timerRunning = false
 			animatedDownloadMbps = result.downloadMbps or animatedDownloadMbps
 			animatedUploadMbps = result.uploadMbps or animatedUploadMbps
+			writeGaugeInput()
 		end
 	end
+	maybeRefreshGauges()
 	render()
 end
