@@ -1,6 +1,6 @@
 id          = "nilsonlinux/world-radio"
 name        = "World Radio"
-version     = "1.0.4"
+version     = "1.0.5"
 plugin_api  = 24
 author      = "Nilsonlinux"
 license     = "MIT"

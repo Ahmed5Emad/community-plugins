@@ -263,8 +263,7 @@ local savePlayingState
 local clearPlayingState
 local playerAlive
 local restorePlayingState
-local isPlayerProcess
-local storedPlayerPid
+local ensureStationCountry
 
 local function tr(key, subst)
   if subst == nil then
@@ -467,6 +466,7 @@ local function fetchStations(offset)
           bitrate = tonumber(s.bitrate) or 0,
           votes = tonumber(s.votes) or 0,
           tags = tostring(s.tags or ""),
+          countrycode = tostring(s.countrycode or ""),
         })
       end
     end
@@ -508,6 +508,7 @@ local function fetchGenreStations(offset)
           bitrate = tonumber(s.bitrate) or 0,
           votes = tonumber(s.votes) or 0,
           tags = tostring(s.tags or ""),
+          countrycode = tostring(s.countrycode or ""),
         })
       end
     end
@@ -549,6 +550,7 @@ local function fetchGlobalSearch(offset)
           bitrate = tonumber(s.bitrate) or 0,
           votes = tonumber(s.votes) or 0,
           tags = tostring(s.tags or ""),
+          countrycode = tostring(s.countrycode or ""),
         })
       end
     end
@@ -589,6 +591,7 @@ local function fetchAllStations(offset)
           bitrate = tonumber(s.bitrate) or 0,
           votes = tonumber(s.votes) or 0,
           tags = tostring(s.tags or ""),
+          countrycode = tostring(s.countrycode or ""),
         })
       end
     end
@@ -657,6 +660,7 @@ local function publishPlaying()
     name = playingName,
     uuid = playingUuid or "",
     url = playingUrl,
+    flag = flagEmoji(playingStation ~= nil and playingStation.countrycode or nil),
   })
 end
 
@@ -689,32 +693,11 @@ local function stopPlayback()
   stopLivePulse()
   clearPlayingState()
   publishPlaying()
-  local pid = storedPlayerPid()
-  if pid ~= nil then
-    noctalia.runAsync("kill " .. tostring(pid))
-  end
+  noctalia.runAsync("kill $(cat " .. shellQuote(getDataDir() .. "/player.pid") .. " 2>/dev/null) 2>/dev/null")
   render()
 end
 
 local faviconJobs = {}
-
-local function sanitizeThumbId(raw)
-  local id = tostring(raw or ""):gsub("%.%.", ""):gsub("[^%w%-_]", "_")
-  id = id:gsub("^[_]+", ""):gsub("[_]+$", "")
-  if id == "" then
-    return "station-" .. tostring((os.time() * 1000) % 0xffffffff)
-  end
-  return id
-end
-
-local function validRemoteImageUrl(url)
-  local scheme = tostring(url or ""):match("^([%a][%w%+%-%.]*)://")
-  if scheme == nil then
-    return false
-  end
-  scheme = scheme:lower()
-  return scheme == "http" or scheme == "https"
-end
 
 local function artSource(station)
   if station.favicon ~= "" then
@@ -725,14 +708,14 @@ end
 
 local function artDest(station)
   local src = artSource(station)
-  if src == "" or not validRemoteImageUrl(src) then
+  if src == "" then
     return nil
   end
   local ext = src:match("%.([%w]+)$")
   if ext == "png" or ext == "gif" or ext == "bmp" or ext == "webp" then
-    return getDataDir() .. "/thumbs/" .. sanitizeThumbId(station.uuid) .. "." .. ext
+    return getDataDir() .. "/thumbs/" .. station.uuid .. "." .. ext
   end
-  return getDataDir() .. "/thumbs/" .. sanitizeThumbId(station.uuid) .. ".jpg"
+  return getDataDir() .. "/thumbs/" .. station.uuid .. ".jpg"
 end
 
 local function ensureFavicon(station, onDone)
@@ -758,19 +741,8 @@ local function ensureFavicon(station, onDone)
   list = { onDone }
   faviconJobs[station.uuid] = list
   thumbPending[station.uuid] = true
-  local src = artSource(station)
-  if not validRemoteImageUrl(src) then
-    thumbPending[station.uuid] = nil
-    faviconJobs[station.uuid] = nil
-    failedFavicons[station.uuid] = true
-    render()
-    for _, cb in ipairs(list) do
-      cb(nil)
-    end
-    return
-  end
   noctalia.mkdirAll(getDataDir() .. "/thumbs")
-  noctalia.download(src, dest, function(ok)
+  noctalia.download(artSource(station), dest, function(ok)
     thumbPending[station.uuid] = nil
     faviconJobs[station.uuid] = nil
     if ok then
@@ -790,11 +762,10 @@ local function loadFavicon(station)
 end
 
 local function clearArt(station)
-  local id = sanitizeThumbId(station.uuid)
   thumbs[station.uuid] = nil
   failedFavicons[station.uuid] = nil
   for _, ext in ipairs({ "jpg", "png", "gif", "bmp", "webp" }) do
-    local path = getDataDir() .. "/thumbs/" .. id .. "." .. ext
+    local path = getDataDir() .. "/thumbs/" .. station.uuid .. "." .. ext
     if noctalia.fileInfo(path) ~= nil then
       pcall(noctalia.removeFile, path)
     end
@@ -828,44 +799,13 @@ clearPlayingState = function()
   noctalia.removeFile(playingPath())
 end
 
-isPlayerProcess = function(pid)
-  local procRoot = "/proc/" .. tostring(pid)
-  local ok, exists = pcall(noctalia.fileExists, procRoot)
-  if not ok or not exists then
-    return false
-  end
-  local ok2, comm = pcall(noctalia.readFile, procRoot .. "/comm")
-  if ok2 and comm ~= nil and (comm:find("mpv", 1, true) ~= nil or comm:find("ffplay", 1, true) ~= nil) then
-    return true
-  end
-  local ok3, cmdline = pcall(noctalia.readFile, procRoot .. "/cmdline")
-  if ok3 and cmdline ~= nil and (cmdline:find("mpv", 1, true) ~= nil or cmdline:find("ffplay", 1, true) ~= nil) then
-    return true
-  end
-  if not ok2 and not ok3 then
-    return nil
-  end
-  return false
-end
-
-storedPlayerPid = function()
+playerAlive = function()
   local raw = noctalia.readFile(getDataDir() .. "/player.pid")
   local pid = tonumber((tostring(raw or ""):match("%d+")))
   if pid == nil or pid <= 0 then
-    return nil
+    return false
   end
-  local ok, result = pcall(isPlayerProcess, pid)
-  if not ok or result == nil then
-    return pid
-  end
-  if not result then
-    return nil
-  end
-  return pid
-end
-
-playerAlive = function()
-  return storedPlayerPid() ~= nil
+  return noctalia.fileExists("/proc/" .. tostring(pid))
 end
 
 restorePlayingState = function()
@@ -892,6 +832,7 @@ restorePlayingState = function()
   playingName = tostring(st.name or "")
   playingUrl = st.url
   playingStation = st
+  ensureStationCountry(st)
   if type(val.queue) == "table" then
     playQueue = val.queue
   end
@@ -940,6 +881,7 @@ local function playStation(station, sourceView)
   playingName = station.name
   playingUrl = station.url
   playingStation = station
+  ensureStationCountry(station)
   currentSongTitle = ""
   lastSongPoll = 0
   startLivePulse()
@@ -980,13 +922,9 @@ local function playStation(station, sourceView)
   if cover ~= nil then
     coverArg = " --cover-art-files=" .. shellQuote(cover)
   end
-  local oldPid = storedPlayerPid()
-  if oldPid ~= nil then
-    noctalia.runAsync("kill " .. tostring(oldPid))
-  end
   local cmd = string.format(
-    "%s %s%s %s >/dev/null 2>&1 & echo $! > %s",
-    playerName, playerArgs, coverArg, shellQuote(station.url), shellQuote(pidFile)
+    "kill $(cat %s 2>/dev/null) 2>/dev/null; %s %s%s %s >/dev/null 2>&1 & echo $! > %s",
+    shellQuote(pidFile), playerName, playerArgs, coverArg, shellQuote(station.url), shellQuote(pidFile)
   )
   noctalia.runAsync(cmd)
   if cover == nil then
@@ -1019,6 +957,46 @@ local function saveFavorites()
   if ok and encoded ~= nil then
     noctalia.writeFile(getDataDir() .. "/favorites.json", encoded)
   end
+end
+
+local countryPending = {}
+local countryFailed = {}
+
+ensureStationCountry = function(station)
+  if station == nil or station.uuid == nil then
+    return
+  end
+  if station.countrycode ~= nil and station.countrycode ~= "" then
+    return
+  end
+  if countryPending[station.uuid] or countryFailed[station.uuid] then
+    return
+  end
+  countryPending[station.uuid] = true
+  local url = string.format("%s/json/stations/byuuid?uuids=%s", API_BASE, noctalia.string.urlEncode(station.uuid))
+  httpJson(url, function(data)
+    countryPending[station.uuid] = nil
+    local cc = (data ~= nil and data[1] ~= nil) and tostring(data[1].countrycode or "") or ""
+    if cc == "" then
+      countryFailed[station.uuid] = true
+      return
+    end
+    station.countrycode = cc
+    local changed = false
+    for _, f in ipairs(favorites) do
+      if f.uuid == station.uuid then
+        f.countrycode = cc
+        changed = true
+      end
+    end
+    if changed then
+      saveFavorites()
+    end
+    if playingUuid == station.uuid then
+      publishPlaying()
+    end
+    render()
+  end)
 end
 
 local function toggleFavorite(station)
@@ -1496,7 +1474,15 @@ local function stationRow(s, sourceView)
   loadFavicon(s)
   local isPlaying = playingUuid == s.uuid
   local thumb = thumbs[s.uuid]
+  local showFlag = (sourceView == "all_stations" or sourceView == "favorites" or sourceView == "genre")
+  if showFlag then
+    ensureStationCountry(s)
+  end
+  local stationFlag = showFlag and flagEmoji(s.countrycode) or ""
   local meta = {}
+  if stationFlag ~= "" then
+    table.insert(meta, stationFlag)
+  end
   if s.codec ~= "" then
     table.insert(meta, s.codec)
   end
@@ -1513,14 +1499,35 @@ local function stationRow(s, sourceView)
   if thumb ~= nil then
     table.insert(parts, ui.image({ path = thumb, width = 26, height = 26, radius = 4 }))
   else
-    table.insert(parts, ui.glyph({ name = "radio", size = 15, color = "outline" }))
+    table.insert(parts, ui.column({
+      width   = 26,
+      height  = 26,
+      radius  = 4,
+      fill    = "surface_variant/0.65",
+      align   = "center",
+      justify = "center",
+    }, { ui.glyph({ name = "radio", size = 15, color = "outline" }) }))
   end
 
-  local labels = { ui.label({ text = s.name, fontSize = 12, maxLines = 1 }) }
+  local labels = {
+    ui.label({
+      text      = s.name,
+      fontSize  = 12,
+      maxLines  = 1,
+      minWidth  = 0,
+      textAlign = "left",
+    }),
+  }
   if metaText ~= "" then
     table.insert(labels, ui.label({ text = metaText, fontSize = 11, color = "outline" }))
   end
-  table.insert(parts, ui.column({ flexGrow = 1, gap = 0 }, labels))
+  table.insert(parts, ui.column({
+    width = 0,
+    flexGrow = 1,
+    minWidth = 0,
+    gap = 0,
+    align = "start",
+  }, labels))
 
   if s.votes > 0 then
     table.insert(parts, ui.label({ text = tostring(s.votes), fontSize = 11, color = "on_surface/0.45" }))
@@ -1558,7 +1565,7 @@ local function stationRow(s, sourceView)
     paddingH = 6,
     paddingV = 1,
     radius  = 6,
-    fill        = isPlaying and "primary/0.12" or "surface_variant/0.4",
+    fill        = isPlaying and "primary/0.12" or (isHovered and "surface_variant/0.55" or "surface_variant/0.4"),
     border      = isPlaying and "primary/0.3" or "outline",
     borderWidth = (isHovered or isPlaying) and 1 or 0,
     onHover = function(isHovering)
@@ -1893,7 +1900,14 @@ local function customRow(s, index)
   local parts = {
     art ~= nil
         and ui.image({ path = art, width = 22, height = 22, radius = 4 })
-      or ui.glyph({ name = "radio", size = 15, color = "outline" }),
+      or ui.column({
+          width   = 22,
+          height  = 22,
+          radius  = 4,
+          fill    = "surface_variant/0.65",
+          align   = "center",
+          justify = "center",
+        }, { ui.glyph({ name = "radio", size = 13, color = "outline" }) }),
     ui.column({ flexGrow = 1, gap = 0 }, labels),
   }
   table.insert(parts, ui.button({
@@ -2164,10 +2178,14 @@ renderMiniPlayer = function()
   if #stationLabel > 35 then
     stationLabel = string.sub(stationLabel, 1, 35) .. "…"
   end
-  table.insert(infoParts, ui.row({ gap = 4, align = "center", minWidth = 0 }, {
-    ui.label({ text = stationLabel, fontSize = 11, maxLines = 1, maxWidth = 370, color = nameColor }),
-    ui.glyph({ name = "access-point", size = 12, color = liveColor }),
-  }))
+  local miniFlag = flagEmoji(playingStation ~= nil and playingStation.countrycode or nil)
+  local nameRowParts = {}
+  if miniFlag ~= "" then
+    table.insert(nameRowParts, ui.label({ text = miniFlag, fontSize = 11 }))
+  end
+  table.insert(nameRowParts, ui.label({ text = stationLabel, fontSize = 11, maxLines = 1, maxWidth = 370, color = nameColor }))
+  table.insert(nameRowParts, ui.glyph({ name = "access-point", size = 12, color = liveColor }))
+  table.insert(infoParts, ui.row({ gap = 4, align = "center", minWidth = 0 }, nameRowParts))
   if currentSongTitle ~= "" then
     local MARQUEE_VIEW = 34
     local CHAR_PX = 4
