@@ -7,7 +7,7 @@ Browse and launch games from Steam, Lutris, and Heroic Games Launcher directly f
 | Field | Value |
 | --- | --- |
 | ID | `alexander/game-launcher` |
-| Entries | Bar widget: `launcher`; panel: `sidebar` (look follows Panel style); launcher provider: `search` |
+| Entries | Bar widget: `launcher`; panels: `browser` (sidebar dock), `original` (center box); launcher provider: `search` |
 | Launcher Prefix | `/g` |
 
 ## Requirements
@@ -37,6 +37,7 @@ To open the panel via IPC:
 
 ```sh
 noctalia msg panel-toggle alexander/game-launcher:browser
+noctalia msg panel-toggle alexander/game-launcher:original
 ```
 
 From the launcher, type `/g` followed by a game name to search. Activate a result to launch the game.
