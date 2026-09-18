@@ -7,5 +7,9 @@ function update()
 end
 
 function onClick()
-  noctalia.togglePanel("alexander/game-launcher:browser")
+  noctalia.togglePanel("alexander/game-launcher:sidebar")
+end
+
+function onIpc(event, _payload)
+  if event == "toggle" then onClick() end
 end
