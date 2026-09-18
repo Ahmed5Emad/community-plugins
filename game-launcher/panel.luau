@@ -539,8 +539,8 @@ function computeLayout()
 end
 
 function onOpen(context)
-  -- Single-command routing: the keybind always toggles :sidebar.
-  -- The host shows one panel at a time, so opening :sidebar already
+  -- Single-command routing: the keybind always toggles the sidebar panel.
+  -- The host shows one panel at a time, so opening sidebar already
   -- closed :original when it was open. The flag tells whether this
   -- press must reopen it (was closed) or stay closed (was open).
   local ok, mode = pcall(noctalia.getConfig, "panel_mode")

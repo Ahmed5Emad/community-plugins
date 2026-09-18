@@ -56,7 +56,7 @@ label_key = "settings.glyph.label"
 default = "device-gamepad-2"
 
 [[panel]]
-id = "sidebar"
+id = "browser"
 entry = "panel.luau"
 width = 380
 height = "fill"

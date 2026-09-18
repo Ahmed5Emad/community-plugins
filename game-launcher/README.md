@@ -36,7 +36,7 @@ In the panel, use the search bar to filter by name or runner. Click **Launch** o
 To open the panel via IPC:
 
 ```sh
-noctalia msg panel-toggle alexander/game-launcher:sidebar
+noctalia msg panel-toggle alexander/game-launcher:browser
 ```
 
 From the launcher, type `/g` followed by a game name to search. Activate a result to launch the game.
