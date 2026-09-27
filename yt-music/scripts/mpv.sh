@@ -74,7 +74,7 @@ mpv_play() {   # $1=volume $2=url_file $3=title_file $4=cover_file(optional)
   nohup mpv "$DUMMY" "$URL" "$DUMMY" --playlist-start=1 \
     --no-video --vo=null --vd=null --audio-display=no --no-osc --no-osd-bar \
     --demuxer-max-bytes=20M --demuxer-readahead-secs=60 --really-quiet --no-terminal \
-    --keep-open=always \
+    --keep-open=yes --pause=no \
     --force-media-title="$TITLE" \
     $cover_opts \
     --input-ipc-server="$SOCK" --ao=pulse,pipewire,alsa,auto \

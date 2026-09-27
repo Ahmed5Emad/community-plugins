@@ -23,6 +23,14 @@ tarballs on the project's GitHub Releases page. Configure your providers once in
 `~/.config/ai-usagebar/config.toml`; the CLI manages credentials and provider
 connections.
 
+The CLI can send its own quota notifications when this plugin polls it. To
+disable them, add this to `~/.config/ai-usagebar/config.toml`:
+
+```toml
+[notifications]
+enabled = false
+```
+
 When the CLI is missing, the panel displays its project address and can open it
 with `xdg-open`. The same command opens provider dashboards from the panel.
 Install `xdg-open` alongside `ai-usagebar`.
@@ -112,6 +120,10 @@ returns automatically after a healthy read. The panel sorts providers by headlin
 severity, then usage; equal readings keep the CLI's order. Automatic bar selection
 uses the same priorities, then the configured primary provider and account id.
 
+Antigravity is the exception when its local server briefly disappears: the last
+reading stays visible with a stale indicator and its original update time until
+the server returns. Without an earlier reading, it stays unavailable.
+
 Parser errors are an exception: the provider remains visible with missing usage
 and the CLI error, because a response-format failure does not establish that the
 account is unavailable.
@@ -180,8 +192,9 @@ noctalia msg plugin felipeartur/ai-usagebar:poller all select anthropic
 - The plugin makes no network calls and writes no files of its own. Everything
   it knows arrives on that command's stdout.
 - A provider whose service is down leaves the bar and panel on the first report
-  that says so. It is not counted behind the `+n`, and returns when a report
-  carries a healthy reading for it again.
+  that says so, except for Antigravity's temporary local-server loss described
+  above. It is not counted behind the `+n`, and returns when a report carries a
+  healthy reading for it again.
 - A failed whole-report read keeps the previous report and marks it as stale.
   Without a previous report, the panel shows the failure and its scrubbed
   diagnostic. Raw HTTP details stay out of the reading cards.
@@ -207,7 +220,7 @@ copying them, then checks that real credential shapes never survive, that ordina
 readings pass through unchanged, and that scrubbing a four-vendor report stays
 inside the CPU budget the poller's async callback is given. The second exercises
 the coalesced refresh state, rejects output from a timed-out process, checks
-quota notifications, and checks that every provider has a glyph of its own.
+quiet quota changes, and checks that every provider has a glyph of its own.
 The third drives the real bar script through default, named, missing and automatic
 account selection, plus malformed metrics. The fourth checks that malformed panel
 sections degrade safely. The fifth verifies UTC parsing through a daylight-saving

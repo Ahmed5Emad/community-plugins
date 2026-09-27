@@ -4,11 +4,11 @@
 --
 -- Reads the display inventory with `umbriel outputs --json`, and applies a
 -- change (mode, position, transform) by patching the matching [output.*]
--- section in the config file, then `umbriel validate` against the patched copy
--- and `umbriel msg config-reload` on success. A failed validate restores the
--- previous file, so a bad edit can never take the session's config down.
--- Because the change lands in the config file itself, it survives reboots by
--- definition.
+-- section in the config file, then `umbriel config validate` against the
+-- patched copy and `umbriel msg config-reload` on success. A failed validate
+-- restores the previous file, so a bad edit can never take the session's config
+-- down. Because the change lands in the config file itself, it survives
+-- reboots by definition.
 --
 --   noctalia.state.set("monitor.state", snapshot)    UI entries render this
 --   noctalia.state.watch("monitor.request", handler)  actions from bar/panel
@@ -94,7 +94,7 @@ local function dataFile(name)
   return dir ~= nil and (dir .. "/" .. name) or nil
 end
 
--- Patch [output.<name>] in the config, gate on `umbriel validate`, reload.
+-- Patch [output.<name>] in the config, gate on `umbriel config validate`, reload.
 -- A validate failure restores the previous file byte-for-byte.
 local function applyConfig(name, fields)
   local text = noctalia.readFile(configPath)
@@ -120,7 +120,7 @@ local function applyConfig(name, fields)
     return false, writeErr or "cannot write config"
   end
 
-  noctalia.runAsync({ "umbriel", "validate", "-c", configPath }, function(result)
+  noctalia.runAsync({ "umbriel", "config", "validate", "-c", configPath }, function(result)
     if result.exitCode ~= 0 or result.timedOut then
       -- Restore byte-for-byte from memory: no backup-file dependency at all.
       local restored, restoreErr = noctalia.writeFile(configPath, text)
@@ -243,7 +243,7 @@ local function handleRequest(value)
     end
     busy = true
     publish()
-    noctalia.runAsync({ "umbriel", "validate", "-c", backup }, function(check)
+    noctalia.runAsync({ "umbriel", "config", "validate", "-c", backup }, function(check)
       if check.exitCode ~= 0 then
         busy = false
         refresh()

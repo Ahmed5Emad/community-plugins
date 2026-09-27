@@ -565,9 +565,6 @@ local function copySummary(entry)
     local text = table.concat(parts, " ")
     if type(noctalia.copyToClipboard) == "function" then
         noctalia.copyToClipboard(text, "text/plain")
-        if type(noctalia.notify) == "function" then
-            noctalia.notify(tostring(entry.display_name or entry.id), text)
-        end
     end
 end
 
@@ -583,6 +580,13 @@ local function statusIndicator(entry)
         })
     end
     if entry == nil then return nil end
+    if entry.stale == true then
+        return ui.row({ gap = 4, align = "center" }, {
+            ui.glyph({ name = "clock-exclamation", size = 12, color = "secondary" }),
+            ui.label({ text = noctalia.tr("ui.stale_hint"), fontSize = 11,
+                color = "on_surface_variant", maxLines = 1 }),
+        })
+    end
     if unavailable(entry) then
         return ui.label({ text = noctalia.tr("ui.unavailable"), fontSize = 11,
             color = "error", maxLines = 1 })

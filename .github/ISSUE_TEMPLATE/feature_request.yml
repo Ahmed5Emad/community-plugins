@@ -124,11 +124,13 @@ body:
         - mango_layouts
         - mangowm-keymode
         - mawaqit
+        - media-island
         - media-lyrics
         - mihomo-control
         - mimir
         - mini-docker
         - misr-quran-radio
+        - mx-control
         - nan-usage
         - network-control
         - network-toolkit
@@ -139,6 +141,7 @@ body:
         - niri-displays
         - niri-ribbon
         - niri-rules-studio
+        - niri-workspace-preview
         - nix-monitor
         - nix-search
         - nix-status
@@ -182,6 +185,7 @@ body:
         - remmina
         - rss-notifier
         - ruh-vpn
+        - rum-updates
         - run-path
         - screen-toolkit
         - share-wifi
@@ -222,6 +226,8 @@ body:
         - upbeat
         - vial_keymap
         - vidi
+        - vietnamese-lunar-calendar
+        - vikunja
         - vm-manager
         - voxtype
         - vpn-manager

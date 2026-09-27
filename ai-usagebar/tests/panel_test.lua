@@ -12,7 +12,7 @@ local function loadPanel(entry, failure)
     local isReport = type(entry) == "table" and type(entry.entries) == "table"
     local report = isReport and entry or entry ~= nil and { entries = { entry } } or nil
     local first = report ~= nil and report.entries[1] or nil
-    local opened = {}
+    local opened, copied, notifications = {}, {}, {}
     local values = {
         report = report,
         error = failure or { code = "", detail = "" },
@@ -40,6 +40,10 @@ local function loadPanel(entry, failure)
             opened[#opened + 1] = command
             return true
         end,
+        copyToClipboard = function(text, mime)
+            copied[#copied + 1] = { text = text, mime = mime }
+        end,
+        notify = function() notifications[#notifications + 1] = true end,
     }
     local ui = setmetatable({}, {
         __index = function(_, kind)
@@ -73,7 +77,7 @@ local function loadPanel(entry, failure)
         watchers.report(values.report)
         return drawn
     end
-    return drawn, publish, env, opened
+    return drawn, publish, env, opened, copied, notifications
 end
 
 -- Walk the drawn tree; the harness records every ui.* call as {kind, props, children}.
@@ -202,6 +206,12 @@ end
 
 local tree = loadPanel(withSections(WINDOWS))
 assert(has(labels(tree), "ui.waiting"), "Antigravity without metrics should not claim healthy quota status")
+
+local staleAgy = withSections(WINDOWS)
+staleAgy.stale = true
+staleAgy.metrics = { { label = "Gemini", percent = 42 } }
+assert(has(labels(loadPanel(staleAgy)), "ui.stale_hint"),
+       "retained Antigravity readings must be marked stale in the panel")
 
 -- One card per model, not one per reading: four readings, two models, two cards.
 local drawn = cards(tree)
@@ -712,16 +722,25 @@ for _, btn in ipairs(installButtons) do
 end
 assert(hasInstallBtn, "errorBlock must contain ui.install button")
 
-local anthropicTree = loadPanel({ id = "anthropic", display_name = "Claude", status = "ready", metrics = {}, sections = {} })
+local anthropicTree, _, _, _, copied, notifications = loadPanel({
+    id = "anthropic", display_name = "Claude", status = "ready",
+    metrics = { { label = "Session", percent = 42 } }, sections = {},
+})
 local anthropicButtons = collect(anthropicTree, "button")
 local hasExternalLink = false
 local hasCopyBtn = false
 for _, btn in ipairs(anthropicButtons) do
     if btn.props.glyph == "external-link" then hasExternalLink = true end
-    if btn.props.glyph == "copy" then hasCopyBtn = true end
+    if btn.props.glyph == "copy" then
+        hasCopyBtn = true
+        btn.props.onClick()
+    end
 end
 assert(hasExternalLink, "provider with dashboard url must have external-link button")
 assert(hasCopyBtn, "provider detail header must have copy button")
+assert(#copied == 1 and copied[1].text == "Claude · Session 42%"
+    and copied[1].mime == "text/plain", "copy button should keep copying the usage summary")
+assert(#notifications == 0, "copying the usage summary must not notify")
 
 local multiReport = {
     entries = {

@@ -82,10 +82,10 @@ noctalia msg panel-toggle muhammadessam/umbriel-monitor-control:panel
 - **Files written**: the configured Umbriel config (patched `[output.*]`
   sections only; comments and other keys are preserved) and a rolling backup
   `config.toml.bak` in the plugin's data dir, used to restore if a patched file
-  fails `umbriel validate` or for the revert request.
+  fails `umbriel config validate` or for the revert request.
 - **Commands spawned**: `umbriel outputs --json` (inventory),
-  `umbriel validate -c <file>` (pre-reload gate), `umbriel msg config-reload`
-  (live apply). No network access.
+  `umbriel config validate -c <file>` (pre-reload gate),
+  `umbriel msg config-reload` (live apply). No network access.
 - Resolution/refresh options come from the modes the display advertises, so
   the dropdowns only ever offer something the monitor can do. Umbriel falls
   back to the preferred mode if a saved mode cannot be applied later.

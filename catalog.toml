@@ -151,8 +151,8 @@ tags = ["nixos", "utility"]
 [[plugin]]
 id = "nightwatch75/todo"
 name = "To Do"
-version = "1.2.0"
-updated_at = 1790099908
+version = "1.2.1"
+updated_at = 1790466807
 added_at = 1784158920
 author = "nightwatch75"
 license = "MIT"
@@ -265,8 +265,8 @@ tags = ["audio", "bar", "recording", "utility"]
 [[plugin]]
 id = "nightwatch75/file-search"
 name = "File Search"
-version = "0.2.0"
-updated_at = 1788534085
+version = "0.3.0"
+updated_at = 1790519222
 added_at = 1784296152
 author = "nightwatch75"
 license = "MIT"
@@ -387,8 +387,8 @@ rev = "56ccc9e5f48bc29b068dbb6f03a3896b0cbe4a14"
 [[plugin]]
 id = "apex077/eyecare"
 name = "Eye-Care Reminders"
-version = "1.0.2"
-updated_at = 1786308581
+version = "1.0.3"
+updated_at = 1790379026
 added_at = 1784415628
 author = "Apex077"
 license = "MIT"
@@ -650,15 +650,15 @@ rev = "d4467e907cba5eeeb793b2168791fd81be124c9a"
 [[plugin]]
 id = "elijaharch/wl-screen-mirror"
 name = "Wayland Screen Mirror"
-version = "1.0.0"
-updated_at = 1784848688
+version = "1.1.0"
+updated_at = 1790379107
 added_at = 1784848688
 author = "elijaharch"
 license = "MIT"
 icon = "screen-share"
 description = "Mirror one Wayland output to another with wl-mirror."
 plugin_api = 3
-tags = ["bar", "panel", "service", "utility", "video"]
+tags = ["bar", "panel", "service", "shortcut", "utility", "video"]
 
 [[plugin]]
 id = "8bury/lid-guard"
@@ -1493,8 +1493,8 @@ tags = ["bar", "niri", "panel", "service", "system", "utility"]
 [[plugin]]
 id = "felipeartur/ai-usagebar"
 name = "AI Usage"
-version = "2.3.0"
-updated_at = 1790252962
+version = "2.3.1"
+updated_at = 1790376962
 added_at = 1786903781
 author = "felipeartur"
 license = "MIT"
@@ -1843,13 +1843,13 @@ tags = ["system", "hardware", "utility"]
 [[plugin]]
 id = "teagar/omniroute-quota"
 name = "OmniRoute Quota"
-version = "0.1.0"
-updated_at = 1787833165
+version = "0.2.0"
+updated_at = 1790518786
 added_at = 1787833165
 author = "Teagar"
 license = "MIT"
 icon = "route"
-description = "Monitor Codex 5-hour and weekly quotas for every OmniRoute account."
+description = "Monitor Codex quotas for OpenCode and OmniRoute accounts."
 plugin_api = 22
 tags = ["ai", "bar", "panel", "service", "indicator", "utility"]
 
@@ -2065,8 +2065,8 @@ tags = ["desktop", "utility"]
 [[plugin]]
 id = "aabidk20/yt-music"
 name = "YouTube Music"
-version = "0.2.7"
-updated_at = 1790251462
+version = "0.2.8"
+updated_at = 1790338491
 added_at = 1788315521
 author = "Aabid"
 license = "MIT"
@@ -2447,8 +2447,8 @@ tags = ["bar", "desktop", "panel", "service", "animation", "media", "network", "
 [[plugin]]
 id = "prponkshe/umbriel-displays"
 name = "Umbriel Displays"
-version = "1.0.0"
-updated_at = 1789086907
+version = "1.0.1"
+updated_at = 1790485959
 added_at = 1789086907
 author = "prponkshe"
 license = "MIT"
@@ -2473,8 +2473,8 @@ tags = ["ai", "development", "bar", "panel", "service", "productivity"]
 [[plugin]]
 id = "muhammadessam/umbriel-monitor-control"
 name = "Umbriel Monitor Control"
-version = "0.3.0"
-updated_at = 1790165665
+version = "0.3.1"
+updated_at = 1790485981
 added_at = 1789146573
 author = "muhammadessam"
 license = "MIT"
@@ -2486,8 +2486,8 @@ tags = ["bar", "panel", "service", "shortcut", "system", "utility", "hardware", 
 [[plugin]]
 id = "grassyloki/kwallet-secrets"
 name = "KWallet Secrets"
-version = "1.1.0"
-updated_at = 1789149522
+version = "1.1.3"
+updated_at = 1790467616
 added_at = 1789149522
 author = "grassyloki"
 license = "MIT"
@@ -2655,8 +2655,8 @@ tags = ["panel", "service", "system"]
 [[plugin]]
 id = "shangshui0302/github-kanban"
 name = "GitHub Kanban"
-version = "0.1.2"
-updated_at = 1790168085
+version = "0.1.3"
+updated_at = 1790338117
 added_at = 1789390542
 author = "Shangshui0302"
 license = "MIT"
@@ -2934,8 +2934,8 @@ rev = "9ec5a4813f22f04313fae5f1707e5d239b812973"
 [[plugin]]
 id = "fel/quill"
 name = "Quill"
-version = "1.0.0"
-updated_at = 1790164567
+version = "1.1.0"
+updated_at = 1790468164
 added_at = 1790164567
 author = "fel"
 license = "MIT"
@@ -3034,3 +3034,82 @@ icon = "mouse-2"
 description = "Razer device monitor, battery level indicator, and lighting controller via OpenRazer."
 plugin_api = 9
 tags = ["hardware", "gaming", "theming", "system", "bar", "panel", "service"]
+
+[[plugin]]
+id = "notoxus/media-island"
+name = "Media Island"
+version = "1.0.0"
+updated_at = 1790341770
+added_at = 1790341770
+author = "notoxus"
+license = "MIT"
+icon = "music"
+description = "Top-center now-playing island with artwork, transport controls, and automatic track-change previews."
+plugin_api = 24
+tags = ["bar", "media", "panel", "service"]
+
+[[plugin]]
+id = "notoxus/vietnamese-lunar-calendar"
+name = "Vietnamese Lunar Calendar"
+version = "1.0.0"
+updated_at = 1790341835
+added_at = 1790341835
+author = "notoxus"
+license = "MIT"
+icon = "moon-stars"
+description = "Vietnamese lunar calendar with lunar dates, Can Chi and traditional festivals."
+plugin_api = 22
+tags = ["panel", "shortcut", "bar", "time", "utility"]
+
+[[plugin]]
+id = "teagar/niri-workspace-preview"
+name = "Niri Workspace Preview"
+version = "1.0.1"
+updated_at = 1790377249
+added_at = 1790342081
+author = "Teagar"
+license = "MIT"
+icon = "layout-dashboard"
+description = "Shows proportional maps of the active Niri workspaces and their windows in the bar."
+deprecated = false
+plugin_api = 17
+tags = ["bar", "indicator", "niri", "productivity", "system"]
+
+[[plugin]]
+id = "etrigan63/rum-updates"
+name = "RUM Updates"
+version = "0.1.6"
+updated_at = 1790467331
+added_at = 1790381127
+author = "etrigan63"
+license = "MIT"
+icon = "package"
+description = "Monitor and manage RakuOS updates with rum."
+plugin_api = 3
+tags = ["system", "utility"]
+
+[[plugin]]
+id = "gamaraan/mx-control"
+name = "MX Control"
+version = "0.2.2"
+updated_at = 1790519199
+added_at = 1790468021
+author = "gamaraan"
+license = "GPL-2.0-or-later"
+icon = "mouse"
+description = "Battery, DPI, SmartShift, buttons, Easy-Switch, profiles and gesture shortcuts for Logitech MX devices via Solaar."
+plugin_api = 24
+tags = ["hardware", "bar", "panel", "service", "indicator", "hyprland"]
+
+[[plugin]]
+id = "omertahaoztop/vikunja"
+name = "Vikunja"
+version = "1.0.2"
+updated_at = 1790519364
+added_at = 1790468776
+author = "omertahaoztop"
+license = "MIT"
+icon = "checkbox"
+description = "Today's and overdue Vikunja tasks, with quick add, complete and postpone."
+plugin_api = 24
+tags = ["bar", "panel", "service", "launcher", "productivity"]

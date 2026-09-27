@@ -549,7 +549,6 @@ local function followingGroupCard(group)
   local rows = {}
   for index = 1, visibleCount do rows[#rows + 1] = followingEventRow(group.items[index]) end
   local hiddenCount = #group.items - visibleCount
-  local cardHeight = headerHeight + visibleCount * rowHeight + (hiddenCount > 0 and 30 or 0)
   local content = {}
   for _, row in ipairs(rows) do content[#content + 1] = row end
   if hiddenCount > 0 then
@@ -568,7 +567,7 @@ local function followingGroupCard(group)
     gap = densityValue(5, 7, 10), padding = densityValue(7, 10, 13), radius = cardRadius(),
     border = cfg("appearance_card_border", "subtle") == "none" and "outline/0" or (cfg("appearance_card_border", "subtle") == "accent" and "primary" or "outline"),
     borderWidth = cfg("appearance_card_border", "subtle") == "none" and 0 or 1,
-    fill = cardFill(), height = math.min(maxHeight, cardHeight),
+    fill = cardFill(),
   }, {
     ui.row({ gap = 9, align = "center" }, {
       avatar,
@@ -1021,6 +1020,7 @@ end
 
 function onOpen()
   panelOpen = true
+  followingVisibleByGroup = {}
   panel.setWantsSecondTicks(true)
   if gridReady and not cachedCalendar then
     panel.setNeedsFrameTick(true)

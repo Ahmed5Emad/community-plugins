@@ -40,7 +40,7 @@ Add the `github` widget to a Noctalia bar and click it to open the dashboard. Ri
 | `pr_default_filter` | `select` | `all` | `all`, `created`, `review` | Sets the initial pull request filter. |
 | `issue_default_filter` | `select` | `all` | `all`, `created`, `assigned` | Sets the initial issue filter. |
 | `show_following` | `bool` | `true` | — | Enables the Following dashboard section. |
-| `following_card_max_height` | `int` | `260` | 140–500 px, step 20 | Caps the height of each Following person or repository card. |
+| `following_card_max_height` | `int` | `260` | 140–500 px, step 20 | Limits the initial collapsed height of each Following person or repository card; expanding shows all items. |
 | `following_user_limit` | `int` | `4` | 1–12, step 1 | Sets how many followed users are included in the feed. |
 | `following_events_per_user` | `int` | `30` | 1–30, step 1 | Sets the maximum events fetched for each followed user. |
 | `starred_repository_limit` | `int` | `100` | 10–100, step 10 | Sets how many recently starred repositories are checked for latest release data. |

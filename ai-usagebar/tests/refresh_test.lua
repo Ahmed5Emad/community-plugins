@@ -42,6 +42,10 @@ local noctalia = {
 }
 
 local env = setmetatable({ noctalia = noctalia }, { __index = _G })
+env.require = function(path)
+    assert(path == "./shared.luau")
+    return assert(load(read("shared.luau"), "shared", "t", env))()
+end
 local service = assert(load(read("service.luau"), "service", "t", env))
 service()
 
@@ -60,60 +64,65 @@ assert(intervals[#intervals] == 5 * 60 * 1000, "active refresh should restore th
 callbacks[2]({ timedOut = true, exitCode = 0, stdout = '{"entries":[]}', stderr = "" })
 assert(values.error.code == "timed_out", "a timed-out command must not publish valid-looking stdout")
 
-decodedReport = { entries = { { id = "openai", display_name = "Codex api_key=topsecret123", status = "ready",
-    metrics = { { label = "Session", percent = 10 },
-        { label = "Weekly", percent = 100 } } } } }
+decodedReport = { entries = { { id = "antigravity", status = "error",
+    error = "credentials error: Antigravity: no local server found.", metrics = {} } } }
 now = 9000
 env.onIpc("refresh")
 callbacks[3]({ exitCode = 0, stdout = "{}", stderr = "" })
-assert(#notifications == 1, "a newly exhausted quota should notify once after the first report")
-assert(not notifications[1].title:find("topsecret123", 1, true),
-       "notifications must use the scrubbed report")
-assert(notifications[1].message == "Weekly · ui.quota_exhausted",
-       "quota notifications should use the available translation")
+assert(values.report.entries[1].status == "error"
+    and values.report.entries[1].stale ~= true,
+    "Antigravity without an earlier reading must stay unavailable")
 
-decodedReport.entries[1].metrics[2].percent = 25
+decodedReport = { entries = { { id = "openai", display_name = "Codex api_key=topsecret123", status = "ready",
+    metrics = { { label = "Session", percent = 10 },
+        { label = "Weekly", percent = 100 } } } } }
 now = 11000
 env.onIpc("refresh")
 callbacks[4]({ exitCode = 0, stdout = "{}", stderr = "" })
-assert(#notifications == 2, "a restored quota should notify on the next successful read")
-assert(notifications[2].message == "Weekly · 25%",
-       "restored quota notifications should state the new reading")
+assert(#notifications == 0, "quota changes must not send notifications")
 
-decodedReport.entries[1].metrics[2].percent = 100
+decodedReport = { entries = {
+    { id = "antigravity", display_name = "Antigravity", status = "ready",
+      fetched_at = "2026-09-24T12:00:00Z", metrics = { { label = "Gemini", percent = 42 } } },
+    { id = "openai", display_name = "Codex", status = "ready", metrics = {} },
+} }
 now = 13000
 env.onIpc("refresh")
 callbacks[5]({ exitCode = 0, stdout = "{}", stderr = "" })
-assert(#notifications == 3 and notifications[3].message == "Weekly · ui.quota_exhausted",
-       "weekly quota should notify when exhausted again")
 
-local metrics = decodedReport.entries[1].metrics
-decodedReport.entries[1].metrics = { metrics[2], metrics[1] }
-decodedReport.entries[1].metrics[1].percent = 25
+decodedReport = { entries = {
+    { id = "antigravity", display_name = "Antigravity", status = "error",
+      error = "credentials error: Antigravity: no local server found.", metrics = {} },
+    { id = "openai", display_name = "Codex", status = "ready", metrics = {} },
+} }
 now = 15000
 env.onIpc("refresh")
 callbacks[6]({ exitCode = 0, stdout = "{}", stderr = "" })
-assert(#notifications == 4 and notifications[4].message == "Weekly · 25%",
-       "restored quota should match the same window after CLI metric reordering")
+local cached = values.report.entries[1]
+assert(cached.id == "antigravity" and cached.metrics[1].percent == 42
+    and cached.fetched_at == "2026-09-24T12:00:00Z" and cached.stale == true,
+    "a transient Antigravity failure should retain the dated last reading")
+assert(values.report.entries[2].id == "openai", "other providers should keep fresh readings")
 
-decodedReport.entries = { { id = "antigravity", display_name = "Antigravity", status = "ready", metrics = {
-    { label = "Gemini", percent = 100, window_secs = 604800 },
-    { label = "Gemini", percent = 10, window_secs = 18000 },
-} } }
+decodedReport = { entries = { { id = "antigravity", status = "error",
+    error = "credentials error: Antigravity: no local server found.", metrics = {} } } }
 now = 17000
 env.onIpc("refresh")
 callbacks[7]({ exitCode = 0, stdout = "{}", stderr = "" })
-assert(#notifications == 5 and notifications[5].message == "Gemini · ui.quota_exhausted",
-       "a shared model label should report exhaustion")
+assert(values.report.entries[1].metrics[1].percent == 42
+    and values.report.entries[1].stale == true,
+    "consecutive local-server failures should not make Antigravity disappear")
 
-local agyMetrics = decodedReport.entries[1].metrics
-decodedReport.entries[1].metrics = { agyMetrics[2], agyMetrics[1] }
-decodedReport.entries[1].metrics[2].percent = 25
+decodedReport = { entries = {
+    { id = "antigravity", display_name = "Antigravity", status = "ready",
+      fetched_at = "2026-09-24T12:05:00Z", metrics = { { label = "Gemini", percent = 35 } } },
+} }
 now = 19000
 env.onIpc("refresh")
 callbacks[8]({ exitCode = 0, stdout = "{}", stderr = "" })
-assert(#notifications == 6 and notifications[6].message == "Gemini · 25%",
-       "restoration should match the weekly window even when model labels repeat")
+assert(values.report.entries[1].metrics[1].percent == 35
+    and values.report.entries[1].stale ~= true,
+    "the next healthy Antigravity reading should replace the cached one")
 
 local sharedEnv = setmetatable({ noctalia = noctalia }, { __index = _G })
 local shared = assert(load(read("shared.luau"), "shared", "t", sharedEnv))()

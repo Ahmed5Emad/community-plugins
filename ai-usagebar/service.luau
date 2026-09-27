@@ -5,6 +5,7 @@
 
 -- `ai-usagebar` is a declared dependency, so it is expected on PATH.
 local COMMAND = "ai-usagebar usage --json"
+local shared = require("./shared.luau")
 
 local function intervalMs()
     local minutes = tonumber(noctalia.getConfig("refresh_minutes")) or 5
@@ -107,8 +108,12 @@ local function safeText(value)
 end
 
 -- Every string, not just the error: a plan name is CLI text too.
-local function scrub(value)
-    if type(value) == "string" then return safeText(value) end
+local function scrub(value, cache)
+    cache = cache or {}
+    if type(value) == "string" then
+        if cache[value] == nil then cache[value] = safeText(value) end
+        return cache[value]
+    end
     if type(value) ~= "table" then return value end
     for key, inner in pairs(value) do
         local sensitive = false
@@ -123,7 +128,7 @@ local function scrub(value)
                 end
             end
         end
-        if sensitive then value[key] = "<redacted>" else value[key] = scrub(inner) end
+        if sensitive then value[key] = "<redacted>" else value[key] = scrub(inner, cache) end
     end
     return value
 end
@@ -166,68 +171,25 @@ local function queueRefresh()
     noctalia.setUpdateInterval(250)
 end
 
-local previousExhausted = {}
-local hasObservedInitial = false
-
-local function restoredMetric(metrics, previous)
-    local matches = {}
-    for _, metric in ipairs(metrics) do
-        if type(metric) == "table" and tostring(metric.label or "Quota") == previous.label then
-            matches[#matches + 1] = metric
-            if previous.windowSecs ~= nil and tonumber(metric.window_secs) == previous.windowSecs then
-                return metric
-            end
-            if previous.windowSecs == nil and previous.resetAt ~= nil
-                and metric.reset_at == previous.resetAt then
-                return metric
-            end
-        end
-    end
-    if previous.windowSecs == nil and #matches == 1 then return matches[1] end
-    return nil
-end
-
-local function checkQuotaNotifications(report)
-    if type(noctalia.notify) ~= "function" then return end
-    if type(report) ~= "table" or type(report.entries) ~= "table" then return end
-
-    for _, entry in ipairs(report.entries) do
-        if type(entry) == "table" and entry.status ~= "error" then
-            local id = tostring(entry.id or "")
-            local name = tostring(entry.display_name or entry.name or id)
-            local blocking = nil
-            local metrics = type(entry.metrics) == "table" and entry.metrics or {}
-            for _, m in ipairs(metrics) do
-                if type(m) == "table" and (tonumber(m.percent) or 0) >= 100 then
-                    blocking = m
+local function keepAntigravityReading(report)
+    local previous = noctalia.state.get("report")
+    if type(previous) ~= "table" or type(previous.entries) ~= "table" then return end
+    for index, entry in ipairs(report.entries) do
+        if type(entry) == "table" and shared.baseProvider(entry.id) == "antigravity"
+            and shared.warning(entry):lower():find("no local server found", 1, true) then
+            for _, old in ipairs(previous.entries) do
+                if type(old) == "table" and old.id == entry.id
+                    and not shared.unavailable(old) and type(old.metrics) == "table"
+                    and #old.metrics > 0 then
+                    local cached = {}
+                    for key, value in pairs(old) do cached[key] = value end
+                    cached.stale = true
+                    report.entries[index] = cached
                     break
                 end
             end
-
-            local previous = previousExhausted[id]
-            local wasExhausted = previous ~= nil
-            local isExhausted = blocking ~= nil
-            previousExhausted[id] = blocking and {
-                label = tostring(blocking.label or "Quota"),
-                windowSecs = tonumber(blocking.window_secs),
-                resetAt = blocking.reset_at,
-            } or nil
-
-            if hasObservedInitial then
-                if isExhausted and not wasExhausted then
-                    local label = tostring(blocking.label or "Quota")
-                    noctalia.notify(name, label .. " · " .. noctalia.tr("ui.quota_exhausted"))
-                elseif not isExhausted and wasExhausted then
-                    local metric = restoredMetric(metrics, previous)
-                    local percent = metric and tonumber(metric.percent) or nil
-                    if percent ~= nil then
-                        noctalia.notify(name, previous.label .. " · " .. tostring(percent) .. "%")
-                    end
-                end
-            end
         end
     end
-    hasObservedInitial = true
 end
 
 local function refresh()
@@ -257,7 +219,7 @@ local function refresh()
             -- A failed vendor still comes back as an entry with `status = "error"`,
             -- so a non-zero exit is no reason to drop the report.
             local safeReport = scrub(decoded)
-            checkQuotaNotifications(safeReport)
+            keepAntigravityReading(safeReport)
             noctalia.state.set("report", safeReport)
             noctalia.state.set("error", failure(""))
         else
