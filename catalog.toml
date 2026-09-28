@@ -1693,8 +1693,8 @@ rev = "f01631bd804b9b80fd00409ed3d5c7eb08bbde6f"
 [[plugin]]
 id = "wy3z/opencodex-bar"
 name = "OpenCodexBar"
-version = "1.0.1"
-updated_at = 1788111346
+version = "1.0.2"
+updated_at = 1790554762
 added_at = 1787609125
 author = "wy3z"
 license = "MIT"
@@ -2065,15 +2065,21 @@ tags = ["desktop", "utility"]
 [[plugin]]
 id = "aabidk20/yt-music"
 name = "YouTube Music"
-version = "0.2.8"
-updated_at = 1790338491
+version = "0.3.0"
+updated_at = 1790549410
 added_at = 1788315521
 author = "Aabid"
 license = "MIT"
 icon = "brand-youtube-filled"
 description = "YouTube Music client for Noctalia v5 - miniplayer & full view"
-plugin_api = 23
+plugin_api = 26
 tags = ["music", "media"]
+
+[[plugin.release]]
+plugin_api = 23
+version = "0.2.8"
+updated_at = 1790338491
+rev = "69edf25c45dc117d258a37106c2331787fac9a7a"
 
 [[plugin]]
 id = "0lucasmatheus/awwwall"
@@ -3113,3 +3119,16 @@ icon = "checkbox"
 description = "Today's and overdue Vikunja tasks, with quick add, complete and postpone."
 plugin_api = 24
 tags = ["bar", "panel", "service", "launcher", "productivity"]
+
+[[plugin]]
+id = "nicomaure/agy"
+name = "Antigravity AGY"
+version = "1.0.0"
+updated_at = 1790549465
+added_at = 1790549465
+author = "nicomaure.com.ar"
+license = "MIT"
+icon = "sparkles"
+description = "Quick bar launcher for the Antigravity Agent CLI (agy)."
+plugin_api = 24
+tags = ["ai", "utility", "bar", "productivity"]

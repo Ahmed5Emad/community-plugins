@@ -1,19 +1,19 @@
 {
   "bar": {
-    "text": {
-      "error": "RUM error",
-      "single": "1 Update",
-      "plural": "{count} Updates"
-    },
     "notify": {
       "missing_rum": "rum is not available",
       "missing_software_center": "RakuOS Software Center is not available",
-      "refresh_failed": "Could not start an update check",
-      "terminal_launch_failed": "Could not open a terminal",
       "new_updates": {
-        "title": "New RUM updates available",
-        "description": "{count} RUM package updates are available."
-      }
+        "description": "{count} RUM package updates are available.",
+        "title": "New RUM updates available"
+      },
+      "refresh_failed": "Could not start an update check",
+      "terminal_launch_failed": "Could not open a terminal"
+    },
+    "text": {
+      "error": "RUM error",
+      "plural": "{count} Updates",
+      "single": "1 Update"
     }
   },
   "poller": {
@@ -29,33 +29,33 @@
     }
   },
   "settings": {
-    "interval": {
-      "label": "Refresh seconds",
-      "description": "How often the service checks for updates."
-    },
-    "notify": {
-      "label": "Notify",
-      "description": "Show a notification when the available update count increases."
-    },
-    "hide_when_empty": {
-      "label": "Hide when empty",
-      "description": "Hide the widget when no updates are available."
-    },
-    "glyph": {
-      "label": "Glyph",
-      "description": "Icon shown before the update count."
-    },
     "click_action": {
-      "label": "Click action",
       "description": "Action performed when the widget is clicked.",
+      "label": "Click action",
       "options": {
         "open_software_center": "Open RakuOS Software Center",
         "run_updater": "Run rum system upgrade"
       }
     },
+    "glyph": {
+      "description": "Icon shown before the update count.",
+      "label": "Glyph"
+    },
+    "hide_when_empty": {
+      "description": "Hide the widget when no updates are available.",
+      "label": "Hide when empty"
+    },
+    "interval": {
+      "description": "How often the service checks for updates.",
+      "label": "Refresh seconds"
+    },
+    "notify": {
+      "description": "Show a notification when the available update count increases.",
+      "label": "Notify"
+    },
     "terminal_application": {
-      "label": "Terminal application",
-      "description": "Executable path or name used to run the updater. Leave blank to use Noctalia's detected terminal."
+      "description": "Executable path or name used to run the updater. Leave blank to use Noctalia's detected terminal.",
+      "label": "Terminal application"
     }
   },
   "tooltip": {

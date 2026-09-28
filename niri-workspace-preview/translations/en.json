@@ -76,14 +76,6 @@
       "description": "Color for windows requesting attention.",
       "label": "Urgent window color"
     },
-    "viewport_mode": {
-      "both": "Highlight and separate map",
-      "description": "Highlight visible windows inside the full map, add a separate viewport map, or use both.",
-      "highlight": "Highlight in full map",
-      "label": "Visible viewport mode",
-      "off": "Off",
-      "separate": "Separate map"
-    },
     "viewport_border_width": {
       "description": "Thickness of the visible viewport highlight in logical pixels.",
       "label": "Viewport border width"
@@ -91,6 +83,14 @@
     "viewport_color": {
       "description": "Border color used for visible windows unless a window-state or hover color takes priority.",
       "label": "Viewport color"
+    },
+    "viewport_mode": {
+      "both": "Highlight and separate map",
+      "description": "Highlight visible windows inside the full map, add a separate viewport map, or use both.",
+      "highlight": "Highlight in full map",
+      "label": "Visible viewport mode",
+      "off": "Off",
+      "separate": "Separate map"
     },
     "window_gap": {
       "description": "Space between miniature windows in logical pixels.",

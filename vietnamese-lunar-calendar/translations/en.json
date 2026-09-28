@@ -1,4 +1,18 @@
 {
+  "months": {
+    "m1": "January",
+    "m10": "October",
+    "m11": "November",
+    "m12": "December",
+    "m2": "February",
+    "m3": "March",
+    "m4": "April",
+    "m5": "May",
+    "m6": "June",
+    "m7": "July",
+    "m8": "August",
+    "m9": "September"
+  },
   "settings": {
     "accent_weekends": {
       "description": "Use the accent color for Saturday and Sunday.",
@@ -18,22 +32,23 @@
     }
   },
   "ui": {
-    "prev_month": "Previous month",
+    "leap": "leap",
+    "lunar_date_suffix": "lunar",
     "next_month": "Next month",
+    "prev_month": "Previous month",
+    "shortcut_label": "Lunar",
     "timezone_label": "Vietnamese Lunar Calendar · UTC+7",
     "timezone_label_short": "Vietnamese Lunar Calendar",
-    "leap": "leap",
-    "year": "Year",
     "today": "Today",
-    "shortcut_label": "Lunar",
-    "lunar_date_suffix": "lunar"
+    "year": "Year"
   },
   "weekdays": {
-    "mon": "Mon", "tue": "Tue", "wed": "Wed", "thu": "Thu", "fri": "Fri", "sat": "Sat", "sun": "Sun"
-  },
-  "months": {
-    "m1": "January", "m2": "February", "m3": "March", "m4": "April",
-    "m5": "May", "m6": "June", "m7": "July", "m8": "August",
-    "m9": "September", "m10": "October", "m11": "November", "m12": "December"
+    "fri": "Fri",
+    "mon": "Mon",
+    "sat": "Sat",
+    "sun": "Sun",
+    "thu": "Thu",
+    "tue": "Tue",
+    "wed": "Wed"
   }
 }

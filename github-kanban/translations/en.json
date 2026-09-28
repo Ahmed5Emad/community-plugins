@@ -397,7 +397,7 @@
     },
     "following": {
       "card_max_height": {
-        "description": "Height limit for the initial collapsed view of each grouped Following card; expanding shows all items.",
+        "description": "Maximum height of each grouped Following card in pixels.",
         "label": "Following · Card maximum height"
       },
       "events_per_user": {
