@@ -2123,8 +2123,8 @@ tags = ["launcher", "bar", "panel", "network", "utility", "productivity"]
 [[plugin]]
 id = "tranzem/media-lyrics"
 name = "Media Lyrics"
-version = "0.9.4"
-updated_at = 1788993439
+version = "0.9.5"
+updated_at = 1790893851
 added_at = 1788381228
 author = "tranzem"
 license = "MIT"
