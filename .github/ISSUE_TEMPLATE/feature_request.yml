@@ -59,6 +59,7 @@ body:
         - cider
         - claude-cockpit
         - claude-companion
+        - claude-sessions
         - claudecode
         - cmd-runner
         - codexbar-meter
