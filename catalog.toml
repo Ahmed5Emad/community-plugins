@@ -3210,3 +3210,16 @@ icon = "zap"
 description = "DeepSeek and Ollama Cloud peak/off-peak API rate windows with a live countdown, progress bar, and policy-drift alerts."
 plugin_api = 22
 tags = ["bar", "panel", "indicator", "ai", "countdown"]
+
+[[plugin]]
+id = "lfdominguez/claude-sessions"
+name = "Claude Sessions"
+version = "1.5.2"
+updated_at = 1790894453
+added_at = 1790894453
+author = "lfdominguez"
+license = "MIT"
+icon = "brain"
+description = "Live Claude Code sessions: what each is doing, which need you, plan limits, and jump to its terminal."
+plugin_api = 24
+tags = ["bar", "panel", "launcher", "service", "ai", "development", "productivity", "hyprland", "niri", "sway"]
