@@ -69,6 +69,7 @@ body:
         - cursor
         - custom-shortcut
         - daily-wallpaper
+        - deepseek-peak
         - deepseek_usage
         - default-apps
         - desktop-launcher
