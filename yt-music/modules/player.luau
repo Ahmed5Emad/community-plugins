@@ -31,8 +31,6 @@ local skip_nonce = 0
 local firing_debounce = false
 local queue_skip -- forward: Player.next/prev coalesce through this, defined below
 
--- Set once the real track plays; reset per mpv instance in start_stream.
-local mpv_started = false
 -- Last click wins, structurally: when a new intent supersedes a still-loading
 -- one, the older yt-dlp stream-resolves are already useless (the generation
 -- guard would drop their results) but still hold spawn slots the final song
@@ -633,12 +631,18 @@ local function handle_stream_line(line)
 		return
 	end
 
+	-- Genuine failures only: a skip aborts with "stop", a natural end "eof".
 	if data.event ~= "property-change" then
+        if data.event == "end-file" and data.reason == "error" and state.player.status == "playing" then
+            log("stream: end-file error (" .. tostring(data.file_error or "?") .. ") entry=" .. tostring(data.playlist_entry_id))
+            mpv.kill()
+            state.player.status = "stopped"
+            state.status_text = "Playlist failed to start: " .. tostring(state.player.title or "")
+            publish()
+            noctalia.notify("Youtube Music", state.status_text)
+        end
 		if data.request_id == 100 then
 			local pos = tonumber(data.data)
-			if pos and pos > 0 then
-			  mpv_started = true
-			end
 			if
 				pos
 				and state.player.status ~= "loading"
@@ -669,23 +673,15 @@ local function handle_stream_line(line)
 		return
 	end
 	if name == "playlist-pos" then
-		-- Ambiguous: a user skip and mpv walking its own playlist look
-		-- identical here, so trust it only once the track actually played;
-		-- either direction is a full step, never a restart.
+        -- Dummy/URL/dummy: a live 0/2 move is a user skip (failures handled above).
 		local pos = tonumber(data.data)
 		if pos ~= 0 and pos ~= 2 then
 			return
 		end
-		if mpv_started then
-			queue_skip(pos == 2 and 1 or -1)
+		if state.player.status == "stopped" then
 			return
 		end
-		log("stream: playlist-pos " .. pos .. " before playback started - mpv abandoned the track, not a skip")
-		mpv.kill()
-		state.player.status = "stopped"
-		state.status_text = "Playback failed to start: " .. tostring(state.player.title or "")
-		publish()
-		noctalia.notify("YouTube Music", state.status_text)
+		queue_skip(pos == 2 and 1 or -1)
 	end
 	if name == "pause" then
 		if state.player.status == "loading" or state.player.status == "stopped" then
@@ -730,7 +726,6 @@ end
 start_stream = function()
 	stream_generation = stream_generation + 1
 	local gen = stream_generation
-	mpv_started = false
 	mpv.stream(function(line)
 		if stream_generation ~= gen then
 			return
