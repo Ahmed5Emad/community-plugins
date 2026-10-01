@@ -3136,8 +3136,8 @@ tags = ["ai", "utility", "bar", "productivity"]
 [[plugin]]
 id = "mgeldi/pixel-shift"
 name = "Pixel Shift"
-version = "1.1.0"
-updated_at = 1790732199
+version = "1.2.0"
+updated_at = 1790893292
 added_at = 1790732199
 author = "mgeldi"
 license = "MIT"
