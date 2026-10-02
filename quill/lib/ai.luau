@@ -5,10 +5,6 @@ local M = {}
 
 local USER_AGENT = "noctalia-quill/1.0.0 (+noctalia)"
 
--- Provider table. `kind` selects the wire format; `base` is the default API
--- root; `env` lists environment variables consulted for a key; `authJson`
--- lists entries in opencode's auth.json (only opencode-go uses it);
--- `extraHeaders` adds the OpenCode Go session/routing headers.
 local PROVIDERS = {
   ["opencode-go"] = {
     kind = "openai",
@@ -99,9 +95,6 @@ local LOOPBACK_HOSTS = {
   ["[::1]"] = true,
 }
 
--- True when the endpoint would carry the key (and note content) in cleartext.
--- Anything that is not plain http:// is treated as fine; for http:// only a
--- loopback host is allowed, so a key never leaves the machine in the clear.
 function M.isInsecureBase(url)
   local lower = string.lower(Text.trim(tostring(url or "")))
   local scheme, host = string.match(lower, "^(https?)://([^/%s]+)")
@@ -408,8 +401,6 @@ local function runHttp(messages, opts, cb)
   end
   local key = M.apiKey()
   if provider.noKey then
-    -- Never attach a stored key to a provider that does not use one: a leftover
-    -- key would otherwise be sent in cleartext to a local endpoint.
     key = nil
   end
   if key == nil and not provider.noKey then
@@ -506,7 +497,6 @@ local function runHttp(messages, opts, cb)
     return
   end
 
-  -- OpenAI-compatible (OpenAI, OpenRouter, Groq, Ollama, OpenCode Go, custom)
   local body = {
     model = model,
     messages = messages,
@@ -559,7 +549,6 @@ function M.complete(messages, opts, cb)
   runHttp(messages, opts, cb)
 end
 
--- Authoring rules shared by every prompt that writes or edits a todo.
 local TODO_RULES = table.concat({
   "Todo rules:",
   "- One action per todo, starting with an imperative verb (\"Call the dentist\", not \"Dentist\" or \"I should call\").",

@@ -332,11 +332,6 @@ function M.nextRecurrence(iso, rule)
   return nil
 end
 
--- Rolls a past recurring due date forward to the next occurrence that is not
--- before `from`. Times are stepped as whole days, not by the recurrence unit,
--- so a monthly todo does not drift a day each month.
--- Unix epoch milliseconds for a due date plus optional "HH:MM", or nil.
--- Without a time, the date is anchored to local midnight.
 function M.dueEpochMs(iso, time)
   if iso == nil or iso == "" then
     return nil
@@ -364,11 +359,6 @@ function M.dueEpochMs(iso, time)
   return epoch * 1000
 end
 
--- Monthly recurrence is capped: stepping is required for correct month-end
--- clamping, which is linear in the number of months skipped. A todo that has
--- not been touched in years would otherwise burn hundreds of iterations on
--- every snapshot build, so past this horizon the date is left alone and shown
--- as-is instead.
 local MAX_MONTHLY_ROLL = 240
 
 function M.rollRecurrence(due, rule, from)
@@ -383,9 +373,6 @@ function M.rollRecurrence(due, rule, from)
   if rule ~= "daily" and rule ~= "weekly" and rule ~= "monthly" then
     return due
   end
-  -- Jump straight to the first occurrence on or after `from` instead of
-  -- walking day by day: a years-old @daily todo would otherwise cost hundreds
-  -- of iterations on every snapshot build.
   local days = M.daysUntil(due)
   local target = M.daysUntil(from)
   if days == nil or target == nil or days > target then
@@ -396,9 +383,6 @@ function M.rollRecurrence(due, rule, from)
     if advance > MAX_MONTHLY_ROLL * 31 then
       return due
     end
-    -- Must step month by month: clamping is not associative, so no jump of
-    -- whole months or years is safe. Skipping a February means a 31st is never
-    -- clamped (2025-01-31 + 12 months is 2026-01-31, not 2026-02-28).
     local probe = due
     local guard = 0
     while probe < from and guard < MAX_MONTHLY_ROLL do
@@ -466,8 +450,6 @@ local function clockTime(text)
   return nil
 end
 
--- Deterministic date/time extraction, used when AI structuring is off or
--- unavailable. Returns "YYYY-MM-DD" and "HH:MM", either of which may be nil.
 function M.parseDueHint(text)
   local lower = string.lower(tostring(text or ""))
   local today = M.todayIso()

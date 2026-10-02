@@ -1,6 +1,6 @@
 id           = "teagar/niri-workspace-preview"
 name         = "Niri Workspace Preview"
-version      = "1.0.1"
+version      = "1.1.0"
 plugin_api   = 17
 author       = "Teagar"
 license      = "MIT"
@@ -17,6 +17,26 @@ entry = "service.luau"
 [[widget]]
 id    = "preview"
 entry = "widget.luau"
+
+    [[widget.setting]]
+    key             = "output_scope"
+    type            = "select"
+    label_key       = "settings.output_scope.label"
+    description_key = "settings.output_scope.description"
+    default         = "all"
+    options         = [
+        { value = "all",     label_key = "settings.output_scope.all" },
+        { value = "current", label_key = "settings.output_scope.current" },
+        { value = "custom",  label_key = "settings.output_scope.custom" },
+    ]
+
+    [[widget.setting]]
+    key             = "output_names"
+    type            = "string"
+    label_key       = "settings.output_names.label"
+    description_key = "settings.output_names.description"
+    default         = ""
+    visible_when    = { key = "output_scope", values = ["custom"] }
 
     [[widget.setting]]
     key             = "size_mode"

@@ -30,6 +30,32 @@ columns and stacks. A single scale is used on both axes, so every miniature
 keeps the aspect ratio of Niri's reported tile and every open tiled window is
 shown.
 
+**Output scope** controls multi-monitor presentation per widget instance.
+**All outputs** keeps every active monitor in every bar. **This bar's output**
+uses Noctalia's connector for that bar instance, so a replicated bar shows only
+its own monitor's active workspace. **Selected outputs** accepts one or more
+comma-separated connector names, such as `eDP-1, HDMI-A-1`. Named widget
+instances can use different scopes or selections on different bars. On older
+hosts that cannot report the bar connector, the current-output mode falls back
+to Niri's focused output and then the first physical output.
+
+For example, one widget definition can follow whichever monitor contains its
+bar, while another can always show a chosen pair of connectors:
+
+```toml
+[widget.niri-local]
+type = "teagar/niri-workspace-preview:preview"
+output_scope = "current"
+
+[widget.niri-pair]
+type = "teagar/niri-workspace-preview:preview"
+output_scope = "custom"
+output_names = "DP-1, HDMI-A-1"
+```
+
+Add `niri-local` or `niri-pair` to the desired bar section. Output names are
+case-sensitive and may be separated by commas, semicolons, or new lines.
+
 The default **Automatic** size mode lets that complete layout determine the
 map's shape. **Fixed** mode instead uses an explicit frame width and height;
 the same complete layout is uniformly scaled and centered inside it, so fixing
@@ -70,6 +96,8 @@ Noctalia's standard **Enable Scroll** setting can disable it entirely.
 
 | Setting | Type | Default | Description |
 | --- | --- | --- | --- |
+| `output_scope` | `select` | `all` | Show all outputs, only the output containing this bar instance, or a manual selection. |
+| `output_names` | `string` | empty | Comma-, semicolon-, or newline-separated output names used by the manual selection mode. |
 | `size_mode` | `select` | `auto` | Use content-driven automatic sizing or an explicitly sized fixed frame. |
 | `preview_size` | `int` | `24` | Cross-axis size of each output preview in logical pixels. |
 | `max_output_length` | `int` | `160` | Maximum length of one workspace map along the bar; reaching it shrinks both axes together. |
@@ -92,6 +120,13 @@ Noctalia's standard **Enable Scroll** setting can disable it entirely.
 | `invert_scroll` | `bool` | `false` | Reverse left/right column navigation while scrolling over the widget. |
 | `highlight_hovered` | `bool` | `true` | Outline the window miniature or stacked column under the pointer. |
 | `hover_color` | `color` | `secondary` | Border color used for the hover highlight. |
+
+## Tests
+
+From this plugin directory, run `lua tests/output_scope_test.lua`. The test
+covers all-output, per-bar, legacy fallback, manual multi-output, physical
+ordering, and unmatched-selection behavior without requiring several physical
+monitors.
 
 ## IPC
 

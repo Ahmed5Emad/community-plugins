@@ -32,6 +32,7 @@ body:
         - agy
         - ai-usagebar
         - airpods
+        - als-brightness
         - ambient-sounds
         - anilist
         - arch-updater
@@ -58,6 +59,7 @@ body:
         - cider
         - claude-cockpit
         - claude-companion
+        - claude-sessions
         - claudecode
         - cmd-runner
         - codexbar-meter
@@ -68,6 +70,7 @@ body:
         - cursor
         - custom-shortcut
         - daily-wallpaper
+        - deepseek-peak
         - deepseek_usage
         - default-apps
         - desktop-launcher
@@ -157,6 +160,7 @@ body:
         - omniroute-quota
         - omp-launcher
         - opencode-companion
+        - opencode-go-usage
         - opencodex-bar
         - opnsense
         - oppo-pods
@@ -166,6 +170,7 @@ body:
         - pass
         - phone-connect
         - phone-operate
+        - pixel-shift
         - podcasts
         - pomodoro
         - portctl
@@ -188,6 +193,7 @@ body:
         - ruh-vpn
         - rum-updates
         - run-path
+        - saved-desktop-widgets
         - screen-toolkit
         - share-wifi
         - sharednd
@@ -204,6 +210,7 @@ body:
         - ssh-launcher
         - sticky-notes
         - super-productivity
+        - sway-mode
         - syncthing
         - system-monitor
         - system-updater

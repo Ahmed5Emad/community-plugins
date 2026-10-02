@@ -9,9 +9,6 @@ local MAX_PARSE_BYTES = 262144
 
 local undoStack = {}
 
--- Parsed notes are cached per file, keyed by mtime and size, so a poll that
--- finds no changes costs a stat per file instead of a full re-parse. This
--- keeps every callback far inside Noctalia's 12 ms CPU budget.
 local parseCache = {}
 
 local function config(key, fallback)
@@ -22,9 +19,6 @@ local function config(key, fallback)
   return value
 end
 
--- Settings that name a file or folder are restricted to a single path
--- segment, so a value like "../../.bashrc" can never point outside the
--- notes folder.
 local function safeName(name, fallback)
   local value = Text.trim(tostring(name or ""))
   if value == "" or value == ".." then
@@ -129,8 +123,6 @@ function M.markDirty()
   noctalia.state.set("refresh_request", noctalia.nowMs())
 end
 
--- Undo -------------------------------------------------------------------
-
 local function isUnsafeRel(rel)
   if rel == nil then
     return true
@@ -150,8 +142,6 @@ local function isUnsafeRel(rel)
   return false
 end
 
--- Resolves a note path relative to the notes folder, refusing anything that
--- escapes it (absolute paths, ~, .. segments, NUL). Returns nil when unsafe.
 function M.safeAbs(rel)
   if isUnsafeRel(rel) then
     return nil
@@ -159,9 +149,6 @@ function M.safeAbs(rel)
   return M.notesDir() .. "/" .. rel
 end
 
--- Normalises an AI-supplied project name into a safe relative note path
--- ("Work", "work.md", "Home Renovation" -> "Work.md"/"home-renovation.md"
--- style paths are slugified by the caller). Returns nil when unsafe.
 function M.safeProjectPath(value)
   if type(value) ~= "string" then
     return nil
@@ -266,8 +253,6 @@ function M.undoLast()
   end
   return entry.label
 end
-
--- Parsing ----------------------------------------------------------------
 
 local function splitFrontmatter(content)
   if string.sub(content, 1, 3) ~= "---" then
@@ -467,16 +452,6 @@ local function todoLess(a, b)
   return a.line < b.line
 end
 
--- Incremental scan -------------------------------------------------------
---
--- Noctalia gives each callback a small CPU budget (25 ms for update()), and a
--- todo-heavy line costs a noticeable fraction of a millisecond here. Parsing a
--- whole file in one callback can therefore blow the budget, which both drops
--- that file's todos and poisons the rest of the callback. So a scan is a small
--- state machine: beginScan() queues only the files whose mtime/size changed,
--- and scanStep() walks a bounded number of lines per call until the snapshot
--- is complete.
-
 local scanState = nil
 
 local function beginFile(file)
@@ -662,9 +637,6 @@ function M.scanActive()
   return scanState ~= nil
 end
 
--- Parses at most `maxLines` lines of the pending scan, or up to two files'
--- worth of setup, then returns. Returns the finished snapshot on the call that
--- completes the last queued file.
 function M.scanStep(maxLines)
   local state = scanState
   if state == nil then
@@ -765,8 +737,6 @@ function M.signature()
   local _, signature = M.snapshotFiles()
   return signature
 end
-
--- Mutation ---------------------------------------------------------------
 
 function M.appendRaw(path, text)
   local abs = absFor(path)
@@ -974,8 +944,6 @@ function M.archiveCompleted()
   return removed
 end
 
--- Refuses to materialise a note larger than the scan cap: the incremental
--- scanner already truncates, so opening one must not be the way around it.
 function M.readParts(abs)
   local info = noctalia.fileInfo(abs)
   if info ~= nil and (info.size or 0) > MAX_PARSE_BYTES then
@@ -1122,8 +1090,6 @@ function M.relative(abs)
   end
   return abs
 end
-
--- Queries ----------------------------------------------------------------
 
 function M.findNote(snapshot, rel)
   if snapshot == nil then

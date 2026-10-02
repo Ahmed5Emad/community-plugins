@@ -17,8 +17,6 @@ local aiCapture = noctalia.getConfig("ai_capture") ~= false
 
 local searchText = ""
 local searchGeneration = 0
--- Caps how many todos one AI extraction may append, so a runaway or injected
--- response cannot turn into thousands of whole-file rewrites.
 local EXTRACT_TODO_LIMIT = 100
 
 local newNoteText = ""
@@ -66,8 +64,6 @@ local function refresh()
   noctalia.state.set("refresh_request", noctalia.nowMs())
 end
 
--- Noctalia runs terminal commands through a login shell, so every word of
--- $EDITOR is quoted individually rather than pasted in as one string.
 local function editor()
   local value = noctalia.getenv("EDITOR")
   if value == nil or Text.trim(value) == "" then
@@ -749,8 +745,6 @@ local function runCommand(text)
   pushAskTurn("error", "Unknown command /" .. cmd .. ". Try /help")
 end
 
--- Callbacks (named so the UI tree can reference them).
-
 function onCaptureChange(value)
   captureText = value or ""
 end
@@ -1002,8 +996,6 @@ local function askDeleteNote()
   Store.markDirty()
   render()
 end
-
--- Rendering.
 
 local function tabButton(id, label, glyph)
   return ui.button({
@@ -1688,11 +1680,6 @@ function onClose()
   todoStatus = nil
 end
 
--- Scriptable surface, e.g. from a keybind:
---   noctalia msg plugin fel/quill:panel all ask '{"text":"what is due today?"}'
---   noctalia msg plugin fel/quill:panel all capture '{"text":"book a haircut friday"}'
---   noctalia msg plugin fel/quill:panel all open '{"path":"Inbox.md"}'
---   noctalia msg plugin fel/quill:panel all rewrite '{"path":"Inbox.md","text":"shorten"}'
 function onIpc(event, payload)
   if event == "ask" then
     local text = Text.payloadField(payload, "text")

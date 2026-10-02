@@ -36,6 +36,8 @@ local URGENT_COLOR = noctalia.getConfig("urgent_color") or "error"
 local INVERT_SCROLL = noctalia.getConfig("invert_scroll") == true
 local HIGHLIGHT_HOVERED = noctalia.getConfig("highlight_hovered") ~= false
 local HOVER_COLOR = noctalia.getConfig("hover_color") or "secondary"
+local OUTPUT_SCOPE = noctalia.getConfig("output_scope") or "all"
+local OUTPUT_NAMES = tostring(noctalia.getConfig("output_names") or "")
 local generatedFiles = {}
 local generatedByOutput = {}
 local exactCache = {}
@@ -54,6 +56,56 @@ local viewportStarts = noctalia.state.get(VIEWPORT_STATE_KEY)
 if type(viewportStarts) ~= "table" then viewportStarts = {} end
 local hoveredWindowIds = {}
 local hoveredStackSlot = nil
+
+local function trim(value)
+  return tostring(value or ""):match("^%s*(.-)%s*$") or ""
+end
+
+local function widgetOutputName()
+  if barWidget.outputName == nil then return nil end
+  local ok, name = pcall(barWidget.outputName)
+  if ok and type(name) == "string" and name ~= "" then return name end
+  return nil
+end
+
+local function customOutputNames()
+  local names = {}
+  for rawName in OUTPUT_NAMES:gmatch("[^,;\n]+") do
+    local name = trim(rawName)
+    if name ~= "" then names[name] = true end
+  end
+  return names
+end
+
+local function selectedOutputs()
+  local outputs = (snapshot and snapshot.outputs) or {}
+  if OUTPUT_SCOPE == "all" then return outputs end
+
+  local selected = {}
+  if OUTPUT_SCOPE == "custom" then
+    local names = customOutputNames()
+    for _, output in ipairs(outputs) do
+      if names[tostring(output.name or "")] then selected[#selected + 1] = output end
+    end
+    return selected
+  end
+
+  local connector = widgetOutputName()
+  if connector ~= nil then
+    for _, output in ipairs(outputs) do
+      if output.name == connector then selected[#selected + 1] = output end
+    end
+    if #selected > 0 then return selected end
+  end
+
+  -- Older hosts may not expose the bar connector. Prefer the compositor's
+  -- focused output, then the first physical output, instead of blanking.
+  for _, output in ipairs(outputs) do
+    if output.focused == true then return { output } end
+  end
+  if outputs[1] ~= nil then return { outputs[1] } end
+  return selected
+end
 
 local function number(value, fallback)
   local converted = tonumber(value)
@@ -808,13 +860,13 @@ local function viewportDimensions(output, vertical)
   return math.max(8, PREVIEW_SIZE * aspect), PREVIEW_SIZE
 end
 
-local function updateTooltip()
+local function updateTooltip(outputs)
   if snapshot == nil then
     barWidget.setTooltip("Niri workspace preview: waiting for state")
     return
   end
   local rows = {}
-  for _, output in ipairs(snapshot.outputs or {}) do
+  for _, output in ipairs(outputs or {}) do
     local workspace = activeWorkspaceFor(output.name)
     local count = 0
     if workspace ~= nil then
@@ -828,7 +880,8 @@ local function updateTooltip()
     }
   end
   if #rows == 0 then
-    barWidget.setTooltip(snapshot.message ~= "" and snapshot.message or "No Niri outputs")
+    local message = snapshot.message ~= "" and snapshot.message or "No outputs match this widget's output scope"
+    barWidget.setTooltip(message)
   else
     barWidget.setTooltip(rows)
   end
@@ -837,7 +890,7 @@ end
 render = function()
   local vertical = barWidget.isVertical()
   local container = vertical and ui.column or ui.row
-  local outputs = (snapshot and snapshot.outputs) or {}
+  local outputs = selectedOutputs()
   local children = {}
   for _, output in ipairs(outputs) do
     local width, height = dimensionsFor(output, vertical)
@@ -851,7 +904,7 @@ render = function()
     children[1] = ui.glyph({ name = snapshot and "alert-circle" or "loader", size = math.min(PREVIEW_SIZE, 16), color = "outline" })
   end
   barWidget.render(container({ gap = OUTPUT_GAP, align = "center", justify = "center" }, children))
-  updateTooltip()
+  updateTooltip(outputs)
 end
 
 noctalia.setUpdateInterval(RENDER_TICK_MS)

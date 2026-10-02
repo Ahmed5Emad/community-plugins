@@ -12,7 +12,7 @@ The plugin checks for updates in the background, displays the available count in
 | --- | --- |
 | ID | `etrigan63/rum-updates` |
 | Entries | Bar widget: `rum_updates`; service: `update_poller` |
-| Version | `0.1.6` |
+| Version | `0.1.8` |
 | Noctalia plugin API | `3` |
 | License | MIT |
 
@@ -47,9 +47,11 @@ The plugin settings control polling and notifications. Each bar widget has its o
 - Provides package names, installed and available versions, and repository names in the tooltip.
 - Uses the `package` glyph by default and supports any configurable Noctalia glyph.
 - Runs `sudo rum system-upgrade` in a terminal on click by default, or opens RakuOS Software Center instead.
+- Clears the update count shortly after a completed upgrade, without waiting for the next scheduled check.
 - Uses Noctalia's detected terminal by default, with support for a custom terminal executable.
 - Optionally sends a notification when the number of available updates increases.
 - Validates and sorts `rum` JSON output before displaying it.
+- Cross-checks the reported updates against `rum upgrade --dry-run` and drops any candidate the real upgrade would not apply, so phantom entries never inflate the count.
 - Never starts a privileged upgrade automatically; `sudo` is run only after an explicit widget click.
 
 ## Requirements
@@ -103,16 +105,19 @@ Click the widget to run the configured action. **Run rum system upgrade** is the
 
 The updater action does not run an upgrade immediately. Review the command in the terminal and enter your password only when you are ready to proceed.
 
+When the updater is launched while updates are available, the plugin watches for the upgrade to finish: it checks every 10 seconds for up to 20 minutes and clears the count as soon as `rum` reports no remaining updates. A partial upgrade updates the count to the packages that are still pending, and checks that fail while `rum` is writing its database are not reported as errors.
+
 ## IPC
 
-The update service accepts IPC events for manual refreshes and diagnostics:
+The update service accepts IPC events for manual refreshes, upgrade watching, and diagnostics:
 
 ```sh
 noctalia msg plugin etrigan63/rum-updates:update_poller all refresh
+noctalia msg plugin etrigan63/rum-updates:update_poller all upgrade_started
 noctalia msg plugin etrigan63/rum-updates:update_poller all status
 ```
 
-`refresh` starts an immediate update check. `status` writes the current update count and error state to the Noctalia log. The widget's right-click action sends the same `refresh` event, so manual and scripted checks share one code path.
+`refresh` starts an immediate update check. `upgrade_started` starts the accelerated post-upgrade watch described above. `status` writes the current update count, error state, and watch state to the Noctalia log. The widget's right-click action sends the same `refresh` event, so manual and scripted checks share one code path.
 
 ## Settings
 
@@ -151,12 +156,14 @@ Enter only the executable. Do not add the command you want to run or terminal ar
 
 1. The background service runs `rum check-upgrade --json`.
 2. The command has a 60-second timeout, and overlapping checks are prevented.
-3. The plugin validates every returned update before updating the shared state.
+3. The plugin validates every returned update before updating the shared state, cross-checking them against `rum upgrade --dry-run` so a candidate the upgrade would not apply is never counted.
 4. Available updates are sorted by package name, architecture, and repository.
 5. The bar widget and its tooltip react immediately when the state changes.
 6. If a check fails, the widget displays `RUM error`; its tooltip contains the available diagnostic message.
 
 The widget reports the overlay package updates returned by `rum check-upgrade`. RakuOS base-image and Flatpak updates remain part of the normal full system upgrade flow and are not represented by this count.
+
+Reported candidates are validated against `rum upgrade --dry-run`, the same resolution the update action runs: a candidate that `rum check-upgrade` reports but `rum` cannot actually upgrade is filtered out rather than shown as available.
 
 ## Notifications
 

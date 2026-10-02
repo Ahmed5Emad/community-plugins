@@ -1,5 +1,6 @@
 {
   "all_hidden": "All tasks are done — the eye toggle is hiding them",
+  "bar_count_both": "{pending}/{total} todos",
   "bar_count_plural": "{count} todos",
   "bar_count_singular": "{count} todo",
   "clear_done_confirm": "Delete all done entries?",
@@ -19,6 +20,15 @@
   "prio_medium": "Medium",
   "save_failed": "Failed to save the task list",
   "settings": {
+    "count_mode": {
+      "description": "Which count the bar label shows next to the task count",
+      "label": "Bar count",
+      "options": {
+        "both": "Pending/total",
+        "pending": "Pending only",
+        "total": "Total"
+      }
+    },
     "glyph": {
       "description": "The glyph shown for the To Do widget on the bar.",
       "label": "Bar glyph"

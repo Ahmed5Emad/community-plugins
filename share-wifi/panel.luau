@@ -25,6 +25,7 @@ local state = {
   stopping = false,
   clients = 0,
   detecting = false,
+  isDfs = false,
   statusMessage = "",
   autoDetectedInfo = ""
 }
@@ -89,9 +90,16 @@ local function autoDetect(callback)
         if data.connected then
           state.band = data.band or "5Ghz"
           state.channel = data.channel or "40"
-          state.autoDetectedInfo = tr("panel.detected_wifi", { band = state.band, channel = state.channel })
-          state.statusMessage = tr("panel.synced_status")
+          state.isDfs = (data.is_dfs == true)
+          if state.isDfs then
+            state.autoDetectedInfo = tr("panel.detected_wifi_dfs", { band = state.band, channel = state.channel })
+            state.statusMessage = tr("panel.dfs_warning", { channel = state.channel })
+          else
+            state.autoDetectedInfo = tr("panel.detected_wifi", { band = state.band, channel = state.channel })
+            state.statusMessage = tr("panel.synced_status")
+          end
         else
+          state.isDfs = false
           state.autoDetectedInfo = tr("panel.no_wifi")
           state.band = "2.4Ghz"
           state.channel = "6"
@@ -138,7 +146,7 @@ end
 function render()
   local isBusy = state.active or state.starting or state.stopping
 
-  panel.render(ui.column({ gap = 10, padding = 16 }, {
+  local items = {
     -- Header
     ui.row({ align = "center", justify = "space_between" }, {
       ui.row({ gap = 8, align = "center" }, {
@@ -304,8 +312,9 @@ function render()
           state.statusMessage
         else
           tr("panel.status_ready"),
-        fontSize = 11,
-        color = "on_surface/0.5"
+        fontSize = 12,
+        fontWeight = "medium",
+        color = if state.isDfs and not state.active then "error" else "on_surface/0.6"
       }),
       ui.button({
         key = "btn_rescan",
@@ -321,12 +330,35 @@ function render()
           end)
         end
       })
-    }),
+    })
+  }
 
-    ui.spacer({ size = 4 }),
+  -- If DFS channel detected and hotspot is off, show clear multi-line warning box
+  local isDfsBlocked = not state.active and state.isDfs and (state.band == "5Ghz" or state.band == "Auto")
+  if isDfsBlocked then
+    table.insert(items, ui.row({
+      fill = "error/0.15",
+      radius = 8,
+      paddingH = 12,
+      paddingV = 8,
+      gap = 8,
+      align = "center"
+    }, {
+      ui.glyph({ name = "alert-circle", size = 18, color = "error" }),
+      ui.label({
+        text = tr("panel.dfs_warning", { channel = tostring(state.channel) }),
+        fontSize = 12,
+        fontWeight = "medium",
+        color = "error",
+        multiline = true,
+        maxWidth = 265
+      })
+    }))
+  end
 
-    -- Toggle Hotspot Button
-    ui.button({
+  -- Toggle Hotspot Button: hide completely if blocked by DFS to keep panel compact
+  if not isDfsBlocked then
+    table.insert(items, ui.button({
       key = "btn_toggle",
       text = if state.starting then
         tr("panel.btn_starting")
@@ -346,8 +378,10 @@ function render()
       onClick = function()
         toggleHotspot()
       end
-    })
-  }))
+    }))
+  end
+
+  panel.render(ui.column({ gap = 10, padding = 16 }, items))
 end
 
 function toggleHotspot()
@@ -384,6 +418,12 @@ function toggleHotspot()
       checkStatus()
     end)
   else
+    if state.isDfs and (state.band == "5Ghz" or state.band == "Auto") then
+      local errMsg = tr("notify.dfs_error", { channel = tostring(state.channel) })
+      noctalia.notifyError(tr("notify.error_title"), errMsg)
+      return
+    end
+
     saveConfig()
     state.starting = true
     state.statusMessage = tr("panel.status_starting")

@@ -54,6 +54,17 @@
       "description": "Space between output previews in logical pixels.",
       "label": "Output gap"
     },
+    "output_names": {
+      "description": "Comma-separated output names to show, for example: eDP-1, HDMI-A-1.",
+      "label": "Selected outputs"
+    },
+    "output_scope": {
+      "all": "All outputs",
+      "current": "This bar's output",
+      "custom": "Selected outputs",
+      "description": "Show every active output, only the monitor containing this bar, or a named selection.",
+      "label": "Output scope"
+    },
     "preview_size": {
       "description": "Cross-axis size of each output preview in logical pixels.",
       "label": "Preview size"

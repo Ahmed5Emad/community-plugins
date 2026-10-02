@@ -10,7 +10,7 @@
 
 id = "tranzem/media-lyrics"
 name = "Media Lyrics"
-version = "0.9.4"
+version = "0.9.5"
 plugin_api = 30
 author = "tranzem"
 license = "MIT"
@@ -193,10 +193,6 @@ entry = "service.luau"
 # Three size presets share one entry; panel_size selects which one the widget
 # and the control-center tile open. Medium (520) is the default and keeps the
 # historical `panel` id for IPC compatibility.
-# NOTE: the canonical repo also declares layer = "overlay" on every panel
-# (lyrics above fullscreen video); this store copy omits the field until the
-# validator learns it — use the host-injected per-entry Layer dropdown
-# (Settings -> Plugins, Noctalia 5.0.1+) to pick "overlay" instead.
 [[panel]]
 id = "panel"
 entry = "panel.luau"

@@ -24,15 +24,6 @@ local function publish(snapshot, index)
   noctalia.state.set("index", index or {})
 end
 
--- Due reminders -----------------------------------------------------------
---
--- Two independent alerts:
---   * a per-todo alert at its due time (or the moment it is discovered past
---     due), keyed by a stable todo id so each fires once; and
---   * a coarse daily summary of overdue/due-today counts.
---
--- The update loop asks for a short tick while a timed todo is imminent.
-
 local REMINDER_KEPT = 200
 
 local function reminderPath()
@@ -88,18 +79,12 @@ local function trimNotified(notified)
   end
 end
 
--- Milliseconds until the next timed todo becomes due, or nil when none has a
--- future time today/soon. Used to tighten the update interval.
--- Milliseconds until the next timed todo falls due, or nil. Reads the clock
--- once, and the result is cached until the next scan because it only changes
--- when the notes change or time passes: recomputing it on every 250 ms tick
--- was enough to blow the update() CPU budget on a large vault.
 local nextDueCache = { at = 0, value = nil }
 
 local function nextDueInMs(snapshot)
   local now = noctalia.nowMs()
   if nextDueCache.at ~= nil and (now - nextDueCache.at) < 5000 and nextDueCache.value ~= nil then
-    return nextDueCache.value
+    return nextDueCache.value - now
   end
   local soonest
   for _, todo in ipairs(snapshot.todos) do
@@ -113,9 +98,11 @@ local function nextDueInMs(snapshot)
       end
     end
   end
-  -- Store the absolute due instant so a cached value still shrinks with time.
   nextDueCache.at = now
   nextDueCache.value = soonest and (now + soonest) or nil
+  if nextDueCache.value == nil then
+    return nil
+  end
   return nextDueCache.value - now
 end
 
@@ -180,8 +167,6 @@ local function checkReminders(snapshot)
   saveReminders(state)
 end
 
--- Git history -------------------------------------------------------------
-
 local function commitNotes()
   if noctalia.getConfig("git_history") == false then
     return
@@ -199,9 +184,6 @@ local function commitNotes()
     return
   end
 
-  -- `-- .` keeps every operation scoped to the notes folder, so a notes folder
-  -- that happens to sit inside a larger repository does not stage and commit
-  -- the rest of the user's working tree.
   local function commit()
     noctalia.runAsync({ "git", "-C", dir, "add", "-A", "--", "." }, function()
       noctalia.runAsync({ "git", "-C", dir, "commit", "-q", "-m", message, "--", "." }, function(result)
@@ -230,8 +212,6 @@ local function commitNotes()
     end)
   end
 end
-
--- Scanning ----------------------------------------------------------------
 
 local function finishSnapshot(snapshot, index)
   publish(snapshot, index)
@@ -298,8 +278,6 @@ function update()
 
   noctalia.setUpdateInterval(scanPending and SCAN_TICK_MS or interval())
 
-  -- A timed todo about to fall due needs a finer tick than the poll interval,
-  -- otherwise a 14:30 reminder could be up to poll_interval_ms late.
   local snapshot = noctalia.state.get("snapshot")
   local dueIn = type(snapshot) == "table" and nextDueInMs(snapshot) or nil
   if dueIn ~= nil and dueIn <= 60000 then
@@ -321,10 +299,6 @@ function onConfigChanged()
   forceScan = true
 end
 
--- Scriptable surface:
---   noctalia msg plugin fel/quill:index refresh
---   noctalia msg plugin fel/quill:index capture '{"text":"buy milk tomorrow"}'
---   noctalia msg plugin fel/quill:index commit
 function onIpc(event, payload)
   if event == "refresh" then
     forceScan = true

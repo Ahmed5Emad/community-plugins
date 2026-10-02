@@ -151,8 +151,8 @@ tags = ["nixos", "utility"]
 [[plugin]]
 id = "nightwatch75/todo"
 name = "To Do"
-version = "1.2.1"
-updated_at = 1790466807
+version = "1.2.2"
+updated_at = 1790597329
 added_at = 1784158920
 author = "nightwatch75"
 license = "MIT"
@@ -542,8 +542,8 @@ rev = "ff289e523fb3dca794979dd3476d336642296463"
 [[plugin]]
 id = "kenn/keybind-cheatsheet"
 name = "Keybind Cheatsheet"
-version = "0.2.7"
-updated_at = 1788993062
+version = "0.2.8"
+updated_at = 1790517287
 added_at = 1784677847
 author = "kenn"
 license = "MIT"
@@ -998,15 +998,21 @@ tags = ["ai", "productivity", "bar", "launcher", "panel"]
 [[plugin]]
 id = "alexander/mimir"
 name = "Mimir"
-version = "0.5.0"
-updated_at = 1785634572
+version = "0.6.0"
+updated_at = 1790899460
 added_at = 1785589188
 author = "Alexander"
 license = "MIT"
 icon = "brain"
 description = "An AI companion for Noctalia that brings LLM-powered chat directly into your desktop."
-plugin_api = 16
+plugin_api = 21
 tags = ["ai", "utility", "productivity", "development"]
+
+[[plugin.release]]
+plugin_api = 16
+version = "0.5.0"
+updated_at = 1785634572
+rev = "dbec4a71904ee65e2d1014bc6d72d4b0f66d106a"
 
 [[plugin]]
 id = "3ri4ng0ld/ip-monitor"
@@ -2065,8 +2071,8 @@ tags = ["desktop", "utility"]
 [[plugin]]
 id = "aabidk20/yt-music"
 name = "YouTube Music"
-version = "0.3.0"
-updated_at = 1790549410
+version = "0.3.1"
+updated_at = 1790893117
 added_at = 1788315521
 author = "Aabid"
 license = "MIT"
@@ -2123,8 +2129,8 @@ tags = ["launcher", "bar", "panel", "network", "utility", "productivity"]
 [[plugin]]
 id = "tranzem/media-lyrics"
 name = "Media Lyrics"
-version = "0.9.4"
-updated_at = 1788993439
+version = "0.9.5"
+updated_at = 1790893851
 added_at = 1788381228
 author = "tranzem"
 license = "MIT"
@@ -2220,8 +2226,8 @@ tags = ["audio", "bar", "panel", "service", "hardware", "indicator"]
 [[plugin]]
 id = "nilsonlinux/inventory-manager"
 name = "Inventory Manager"
-version = "1.0.0"
-updated_at = 1788657701
+version = "1.0.1"
+updated_at = 1790899477
 added_at = 1788657701
 author = "Nilsonlinux"
 license = "MIT"
@@ -2557,8 +2563,8 @@ tags = ["bar", "panel", "service", "network", "system", "utility"]
 [[plugin]]
 id = "nilsonlinux/contact-sounds"
 name = "Contact Notification Sounds"
-version = "1.5.1"
-updated_at = 1789910760
+version = "1.5.2"
+updated_at = 1790732854
 added_at = 1789256312
 author = "Nilsonlinux"
 license = "MIT"
@@ -2648,8 +2654,8 @@ tags = ["bar", "panel", "service", "productivity", "utility"]
 [[plugin]]
 id = "tordex/processes"
 name = "Processes"
-version = "2.0.0"
-updated_at = 1789931424
+version = "2.1.0"
+updated_at = 1790806146
 added_at = 1789389846
 author = "tordex"
 license = "MIT"
@@ -2856,8 +2862,8 @@ tags = ["theming", "wallpaper", "utility"]
 [[plugin]]
 id = "conqazht/share-wifi"
 name = "Share WiFi"
-version = "1.0.0"
-updated_at = 1790006494
+version = "1.1.0"
+updated_at = 1790893208
 added_at = 1790006494
 author = "conqazht"
 license = "MIT"
@@ -2940,8 +2946,8 @@ rev = "9ec5a4813f22f04313fae5f1707e5d239b812973"
 [[plugin]]
 id = "fel/quill"
 name = "Quill"
-version = "1.1.0"
-updated_at = 1790468164
+version = "1.1.1"
+updated_at = 1790643919
 added_at = 1790164567
 author = "fel"
 license = "MIT"
@@ -3070,8 +3076,8 @@ tags = ["panel", "shortcut", "bar", "time", "utility"]
 [[plugin]]
 id = "teagar/niri-workspace-preview"
 name = "Niri Workspace Preview"
-version = "1.0.1"
-updated_at = 1790377249
+version = "1.1.0"
+updated_at = 1790644179
 added_at = 1790342081
 author = "Teagar"
 license = "MIT"
@@ -3084,8 +3090,8 @@ tags = ["bar", "indicator", "niri", "productivity", "system"]
 [[plugin]]
 id = "etrigan63/rum-updates"
 name = "RUM Updates"
-version = "0.1.6"
-updated_at = 1790467331
+version = "0.1.8"
+updated_at = 1790736827
 added_at = 1790381127
 author = "etrigan63"
 license = "MIT"
@@ -3132,3 +3138,94 @@ icon = "sparkles"
 description = "Quick bar launcher for the Antigravity Agent CLI (agy)."
 plugin_api = 24
 tags = ["ai", "utility", "bar", "productivity"]
+
+[[plugin]]
+id = "mgeldi/pixel-shift"
+name = "Pixel Shift"
+version = "1.2.0"
+updated_at = 1790893292
+added_at = 1790732199
+author = "mgeldi"
+license = "MIT"
+icon = "arrows-move-horizontal"
+description = "Protects OLED screens from bar burn-in: measures your bar, simulates wear and shifts it smartly."
+plugin_api = 30
+tags = ["bar", "panel", "service", "shortcut", "utility", "hardware", "hyprland", "niri", "sway", "labwc", "mangowc"]
+
+[[plugin]]
+id = "zumik3-del/opencode-go-usage"
+name = "Opencode Go Usage"
+version = "1.2.0"
+updated_at = 1790732739
+added_at = 1790732739
+author = "zumik3-del"
+license = "MIT"
+icon = "brand-openai"
+description = "Opencode Go usage limits in the bar, with a details panel for the 5-hour, weekly and monthly meters."
+plugin_api = 28
+tags = ["bar", "panel", "service", "ai", "productivity", "indicator"]
+
+[[plugin]]
+id = "hakanct/saved-desktop-widgets"
+name = "Saved Desktop Widgets"
+version = "1.0.1"
+updated_at = 1790806628
+added_at = 1790733266
+author = "hakanct"
+license = "MIT"
+icon = "puzzle"
+description = "A plugin that allows you to have multiple setups for your desktop widgets based on the wallpaper."
+plugin_api = 26
+tags = ["bar", "desktop", "panel", "service", "utility", "wallpaper"]
+
+[[plugin]]
+id = "zhangdm/als-brightness"
+name = "ALS Brightness"
+version = "0.4.1"
+updated_at = 1790805024
+added_at = 1790805024
+author = "zhangdm"
+license = "MIT"
+icon = "sun"
+description = "Adapts panel brightness to the ambient light sensor, and hands control back the moment you touch the brightness keys."
+plugin_api = 24
+tags = ["hardware", "system"]
+
+[[plugin]]
+id = "ismay/sway-mode"
+name = "Sway Mode"
+version = "1.0.0"
+updated_at = 1790806605
+added_at = 1790806605
+author = "ismay"
+license = "MIT"
+icon = "square-letter-m"
+description = "Displays the current Sway mode."
+plugin_api = 24
+tags = ["bar", "sway", "indicator"]
+
+[[plugin]]
+id = "alpzy/deepseek-peak"
+name = "DeepSeek Peak Hours"
+version = "1.0.0"
+updated_at = 1790893770
+added_at = 1790893770
+author = "Alpzy"
+license = "MIT"
+icon = "zap"
+description = "DeepSeek and Ollama Cloud peak/off-peak API rate windows with a live countdown, progress bar, and policy-drift alerts."
+plugin_api = 22
+tags = ["bar", "panel", "indicator", "ai", "countdown"]
+
+[[plugin]]
+id = "lfdominguez/claude-sessions"
+name = "Claude Sessions"
+version = "1.5.2"
+updated_at = 1790894453
+added_at = 1790894453
+author = "lfdominguez"
+license = "MIT"
+icon = "brain"
+description = "Live Claude Code sessions: what each is doing, which need you, plan limits, and jump to its terminal."
+plugin_api = 24
+tags = ["bar", "panel", "launcher", "service", "ai", "development", "productivity", "hyprland", "niri", "sway"]

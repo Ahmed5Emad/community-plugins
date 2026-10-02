@@ -138,6 +138,18 @@ local function shellQuote(value)
     return `'{quoted}'`
 end
 
+-- Tells the service to poll faster until rum reports no remaining updates, so a
+-- completed upgrade clears the count without waiting for the regular interval.
+local function watchForUpgradeCompletion()
+    if count <= 0 then
+        return
+    end
+
+    noctalia.runAsync(
+        "noctalia msg plugin etrigan63/rum-updates:update_poller all upgrade_started"
+    )
+end
+
 local function runUpdater()
     if not noctalia.commandExists("rum") then
         noctalia.notifyError("RUM Updates", noctalia.tr("bar.notify.missing_rum"))
@@ -147,6 +159,7 @@ local function runUpdater()
     local command = "sudo rum system-upgrade"
     if terminalApplication == "" then
         if noctalia.runInTerminal(command) then
+            watchForUpgradeCompletion()
             return
         end
     else
@@ -164,6 +177,7 @@ local function runUpdater()
 
         local launchCommand = `{shellQuote(executable)} {separator} sh -lc {shellQuote(command)}`
         if noctalia.runAsync(launchCommand) then
+            watchForUpgradeCompletion()
             return
         end
     end

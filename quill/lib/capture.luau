@@ -14,9 +14,6 @@ local function finish(cb, status)
   end
 end
 
--- Appends a todo, pulling a due date/time out of the text itself when AI
--- structuring is unavailable. The words stay in the task text so nothing is
--- silently lost.
 function M.appendWithHint(text)
   local due, time = Text.parseDueHint(text)
   local target
@@ -27,9 +24,6 @@ function M.appendWithHint(text)
   return due, time
 end
 
--- Builds the list of existing project files the AI chooses from, straight
--- from the published snapshot ("- Work.md — Work"). Archive is excluded, and
--- the list is capped so a large notes folder does not bloat every capture.
 function M.projectContext()
   local snapshot = noctalia.state.get("snapshot")
   local notes = type(snapshot) == "table" and type(snapshot.notes) == "table" and snapshot.notes or {}
@@ -73,9 +67,6 @@ local function projectTitle(clean)  local stem = string.match(clean, "^(.-)%.md$
   return Text.trim(last)
 end
 
--- Turns the AI's "file" answer into a target note path. Returns the path,
--- a display label, and whether the project file was just created. Empty or
--- unsafe answers fall back to the Inbox (nil target).
 local function resolveProject(data)
   local raw = tostring(data.file or "")
   if Text.trim(raw) == "" then
