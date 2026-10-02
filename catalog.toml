@@ -2946,8 +2946,8 @@ rev = "9ec5a4813f22f04313fae5f1707e5d239b812973"
 [[plugin]]
 id = "fel/quill"
 name = "Quill"
-version = "1.1.1"
-updated_at = 1790643919
+version = "1.1.2"
+updated_at = 1790982331
 added_at = 1790164567
 author = "fel"
 license = "MIT"
