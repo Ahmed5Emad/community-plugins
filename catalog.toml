@@ -3229,3 +3229,16 @@ icon = "brain"
 description = "Live Claude Code sessions: what each is doing, which need you, plan limits, and jump to its terminal."
 plugin_api = 24
 tags = ["bar", "panel", "launcher", "service", "ai", "development", "productivity", "hyprland", "niri", "sway"]
+
+[[plugin]]
+id = "ismay/sway-scratchpad"
+name = "Sway Scratchpad"
+version = "1.0.0"
+updated_at = 1790982697
+added_at = 1790982697
+author = "ismay"
+license = "MIT"
+icon = "archive"
+description = "Displays the number of windows in the Sway scratchpad."
+plugin_api = 24
+tags = ["bar", "sway", "indicator"]
