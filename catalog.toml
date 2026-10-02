@@ -998,15 +998,21 @@ tags = ["ai", "productivity", "bar", "launcher", "panel"]
 [[plugin]]
 id = "alexander/mimir"
 name = "Mimir"
-version = "0.5.0"
-updated_at = 1785634572
+version = "0.6.0"
+updated_at = 1790899460
 added_at = 1785589188
 author = "Alexander"
 license = "MIT"
 icon = "brain"
 description = "An AI companion for Noctalia that brings LLM-powered chat directly into your desktop."
-plugin_api = 16
+plugin_api = 21
 tags = ["ai", "utility", "productivity", "development"]
+
+[[plugin.release]]
+plugin_api = 16
+version = "0.5.0"
+updated_at = 1785634572
+rev = "dbec4a71904ee65e2d1014bc6d72d4b0f66d106a"
 
 [[plugin]]
 id = "3ri4ng0ld/ip-monitor"
@@ -2220,8 +2226,8 @@ tags = ["audio", "bar", "panel", "service", "hardware", "indicator"]
 [[plugin]]
 id = "nilsonlinux/inventory-manager"
 name = "Inventory Manager"
-version = "1.0.0"
-updated_at = 1788657701
+version = "1.0.1"
+updated_at = 1790899477
 added_at = 1788657701
 author = "Nilsonlinux"
 license = "MIT"
