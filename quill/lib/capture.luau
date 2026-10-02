@@ -89,7 +89,7 @@ local function resolveProject(data)
     return nil, nil, false
   end
   local title = projectTitle(clean)
-  if noctalia.fileExists(M.notesDir() .. "/" .. slug) then
+  if noctalia.fileExists(Store.notesDir() .. "/" .. slug) then
     return slug, title, false
   end
   local abs = Store.createNoteAt(slug, title)
