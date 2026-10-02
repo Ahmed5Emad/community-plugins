@@ -2071,8 +2071,8 @@ tags = ["desktop", "utility"]
 [[plugin]]
 id = "aabidk20/yt-music"
 name = "YouTube Music"
-version = "0.3.1"
-updated_at = 1790893117
+version = "0.3.2"
+updated_at = 1790926221
 added_at = 1788315521
 author = "Aabid"
 license = "MIT"
