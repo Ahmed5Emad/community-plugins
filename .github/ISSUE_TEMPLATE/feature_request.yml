@@ -211,6 +211,7 @@ body:
         - sticky-notes
         - super-productivity
         - sway-mode
+        - sway-scratchpad
         - syncthing
         - system-monitor
         - system-updater
