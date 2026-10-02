@@ -2174,15 +2174,15 @@ tags = ["bar", "panel", "niri", "utility"]
 [[plugin]]
 id = "liamwh/emoji-picker"
 name = "Emoji & Symbol Picker"
-version = "1.0.1"
-updated_at = 1789745716
+version = "1.1.0"
+updated_at = 1790982217
 added_at = 1788473658
 author = "liamwh"
 license = "MIT"
 icon = "mood-smile"
 description = "Raycast-inspired emoji & Unicode symbol browser: instant search, categories, recents."
 plugin_api = 28
-tags = ["panel", "emoticon", "utility"]
+tags = ["bar", "panel", "emoticon", "utility"]
 
 [[plugin]]
 id = "mezoahmedii/quranwidget"
