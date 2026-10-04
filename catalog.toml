@@ -3255,3 +3255,16 @@ icon = "video"
 description = "Control OBS Studio recording, replay buffer and streaming from your bar, panel and keyboard."
 plugin_api = 24
 tags = ["bar", "panel", "service", "shortcut", "recording", "video"]
+
+[[plugin]]
+id = "surumeika1987/vrchat-status"
+name = "VRChat Status"
+version = "0.1.0"
+updated_at = 1791074889
+added_at = 1791074889
+author = "surumeika1987"
+license = "MIT"
+icon = "message-dots"
+description = "Display and update your VRChat status from the Noctalia bar."
+plugin_api = 24
+tags = ["bar", "panel", "gaming"]
