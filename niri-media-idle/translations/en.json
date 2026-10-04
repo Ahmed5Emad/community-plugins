@@ -35,8 +35,8 @@
     "music_sleep": "Music: sleep blocked; idle remains. Source: this bridge only.",
     "music_sleep_incomplete": "Music: sleep inhibitor missing. Source: this bridge only.",
     "normal": "No media; normal idle chain. Source: this bridge only.",
-    "protection_unknown": "No inhibitors confirmed. Source: this bridge only.",
     "protected": "Video: sleep, idle, ScreenSaver blocked. Source: this bridge only.",
+    "protection_unknown": "No inhibitors confirmed. Source: this bridge only.",
     "status_error": "Status check failed; click to retry. Source: this bridge only.",
     "unknown": "Bridge state unknown; click to retry. Source: this bridge only."
   }
