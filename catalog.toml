@@ -3268,3 +3268,16 @@ icon = "message-dots"
 description = "Display and update your VRChat status from the Noctalia bar."
 plugin_api = 24
 tags = ["bar", "panel", "gaming"]
+
+[[plugin]]
+id = "zhangdm-520/niri-media-idle"
+name = "Niri Media Idle"
+version = "1.2.0"
+updated_at = 1791146770
+added_at = 1791146770
+author = "ZhangDM-520"
+license = "MIT"
+icon = "player-play"
+description = "Control the bundled media-idle bridge without exposing player details or changing idle policy."
+plugin_api = 30
+tags = ["bar", "indicator", "media", "niri", "service", "system", "utility", "video"]
