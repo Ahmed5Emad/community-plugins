@@ -154,6 +154,7 @@ body:
         - noctwhspr
         - nvim-projects
         - nvtop
+        - obs-control
         - obs-integration
         - obsidian
         - ocr
