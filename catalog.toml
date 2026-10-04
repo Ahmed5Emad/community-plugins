@@ -3242,3 +3242,16 @@ icon = "archive"
 description = "Displays the number of windows in the Sway scratchpad."
 plugin_api = 24
 tags = ["bar", "sway", "indicator"]
+
+[[plugin]]
+id = "ayagmar/obs-control"
+name = "OBS Control"
+version = "1.0.0"
+updated_at = 1791074600
+added_at = 1791074600
+author = "ayagmar"
+license = "MIT"
+icon = "video"
+description = "Control OBS Studio recording, replay buffer and streaming from your bar, panel and keyboard."
+plugin_api = 24
+tags = ["bar", "panel", "service", "shortcut", "recording", "video"]
