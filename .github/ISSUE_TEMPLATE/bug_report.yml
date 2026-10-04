@@ -27,6 +27,7 @@ body:
       options:
         - --- SELECT ---
         - 9router-control
+        - 9router-monitor
         - agent-glow
         - agentik
         - agy
