@@ -241,6 +241,7 @@ body:
         - vm-manager
         - voxtype
         - vpn-manager
+        - vrchat-status
         - w-engine
         - wallpaper-switcher
         - wallpaper-widget
