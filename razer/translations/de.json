@@ -1,37 +1,36 @@
 {
   "settings": {
     "low_battery_threshold": {
-      "description": "Akkustand in Prozent, ab dem eine Warnbenachrichtigung gesendet wird",
-      "label": "Warnschwelle für niedrigen Akkustand (%)"
+      "label": "Warnschwelle für niedrigen Akkustand (%)",
+      "description": "Akkustand in Prozent, ab dem eine Warnbenachrichtigung gesendet wird"
     },
     "show_percentage": {
-      "description": "Prozentzahl neben dem Gerätesymbol in der Leiste anzeigen",
-      "label": "Akkustand in Prozent anzeigen"
-    },
-    "sync_theme_color": {
-      "description": "Razer-LED-Farben automatisch an Noctalias aktive Akzentfarbe anpassen",
-      "label": "RGB mit Theme synchronisieren"
+      "label": "Akkustand in Prozent anzeigen",
+      "description": "Prozentzahl neben dem Gerätesymbol in der Leiste anzeigen"
     }
   },
   "ui": {
-    "brightness": "LED-Helligkeit",
-    "custom_color_placeholder": "Hex-Farbe (z. B. #FF0055)",
-    "custom_dpi_placeholder": "Eigene DPI (z. B. 1500)",
-    "daemon_not_running": "OpenRazer-Daemon läuft nicht",
-    "lighting_effect": "Beleuchtungseffekt",
-    "no_devices": "Keine Razer-Geräte gefunden",
-    "no_devices_hint": "Schließe eine unterstützte Razer-Maus, Tastatur oder ein Headset an.",
-    "off": "Aus",
     "panel_title": "Razer Control Center",
-    "picker": "Farbauswahl",
-    "razer_green": "Razer-Grün",
-    "refresh": "Aktualisieren",
-    "sensitivity": "Empfindlichkeit (DPI)",
-    "set": "Übernehmen",
-    "spectrum": "Spektrum",
+    "daemon_not_running": "OpenRazer-Daemon läuft nicht",
     "start_daemon": "Daemon starten",
     "start_daemon_hint": "Starte den Daemon mit:\nsystemctl --user start openrazer-daemon",
+    "no_devices": "Keine Razer-Geräte gefunden",
+    "no_devices_hint": "Schließe eine unterstützte Razer-Maus, Tastatur oder ein Headset an.",
+    "refresh": "Aktualisieren",
+    "wired": "Kabelgebunden",
+    "sensitivity": "Empfindlichkeit (DPI)",
+    "custom_dpi_placeholder": "Eigene DPI (z. B. 1500)",
+    "set": "Übernehmen",
+    "brightness": "LED-Helligkeit",
+    "lighting_effect": "Beleuchtungseffekt",
     "theme_sync": "Theme-Sync",
-    "wired": "Kabelgebunden"
+    "theme_role": "Farbrolle",
+    "theme_synced": "Theme-Rolle gesetzt auf: ",
+    "theme_fallback": "Theme-Farbe nicht verfügbar, Standard Razer-Grün verwendet",
+    "razer_green": "Razer-Grün",
+    "spectrum": "Spektrum",
+    "off": "Aus",
+    "picker": "Farbauswahl",
+    "custom_color_placeholder": "Hex-Farbe (z. B. #FF0055)"
   }
 }
