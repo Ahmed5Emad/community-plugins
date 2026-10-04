@@ -3037,15 +3037,21 @@ tags = ["panel", "bar", "hardware", "utility", "hyprland"]
 [[plugin]]
 id = "detluck/razer"
 name = "Razer Devices"
-version = "1.0.0"
-updated_at = 1790294970
+version = "1.1.0"
+updated_at = 1791148145
 added_at = 1790294970
 author = "detluck"
 license = "MIT"
 icon = "mouse-2"
 description = "Razer device monitor, battery level indicator, and lighting controller via OpenRazer."
-plugin_api = 9
+plugin_api = 31
 tags = ["hardware", "gaming", "theming", "system", "bar", "panel", "service"]
+
+[[plugin.release]]
+plugin_api = 9
+version = "1.0.0"
+updated_at = 1790294970
+rev = "66f12b08afe79f55b7fb104294fc491f219c2261"
 
 [[plugin]]
 id = "notoxus/media-island"
