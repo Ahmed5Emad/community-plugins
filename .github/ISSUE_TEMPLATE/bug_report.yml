@@ -143,6 +143,7 @@ body:
         - niri-active-workspace
         - niri-animations
         - niri-displays
+        - niri-media-idle
         - niri-ribbon
         - niri-rules-studio
         - niri-workspace-preview
