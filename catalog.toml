@@ -3300,3 +3300,16 @@ icon = "rss"
 description = "Displays recent entries from up to 5 RSS feeds of your choice."
 plugin_api = 24
 tags = ["desktop", "utility"]
+
+[[plugin]]
+id = "bardiz12/9router-monitor"
+name = "9Router Monitor"
+version = "0.1.0"
+updated_at = 1791149673
+added_at = 1791149673
+author = "bardiz12"
+license = "MIT"
+icon = "route"
+description = "Live 9Router monitor: active traffic indicator, last used model, request history, and quota tracker"
+plugin_api = 15
+tags = ["ai", "indicator", "bar", "panel", "service", "utility"]
