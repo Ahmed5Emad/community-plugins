@@ -2602,8 +2602,8 @@ tags = ["bar", "panel", "service", "system", "utility"]
 [[plugin]]
 id = "notfinaldev/agentik"
 name = "Agentik"
-version = "0.1.1"
-updated_at = 1789991622
+version = "0.2.0"
+updated_at = 1791148217
 added_at = 1789338724
 author = "notfinaldev"
 license = "MIT"
