@@ -516,8 +516,8 @@ rev = "7cc2a499e6d90b4f756a606bfaf38f014a465956"
 [[plugin]]
 id = "gustav0ar/drive-health"
 name = "Drive Health"
-version = "1.2.6"
-updated_at = 1785329312
+version = "1.2.7"
+updated_at = 1791165669
 added_at = 1784646878
 author = "Drive Health contributors"
 license = "MIT"
@@ -3313,3 +3313,16 @@ icon = "route"
 description = "Live 9Router monitor: active traffic indicator, last used model, request history, and quota tracker"
 plugin_api = 15
 tags = ["ai", "indicator", "bar", "panel", "service", "utility"]
+
+[[plugin]]
+id = "eternalself-2328/undershell"
+name = "undershell"
+version = "1.2.1"
+updated_at = 1791165649
+added_at = 1791165649
+author = "EternalSelf-2328"
+license = "GPL-3.0-or-later"
+icon = "layout-dashboard"
+description = "Control undershell's desktop widgets from the bar: editor, depth planes, tilt and wallpaper layouts."
+plugin_api = 26
+tags = ["bar", "panel", "desktop", "wallpaper", "music", "utility"]
