@@ -236,6 +236,7 @@ body:
         - um5606_fan_state
         - umbriel-displays
         - umbriel-monitor-control
+        - undershell
         - upbeat
         - vial_keymap
         - vidi
