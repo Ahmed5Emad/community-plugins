@@ -97,6 +97,7 @@ body:
         - hassio
         - herdr
         - hotspot
+        - hover-widgets
         - hypr-layout-switcher
         - hypr-screen-mirror
         - hypr-submap
