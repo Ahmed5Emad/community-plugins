@@ -3326,3 +3326,16 @@ icon = "layout-dashboard"
 description = "Control undershell's desktop widgets from the bar: editor, depth planes, tilt and wallpaper layouts."
 plugin_api = 26
 tags = ["bar", "panel", "desktop", "wallpaper", "music", "utility"]
+
+[[plugin]]
+id = "pulser/hover-widgets"
+name = "Hover Widgets"
+version = "1.13.0"
+updated_at = 1791205936
+added_at = 1791205936
+author = "pulser"
+license = "MIT"
+icon = "layout-navbar"
+description = "Nine compact bar widgets with hover expansion: clock, volume, media, active window and system monitors."
+plugin_api = 32
+tags = ["bar", "clock", "audio", "media", "system", "network", "utility"]
