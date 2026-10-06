@@ -2018,8 +2018,8 @@ tags = ["launcher", "media", "network", "video"]
 [[plugin]]
 id = "notfinaldev/spotify"
 name = "Spotify Search"
-version = "1.0.0"
-updated_at = 1788121577
+version = "1.0.4"
+updated_at = 1791245523
 added_at = 1788121577
 author = "notfinaldev"
 license = "MIT"
@@ -2317,8 +2317,8 @@ tags = ["ai", "development", "indicator", "system", "bar", "desktop", "panel", "
 [[plugin]]
 id = "ahmedhossamdev/sticky-notes"
 name = "Sticky Notes"
-version = "1.2.1"
-updated_at = 1789561019
+version = "1.3.0"
+updated_at = 1791245545
 added_at = 1788740022
 author = "ahmedhossamdev"
 license = "MIT"
