@@ -182,6 +182,31 @@ local function shellCapture(argv, timeout, onFile)
   end, timeout)
 end
 
+-- Same as shellCapture, but the screenshot is moved to a temp copy and the
+-- original is deleted right away: text-only tools (OCR/QR/palette/measure/
+-- lens) only need the pixels, not a file in the screenshots folder. Annotate
+-- and record flows keep using shellCapture — their file is the deliverable.
+local tmpCaptureSerial = 0
+local function shellCaptureTemp(argv, timeout, onFile)
+  shellCapture(argv, timeout, function(path)
+    if path == "" then
+      onFile("")
+      return
+    end
+    tmpCaptureSerial = tmpCaptureSerial + 1
+    local tmp = string.format("/tmp/st-capture-%d-%d.png", os.time(), tmpCaptureSerial)
+    noctalia.runAsync({ "cp", path, tmp }, function(res)
+      if (res.exitCode or 1) ~= 0 then
+        noctalia.notifyError(noctalia.tr("messages.capture_failed"))
+        return
+      end
+      noctalia.runAsync({ "rm", "-f", path }, function()
+        onFile(tmp)
+      end, 15000)
+    end, 15000)
+  end)
+end
+
 -- Opens a file in the shell's annotation editor. Silent when the editor
 -- takes it; surfaces failures instead of dying quietly.
 local function editFile(path, onOk)
@@ -344,7 +369,7 @@ local function runOcr()
     noctalia.notify(noctalia.tr("panel.running"))
     return
   end
-  shellCapture({ SCRIPT_SHELL, "region-file" }, SHELL_TIMEOUT_INTERACTIVE, function(path)
+  shellCaptureTemp({ SCRIPT_SHELL, "region-file" }, SHELL_TIMEOUT_INTERACTIVE, function(path)
     ocrRunning = true
     ocrSerial = ocrSerial + 1
     local serial = ocrSerial
@@ -432,7 +457,7 @@ end
 -- ── Tools: QR / palette / lens ─────────────────────────────────────────────
 
 local function runQr()
-  shellCapture({ SCRIPT_SHELL, "region-file" }, SHELL_TIMEOUT_INTERACTIVE, function(path)
+  shellCaptureTemp({ SCRIPT_SHELL, "region-file" }, SHELL_TIMEOUT_INTERACTIVE, function(path)
     noctalia.runAsync({ SCRIPT_CAPTURE, "qr", path }, function(res)
       local text = trim(res.stdout or "")
       if res.exitCode ~= 0 or text == "" then
@@ -449,7 +474,7 @@ local function runQr()
 end
 
 local function runPalette()
-  shellCapture({ SCRIPT_SHELL, "region-file" }, SHELL_TIMEOUT_INTERACTIVE, function(path)
+  shellCaptureTemp({ SCRIPT_SHELL, "region-file" }, SHELL_TIMEOUT_INTERACTIVE, function(path)
     noctalia.runAsync({ SCRIPT_CAPTURE, "palette", path }, function(res)
       if res.exitCode ~= 0 then
         noctalia.notifyError(noctalia.tr("messages.palette_failed"))
@@ -484,7 +509,7 @@ local function runPalette()
 end
 
 local function runLens()
-  shellCapture({ SCRIPT_SHELL, "region-file" }, SHELL_TIMEOUT_INTERACTIVE, function(path)
+  shellCaptureTemp({ SCRIPT_SHELL, "region-file" }, SHELL_TIMEOUT_INTERACTIVE, function(path)
     noctalia.runAsync({ SCRIPT_LENS, path }, function(res)
       if res.exitCode == 1 then
         noctalia.notifyError(noctalia.tr("messages.missing_dep", { dep = trim(res.stdout or "") }))
@@ -498,7 +523,7 @@ end
 -- ── Tools: measure ─────────────────────────────────────────────────────────
 
 local function runMeasure()
-  shellCapture({ SCRIPT_SHELL, "region-file" }, SHELL_TIMEOUT_INTERACTIVE, function(path)
+  shellCaptureTemp({ SCRIPT_SHELL, "region-file" }, SHELL_TIMEOUT_INTERACTIVE, function(path)
     noctalia.runAsync({ "magick", "identify", "-format", "%w %h", path }, function(res)
       local sw, sh = tostring(res.stdout or ""):match("(%d+)%s+(%d+)")
       local gw, gh = tonumber(sw), tonumber(sh)
