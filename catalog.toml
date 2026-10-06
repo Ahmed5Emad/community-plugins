@@ -2511,8 +2511,8 @@ tags = ["service", "network", "privacy", "system"]
 [[plugin]]
 id = "hy4ri/github-notifications"
 name = "GitHub Notifications"
-version = "0.1.0"
-updated_at = 1789149555
+version = "0.2.0"
+updated_at = 1791245985
 added_at = 1789149555
 author = "hy4ri"
 license = "MIT"
