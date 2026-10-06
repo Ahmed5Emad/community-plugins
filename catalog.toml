@@ -3339,3 +3339,16 @@ icon = "layout-navbar"
 description = "Nine compact bar widgets with hover expansion: clock, volume, media, active window and system monitors."
 plugin_api = 32
 tags = ["bar", "clock", "audio", "media", "system", "network", "utility"]
+
+[[plugin]]
+id = "tausif/ncs-visualizer"
+name = "NCS Visualizer"
+version = "1.0.0"
+updated_at = 1791247369
+added_at = 1791247369
+author = "tausif"
+license = "GPL-3.0-or-later"
+icon = "wave-sine"
+description = "The NCS audio-visualizer orb on your desktop: 103k GPU-drawn dots that react to any audio, in your theme colours."
+plugin_api = 26
+tags = ["audio", "desktop", "music"]
