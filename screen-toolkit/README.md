@@ -132,8 +132,9 @@ not expose a portable cursor flag, so its behavior depends on the compositor.
 
 - **Markup** captures the region and opens it in the shell's annotation
   editor; Copy and Save deliver the annotated PNG per the shell's screenshot
-  policy. **Markup FS** captures the focused monitor, **Markup Window**
-  captures the focused window (Hyprland via `hyprctl`, Niri via `niri msg`).
+  policy. **Markup FS** captures the focused monitor, **Markup Window** lets
+  you click a window and captures it (Hyprland via `hyprctl`, Niri captures
+  the focused window via `niri msg`).
 - **Measure** reports the region's pixel size and copies it to the clipboard.
 - **OCR** extracts text and copies it to the clipboard. The result includes the
   capture preview and an editable multiline text area, so you can correct, trim,

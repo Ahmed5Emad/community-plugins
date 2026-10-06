@@ -13,8 +13,8 @@
 -- owns the output policy under [shell.screenshot]. Pixel work (OCR, QR,
 -- palette, Lens uploads, window crops) runs over the picked-up file with
 -- `tesseract` / `zbarimg` / `magick` / `curl`. Annotation opens the shell's
--- own editor (`annotate <file>`); the focused-window capture resolves its
--- geometry with `hyprctl` (or `niri`). Only region *recording* still uses
+-- own editor (`annotate <file>`); the window capture lets you click one and
+-- snaps to it with `hyprctl` (or takes the focused one on `niri`). Only region *recording* still uses
 -- `slurp`, to get a geometry for the external recorder backends.
 --
 -- Recording runs `wl-screenrec` (preferred) or `wf-recorder`. The raw output
@@ -553,7 +553,7 @@ local function annotateWindow()
     noctalia.notifyError(noctalia.tr("messages.missing_dep", { dep = "hyprctl" }))
     return
   end
-  shellCapture({ SCRIPT_SHELL, "annotate-window" }, SHELL_TIMEOUT_QUICK, afterAnnotate)
+  shellCapture({ SCRIPT_SHELL, "annotate-window" }, SHELL_TIMEOUT_INTERACTIVE, afterAnnotate)
 end
 
 -- ── Recording ──────────────────────────────────────────────────────────────

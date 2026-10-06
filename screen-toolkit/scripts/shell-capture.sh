@@ -9,8 +9,10 @@
 # Actions:
 #   region-file                — interactive region capture; stdout: file path
 #   fullscreen-file            — capture the focused monitor; stdout: file path
-#   window-file                — capture the focused Hyprland window
-#                                (fullscreen + magick crop); stdout: file path
+#   window-file                — click a window (slurp point), snap to the
+#                                smallest mapped Hyprland window under it,
+#                                capture via fullscreen + magick crop;
+#                                stdout: file path
 #   edit <file>                — open <file> in the shell annotation editor
 #   annotate-region            — region capture + editor; stdout: file path
 #   annotate-fullscreen        — fullscreen capture + editor; stdout: file path
@@ -23,7 +25,7 @@
 # Exit codes:
 #   0  — ok (stdout is the file path)
 #   1  — missing dependency (dep name written to stdout)
-#   2  — bad / missing arguments, or no focused window
+#   2  — bad / missing arguments, or no window under the click
 #   3  — image processing (crop) failed
 #   10 — cancelled by the user (silent)
 #   11 — capture finished but nothing was saved to a file (NOFILE)
@@ -136,26 +138,35 @@ case "$ACTION" in
 
     window-file)
         _require noctalia
+        _require slurp
         _require hyprctl
         _require jq
         _require magick
-        _win=$(hyprctl activewindow -j 2>/dev/null) || exit 2
-        _wx=$(printf '%s' "$_win" | jq -r '.at[0] // empty' 2>/dev/null)
-        _wy=$(printf '%s' "$_win" | jq -r '.at[1] // empty' 2>/dev/null)
-        _ww=$(printf '%s' "$_win" | jq -r '.size[0] // empty' 2>/dev/null)
-        _wh=$(printf '%s' "$_win" | jq -r '.size[1] // empty' 2>/dev/null)
-        _mid=$(printf '%s' "$_win" | jq -r '.monitor // empty' 2>/dev/null)
-        if [ -z "${_wx:-}" ] || [ -z "${_wy:-}" ] || [ -z "${_ww:-}" ] || [ -z "${_wh:-}" ]; then
-            exit 2
-        fi
-        _mon=$(hyprctl monitors -j 2>/dev/null | jq -c --argjson id "${_mid:-0}" \
-            '.[] | select(.id == $id) | {x: .x, y: .y, scale: .scale}' 2>/dev/null)
-        if [ -z "$_mon" ] || [ "$_mon" = "null" ]; then
-            # Fall back to the first monitor; crop math clamps to bounds.
-            _mon=$(hyprctl monitors -j 2>/dev/null | jq -c \
-                '.[0] | {x: .x, y: .y, scale: .scale}' 2>/dev/null)
-            [ -n "$_mon" ] && [ "$_mon" != "null" ] || exit 2
-        fi
+        # Click the window you want, like the Markup tool: slurp -p reports
+        # the click point without drawing a shape, then we snap to the
+        # smallest mapped window containing it (topmost wins).
+        _pt=$(slurp -p 2>/dev/null) || exit 10
+        _px=$(printf '%s' "$_pt" | awk -F'[, ]+' '{print int($1)}')
+        _py=$(printf '%s' "$_pt" | awk -F'[, ]+' '{print int($2)}')
+        _win=$(hyprctl clients -j 2>/dev/null | jq -c --argjson x "$_px" --argjson y "$_py" '
+            [ .[] | select(.mapped == true)
+              | { at: (.at // [0, 0]), size: (.size // [0, 0]) }
+              | select(.at[0] <= $x and (.at[0] + .size[0]) >= $x
+                   and .at[1] <= $y and (.at[1] + .size[1]) >= $y) ]
+            | sort_by(.size[0] * .size[1]) | first' 2>/dev/null)
+        [ -n "$_win" ] && [ "$_win" != "null" ] || exit 2
+        _wx=$(printf '%s' "$_win" | jq -r '.at[0]')
+        _wy=$(printf '%s' "$_win" | jq -r '.at[1]')
+        _ww=$(printf '%s' "$_win" | jq -r '.size[0]')
+        _wh=$(printf '%s' "$_win" | jq -r '.size[1]')
+        # Monitor under the window center, for origin + scale.
+        _cx=$((_wx + _ww / 2))
+        _cy=$((_wy + _wh / 2))
+        _mon=$(hyprctl monitors -j 2>/dev/null | jq -c --argjson x "$_cx" --argjson y "$_cy" '
+            ([ .[] | select(.x <= $x and ($x < .x + .width)
+                         and .y <= $y and ($y < .y + .height))
+               | {x: .x, y: .y, scale: .scale} ] | first) // (.[0] | {x: .x, y: .y, scale: .scale})' 2>/dev/null)
+        [ -n "$_mon" ] && [ "$_mon" != "null" ] || exit 2
         _mx=$(printf '%s' "$_mon" | jq -r '.x // 0')
         _my=$(printf '%s' "$_mon" | jq -r '.y // 0')
         _scale=$(printf '%s' "$_mon" | jq -r '.scale // 1')
