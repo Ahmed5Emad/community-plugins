@@ -138,6 +138,7 @@ body:
         - misr-quran-radio
         - mx-control
         - nan-usage
+        - ncs-visualizer
         - network-control
         - network-toolkit
         - nextboot-selector
