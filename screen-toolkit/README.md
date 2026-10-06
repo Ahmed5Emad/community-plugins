@@ -48,7 +48,7 @@ Recording requires at least one backend:
 Optional:
 
 - **`translate-shell`** (`trans`) — OCR translation
-- **hyprctl** — window geometry and hover highlight for Annotate Window (Hyprland; the highlight needs a Lua-dispatch build)
+- **`hyprctl`** — window geometry and hover highlight for Annotate Window (Hyprland; the highlight needs a Lua-dispatch build)
 - **`niri`** — Annotate Window on Niri captures the focused window
 
 Screenshots and annotation use the shell's own screenshot stack
