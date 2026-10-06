@@ -9,9 +9,9 @@
 # Actions:
 #   region-file                — interactive region capture; stdout: file path
 #   fullscreen-file            — capture the focused monitor; stdout: file path
-#   window-file                — click a window (slurp point), snap to the
-#                                smallest mapped Hyprland window under it,
-#                                capture via fullscreen + magick crop;
+#   window-file                — hover to aim (overlay cut from the hovered
+#                                window's geometry), click to capture it via
+#                                fullscreen + magick crop.
 #                                stdout: file path
 #   edit <file>                — open <file> in the shell annotation editor
 #   annotate-region            — region capture + editor; stdout: file path
@@ -76,30 +76,31 @@ newest_since() {
 # Poll for the capture the shell is still flushing. Prints the file path.
 pickup() {
     local i f
-    for i in $(seq 1 20); do
+    for i in $(seq 1 50); do
         f=$(newest_since "$1" "$2")
         if [ -n "$f" ]; then
             printf '%s\n' "$f"
             return 0
         fi
-        sleep 0.25
+        sleep 0.1
     done
     return 1
 }
 
-# Wait until $1 stops growing (the shell flushes the file asynchronously
-# after printing ok). True when two reads 0.3s apart agree on a nonzero size.
-wait_stable() {
+# Wait until $1 is fully flushed (the shell writes the file asynchronously
+# after printing ok). Cheap stat polling finds stability, then a single
+# magick parse confirms it — a fresh file typically costs ~0.3s here.
+wait_ready() {
     local prev="" cur="" i
-    for i in $(seq 1 14); do
+    for i in $(seq 1 50); do
         cur=$(stat -c %s "$1" 2>/dev/null) || cur=""
         if [ -n "$cur" ] && [ "$cur" != "0" ] && [ "$cur" = "$prev" ]; then
-            return 0
+            magick identify -format '%w %h\n' "$1" >/dev/null 2>&1 && return 0
         fi
         prev="$cur"
-        sleep 0.3
+        sleep 0.1
     done
-    [ -n "$cur" ] && [ "$cur" != "0" ]
+    return 1
 }
 
 _require() {
@@ -120,7 +121,7 @@ case "$ACTION" in
         noctalia msg screenshot-region >/dev/null 2>&1 || exit 10
         _f=""
         _f=$(pickup "$_dir" "$_before") || exit 11
-        wait_stable "$_f" || exit 11
+        wait_ready "$_f" || exit 11
         printf '%s\n' "$_f"
         ;;
 
@@ -132,7 +133,7 @@ case "$ACTION" in
         noctalia msg screenshot-fullscreen >/dev/null 2>&1 || exit 10
         _f=""
         _f=$(pickup "$_dir" "$_before") || exit 11
-        wait_stable "$_f" || exit 11
+        wait_ready "$_f" || exit 11
         printf '%s\n' "$_f"
         ;;
 
@@ -142,10 +143,59 @@ case "$ACTION" in
         _require hyprctl
         _require jq
         _require magick
-        # Click the window you want, like the Markup tool: slurp -p reports
-        # the click point without drawing a shape, then we snap to the
-        # smallest mapped window containing it (topmost wins).
-        _pt=$(slurp -p 2>/dev/null) || exit 10
+        # Hover to aim, click to capture, no dragging. slurp waits for the
+        # click with a fully transparent background, so the only overlay is
+        # the loop below: it tracks the cursor and sets dim_around on the
+        # window under it, removing the fullscreen effect from exactly that
+        # window's geometry. The snap below then captures the same window.
+        _hlast="/tmp/screen-toolkit-hover-$$.addr"
+        : > "$_hlast"
+        _hover_cleanup() {
+            _off=""
+            _off=$(cat "$_hlast" 2>/dev/null)
+            if [ -n "$_off" ]; then
+                hyprctl dispatch "hl.dsp.window.set_prop({prop='dim_around', value='0', window='address:$_off'})" >/dev/null 2>&1
+            fi
+            rm -f "$_hlast"
+        }
+        (
+            _cur=""
+            while true; do
+                _pos=$(hyprctl cursorpos 2>/dev/null) || { sleep 0.12; continue; }
+                _hx=$(printf '%s' "$_pos" | awk -F'[, ]+' '{print int($1)}')
+                _hy=$(printf '%s' "$_pos" | awk -F'[, ]+' '{print int($2)}')
+                _addr=""
+                if [ -n "$_hx" ] && [ -n "$_hy" ]; then
+                    _addr=$(hyprctl clients -j 2>/dev/null | jq -r --argjson x "$_hx" --argjson y "$_hy" '
+                        [ .[] | select(.mapped == true and (.hidden != true))
+                          | { address: .address, at: (.at // [0, 0]), size: (.size // [0, 0]) }
+                          | select(.at[0] <= $x and (.at[0] + .size[0]) >= $x
+                               and .at[1] <= $y and (.at[1] + .size[1]) >= $y) ]
+                        | sort_by(.size[0] * .size[1]) | first | .address // empty' 2>/dev/null)
+                fi
+                if [ "$_addr" != "$_cur" ]; then
+                    if [ -n "$_cur" ]; then
+                        hyprctl dispatch "hl.dsp.window.set_prop({prop='dim_around', value='0', window='address:$_cur'})" >/dev/null 2>&1
+                    fi
+                    _cur="$_addr"
+                    printf '%s' "$_cur" > "$_hlast"
+                    if [ -n "$_cur" ]; then
+                        hyprctl dispatch "hl.dsp.window.set_prop({prop='dim_around', value='1', window='address:$_cur'})" >/dev/null 2>&1
+                    fi
+                fi
+                sleep 0.12
+            done
+        ) &
+        _hoverpid=$!
+        trap 'kill ${_hoverpid:-} 2>/dev/null; _hover_cleanup' EXIT
+        _pt=""
+        _rc=0
+        _pt=$(slurp -p -b 00000000 2>/dev/null) || _rc=$?
+        kill "$_hoverpid" 2>/dev/null
+        wait "$_hoverpid" 2>/dev/null
+        _hover_cleanup
+        trap - EXIT
+        if [ "$_rc" -ne 0 ]; then exit 10; fi
         _px=$(printf '%s' "$_pt" | awk -F'[, ]+' '{print int($1)}')
         _py=$(printf '%s' "$_pt" | awk -F'[, ]+' '{print int($2)}')
         _win=$(hyprctl clients -j 2>/dev/null | jq -c --argjson x "$_px" --argjson y "$_py" '
@@ -170,13 +220,12 @@ case "$ACTION" in
         _mx=$(printf '%s' "$_mon" | jq -r '.x // 0')
         _my=$(printf '%s' "$_mon" | jq -r '.y // 0')
         _scale=$(printf '%s' "$_mon" | jq -r '.scale // 1')
-        sleep 0.4
         _dir=$(shell_dir)
         _before=$(date +%s)
         noctalia msg screenshot-fullscreen >/dev/null 2>&1 || exit 10
         _full=""
         _full=$(pickup "$_dir" "$_before") || exit 11
-        wait_stable "$_full" || exit 11
+        wait_ready "$_full" || exit 11
         # Window geometry is logical pixels; the PNG is physical (x scale).
         read -r _iw _ih < <(magick identify -format '%w %h\n' "$_full" 2>/dev/null) || exit 3
         read -r _cx _cy _cw _ch < <(awk -v wx="$_wx" -v wy="$_wy" -v ww="$_ww" -v wh="$_wh" \

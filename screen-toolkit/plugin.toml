@@ -8,7 +8,7 @@
 
 id = "alexander/screen-toolkit"
 name = "Screen Toolkit"
-version = "1.5.0"
+version = "1.5.2"
 plugin_api = 13
 author = "alexander"
 license = "MIT"
