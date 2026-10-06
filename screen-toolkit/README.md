@@ -21,10 +21,10 @@ not the original implementation.
 ## Requirements
 
 Install the tools used by the features you want on `PATH`. Missing tools are
-reported when that feature is started.
+reported when that feature is started. Screenshots, region selection, and
+annotation run through the shell's own screenshot stack (no extra binaries);
+only pixel processing and recording need external tools.
 
-- **`slurp`** — region selection
-- **`grim`** — screen capture
 - **`hyprpicker`** — pixel color picking
 - **`tesseract`** — OCR engine (plus your language packs, e.g. `tesseract-data-eng`)
 - **`imagemagick`** — image processing
@@ -44,17 +44,18 @@ Recording requires at least one backend:
 - **`wl-screenrec`** — preferred for region recording and microphone audio
 - **`wf-recorder`** — fallback recorder for region and fullscreen capture
 
+Region recording also needs **`slurp`** for the region-selection crosshair.
+
 Optional:
 
-- **`swappy`** / **`satty`** / **`tensaku`** — annotation editor (Markup tool)
-- **`gimp`** — fallback annotation editor when swappy/satty/tensaku are missing
 - **`translate-shell`** (`trans`) — OCR translation
 - **hyprctl** — annotate the focused window (Hyprland)
 - **`niri`** — annotate the focused window (Niri)
 
-Compositor support: region tools, measure, annotate and recording work on any
-Wayland compositor with `wlroots` protocols. `Annotate Window` requires Hyprland
-(`hyprctl`) or Niri (`niri msg`).
+Screenshots and annotation use the shell's own screenshot stack
+(`screenshot-region`, `screenshot-fullscreen`, `annotate`), so captures land
+in the shell's screenshot directory with its filename pattern. `Annotate
+Window` captures the focused window: Hyprland (`hyprctl`) or Niri (`niri msg`).
 
 ## Usage
 
@@ -115,24 +116,24 @@ The tools panel contains the capture actions. When a capture tool finishes, a
 **result panel** opens with the output and its actions; close it to return to
 the tools panel.
 
-Region tools (Color, OCR, QR, Palette, Lens, Measure, GIF/MP4 record, Markup)
-draw a `slurp` crosshair — drag to select a region, then release. Recording
-starts immediately and the bar widget shows the pulsing dot; click the dot, the
-widget, the shortcut, or the panel's **Stop** button to end it. Unless "Skip
+Region tools (OCR, QR, Palette, Lens, Measure, Markup) use the shell's
+interactive region overlay — drag to select a region, then release. Region
+recording draws a `slurp` crosshair instead, to get a geometry for the
+external recorder. Recording starts immediately and the bar widget shows the
+pulsing dot; click the dot, the widget, the shortcut, or the panel's **Stop** button to end it. Unless "Skip
 Save Confirmation" is on, the panel then offers **Save MP4**, **Save GIF**,
 **Copy**, and **Discard**.
 
-The `hide-cursor` setting excludes the cursor from **recordings and screenshots**
-(default: hidden). Grim excludes the cursor by default; when the setting is
-disabled, the plugin passes grim's `-c` flag to include it. gpu-screen-recorder
+The `hide-cursor` setting excludes the cursor from **recordings** (default:
+hidden). Screenshots follow the shell's own screenshot cursor setting.
+gpu-screen-recorder
 and wl-screenrec receive their corresponding cursor options. wf-recorder does
 not expose a portable cursor flag, so its behavior depends on the compositor.
 
-- **Markup** captures the region and opens it in `swappy` (`satty` or `tensaku`). Saving
-  happens in that editor; satty saves to your screenshot path automatically.
-  **Markup Window** shows a crosshair — click the window you want to annotate
-  and it captures that window (Hyprland). On Niri it captures the focused
-  window directly.
+- **Markup** captures the region and opens it in the shell's annotation
+  editor; Copy and Save deliver the annotated PNG per the shell's screenshot
+  policy. **Markup FS** captures the focused monitor, **Markup Window**
+  captures the focused window (Hyprland via `hyprctl`, Niri via `niri msg`).
 - **Measure** reports the region's pixel size and copies it to the clipboard.
 - **OCR** extracts text and copies it to the clipboard. The result includes the
   capture preview and an editable multiline text area, so you can correct, trim,
@@ -155,7 +156,6 @@ All settings live in Settings → Plugins (gear on the plugin's row).
 
 | Setting | Type | Default | Description |
 | --- | --- | --- | --- |
-| `screenshot-path` | `folder` | `~/Pictures/Screenshots` | Where satty saves annotations. |
 | `video-path` | `folder` | `~/Videos` | Where recordings are saved. |
 | `filename-format` | `string` | `%Y-%m-%d_%H-%M-%S` | Filename template; the extension is added automatically. |
 | `selected-ocr-lang` | `string` | `eng` | Tesseract language code; combine with `+` (e.g. `eng+fra`). |
