@@ -1,6 +1,6 @@
 id = "alexander/game-launcher"
 name = "Game Launcher"
-version = "1.5.0"
+version = "1.5.1"
 plugin_api = 13
 author = "Alexander"
 license = "MIT"
@@ -80,5 +80,5 @@ id = "search"
 entry = "search.luau"
 prefix = "g"
 glyph = "device-gamepad-2"
-include_in_global_search = true
+include_in_global_search = false
 debounce_ms = 150

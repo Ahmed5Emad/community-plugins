@@ -1,9 +1,6 @@
 local games = {}
 local lastQuery = ""
-
-local function statusRow(title, subtitle, glyph)
-  return { id = "", title = title, subtitle = subtitle, glyph = glyph }
-end
+local cmdById = {}
 
 local function isRunnerEnabled(runner)
   local ok, val = pcall(noctalia.getConfig, runner .. "_enabled")
@@ -33,31 +30,65 @@ local function loadGames()
   return false
 end
 
-local function filterRows(text)
-  local lower = noctalia.string.trim(text):lower()
+local runnerMeta = {
+  steam = { glyph = "brand-steam", color = "steam" },
+  lutris = { glyph = "device-gamepad", color = "warning" },
+  heroic = { glyph = "app-window", color = "heroic" },
+}
+
+local function makeRow(g, score)
+  local m = runnerMeta[g.runner] or { glyph = "app-window", color = "on_surface" }
+  if g.run_command and #g.run_command > 0 then
+    cmdById[g.id] = g.run_command
+  end
+  local row = {
+    id = g.id,
+    title = g.name,
+    subtitle = "Launch via " .. g.runner,
+    glyph = m.glyph,
+  }
+  if score ~= nil then
+    row.score = score
+  end
+  return row
+end
+
+-- Browse mode (empty query, like web-launcher): list every enabled game.
+local function allRows()
   local results = {}
   for _, g in ipairs(games) do
-    if g.name and g.runner and g.name:lower():find(lower, 1, true) and isRunnerEnabled(g.runner) then
-      local meta = { steam = { glyph = "brand-steam", color = "steam" }, lutris = { glyph = "device-gamepad", color = "warning" }, heroic = { glyph = "app-window", color = "heroic" } }
-      local m = meta[g.runner] or { glyph = "app-window", color = "on_surface" }
-      table.insert(results, {
-        id = g.id,
-        title = g.name,
-        subtitle = "Launch via " .. g.runner,
-        glyph = m.glyph,
-      })
+    if g.name and g.runner and isRunnerEnabled(g.runner) then
+      table.insert(results, makeRow(g))
     end
   end
-  if #results == 0 then
-    if #games == 0 then
-      return {
-        statusRow("No games found", "Open the Game Launcher panel to scan your games first.", "app-window"),
-      }
-    end
-    return {
-      statusRow("No games found", "Nothing matches \"" .. text .. "\". Try a different name.", "app-window"),
-    }
+  table.sort(results, function(a, b)
+    return a.title:lower() < b.title:lower()
+  end)
+  return results
+end
+
+local function filterRows(text)
+  local query = noctalia.string.trim(text)
+  if query == "" then
+    return allRows()
   end
+  local results = {}
+  for _, g in ipairs(games) do
+    if g.name and g.runner and isRunnerEnabled(g.runner) then
+      local score
+      if noctalia.fuzzyScore then
+        score = noctalia.fuzzyScore(query, g.name)
+      elseif g.name:lower():find(query:lower(), 1, true) then
+        score = 1
+      end
+      if score then
+        table.insert(results, makeRow(g, score))
+      end
+    end
+  end
+  table.sort(results, function(a, b)
+    return (a.score or 0) > (b.score or 0)
+  end)
   return results
 end
 
@@ -65,25 +96,15 @@ pcall(function()
   noctalia.state.watch("games", function(v)
     if type(v) == "table" then
       games = v
-      if lastQuery ~= "" then
-        launcher.setResults(lastQuery, filterRows(lastQuery))
-      end
+      launcher.setResults(lastQuery, filterRows(lastQuery))
     end
   end)
 end)
 
 function onQuery(text)
   lastQuery = text
-  if text == "" then
-    launcher.setResults(text, {
-      statusRow("Type a game name to search", "Searches Steam, Lutris, and Heroic.", "device-gamepad-2"),
-    })
-    return
-  end
   if not loadGames() then
-    launcher.setResults(text, {
-      statusRow("No games loaded", "Open the Game Launcher panel first so it can scan your games.", "device-gamepad-2"),
-    })
+    launcher.setResults(text, {})
     return
   end
   launcher.setResults(text, filterRows(text))
@@ -102,10 +123,28 @@ end
 
 function onActivate(id)
   if id == "" then return end
-  for _, g in ipairs(games) do
-    if g.id == id and g.run_command and #g.run_command > 0 and isValidProtocol(g.run_command) then
-      noctalia.runAsync('xdg-open "' .. g.run_command .. '"')
-      return
+  -- Prefer the command captured when the row was built: the games table
+  -- may be stale or unloaded in this VM by activation time.
+  local cmd = cmdById[id]
+  if not cmd then
+    for _, g in ipairs(games) do
+      if g.id == id and g.run_command and #g.run_command > 0 then
+        cmd = g.run_command
+        break
+      end
     end
+  end
+  if not cmd and loadGames() then
+    for _, g in ipairs(games) do
+      if g.id == id and g.run_command and #g.run_command > 0 then
+        cmd = g.run_command
+        break
+      end
+    end
+  end
+  if cmd and isValidProtocol(cmd) then
+    noctalia.runAsync('xdg-open "' .. cmd .. '"')
+  else
+    noctalia.log("game-launcher: cannot launch id " .. tostring(id))
   end
 end
