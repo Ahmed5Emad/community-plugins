@@ -9,7 +9,7 @@
 id = "alexander/screen-toolkit"
 name = "Screen Toolkit"
 version = "2.0.0"
-plugin_api = 42 (feat(screen-toolkit): v2.0.0 — OCR retry, share history, Umbriel support, cleanup)
+plugin_api = 42
 author = "alexander"
 license = "MIT"
 icon = "crosshair"
