@@ -45,6 +45,28 @@
   "ipc": {
     "not_found": "No theme matches \"{query}\"."
   },
+  "picker": {
+    "add": {
+      "one": "Add {count} wallpaper",
+      "other": "Add {count} wallpapers"
+    },
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "empty_dir": "No images in this folder.",
+    "filter_placeholder": "Filter by name",
+    "image_count": {
+      "one": "{count} image",
+      "other": "{count} images"
+    },
+    "next_page": "Next page",
+    "no_matches": "No images match the filter.",
+    "page": "Page {page} / {pages}",
+    "prev_page": "Previous page",
+    "select_all": "Select all",
+    "title": "Add wallpapers",
+    "up": "Parent folder",
+    "wallpaper_dir": "Wallpaper folder"
+  },
   "random": {
     "applied": "Random wallpaper applied",
     "no_wallpapers": "This theme has no wallpapers.",

@@ -12,6 +12,7 @@
     "no-variants": "No alternative lyrics found",
     "now-playing": "NOW PLAYING",
     "reload-lyrics": "Reload lyrics",
+    "seek-to": "Seek to",
     "synced": "synced",
     "unsynced": "unsynced",
     "variant-default": "Default"
@@ -36,6 +37,34 @@
     "artist_first": {
       "description": "Show \"Artist - Title\" instead of \"Title - Artist\".",
       "label": "Artist first"
+    },
+    "audio_spectrum": {
+      "description": "Draw a live audio band meter in the chip.",
+      "label": "Audio spectrum"
+    },
+    "audio_spectrum_bands": {
+      "description": "Number of spectrum bands, 1-64.",
+      "label": "Spectrum bands"
+    },
+    "desktop_background": {
+      "description": "Draw a surface behind the desktop widget. Off by default: like the built-in desktop widgets, the content sits straight on the wallpaper.",
+      "label": "Background"
+    },
+    "desktop_lines": {
+      "description": "Minimum lyric lines in the desktop widget; short tracks fill more.",
+      "label": "Lyric lines"
+    },
+    "desktop_show_artist": {
+      "description": "Show the artist line under the title on the desktop widget.",
+      "label": "Show artist"
+    },
+    "desktop_show_cover": {
+      "description": "Show the album artwork on the desktop widget.",
+      "label": "Show album art"
+    },
+    "desktop_width": {
+      "description": "Fixed widget width. Without it the surface resizes with every lyric line.",
+      "label": "Widget width"
     },
     "hide_album_art": {
       "description": "Hide the artwork and its fallback icon.",

@@ -13,7 +13,7 @@
 
 id = "jrohland/claudecode"
 name = "Claude Code Usage"
-version = "1.0.1"
+version = "1.1.0"
 # Oldest API level this plugin actually needs. The gate is noctalia.getSetting (API 26),
 # which ring.luau reads theme.pure_black_dark through; below that the ring picks the wrong
 # palette. The rest of the surface sits lower: runAsync with an argv table (24),
@@ -45,6 +45,12 @@ dependencies = [
   "find",
   "basename",
   "mktemp",
+  "mkdir",
+  "mv",
+  "rm",
+  "seq",
+  "sort",
+  "xargs",
 ]
 
 # Plugin-level settings: shared by every entry, edited under Settings → Plugins,

@@ -593,6 +593,11 @@ end
 local streamRunning = false
 local streamRetryAtMs = 0
 local feedDirty = false
+-- runStream returns no handle, so each stream carries a token on its command line: stopF1Stream
+-- sends SIGTERM to that one process, and f1-live.sh's trap ends its curl. streamGen drops lines from
+-- a stream the moment it is superseded, before its process has gone.
+local streamGen = 0
+local streamToken: string? = nil
 
 local function useF1Feed()
     return noctalia.getConfig("live_source") == "f1_feed"
@@ -612,8 +617,13 @@ local function startF1Stream(now)
     local seconds = math.max(120, math.min(untilTs - now, 4 * 3600))
     -- The path comes from the host, not from the network; quoting keeps spaces safe.
     local quoted = "'" .. (dir:gsub("'", "'\\''")) .. "/f1-live.sh'"
+    streamGen += 1
+    local gen = streamGen
+    local token = "f1live-" .. tostring(noctalia.nowMs())
+    streamToken = token
     streamRunning = true
-    local started = noctalia.runStream("sh " .. quoted .. " " .. tostring(math.floor(seconds)), function(line)
+    local started = noctalia.runStream("sh " .. quoted .. " " .. tostring(math.floor(seconds)) .. " " .. token, function(line)
+        if gen ~= streamGen then return end
         if line == "closed" then
             streamRunning = false
             streamRetryAtMs = noctalia.nowMs() + 15000
@@ -626,6 +636,19 @@ local function startF1Stream(now)
         streamRetryAtMs = noctalia.nowMs() + 60000
         liveError = "net"
         publishLive()
+    end
+end
+
+-- Ends the running stream: on leaving f1_feed, and once no session is near.
+local function stopF1Stream()
+    if not streamRunning then return end
+    streamGen += 1
+    streamRunning = false
+    streamRetryAtMs = 0
+    if streamToken ~= nil then
+        -- Anchored to the script's own argv, so no other process that happens to carry the token matches.
+        noctalia.runAsync({ "pkill", "-TERM", "-f", "f1-live\\.sh [0-9]+ " .. streamToken .. "$" })
+        streamToken = nil
     end
 end
 
@@ -711,6 +734,7 @@ function update()
         if useF1Feed() then
             runF1Feed(now)
         else
+            stopF1Stream()
             liveSourceName, liveSession, liveClock = "openf1", nil, nil
             local ms = noctalia.nowMs()
             if ms - lastLiveMs >= LIVE_EVERY_MS and ms >= liveBackoffUntilMs then
@@ -718,11 +742,14 @@ function update()
                 pollLive()
             end
         end
-    elseif #liveRows > 0 or liveLatest ~= 0 or liveError ~= nil then
-        liveRows, liveFlag, liveLatest, liveError, driversMap = {}, "", 0, nil, nil
-        liveSession, liveClock = nil, nil
-        f1feed.reset()
-        publishLive()
+    else
+        stopF1Stream()
+        if #liveRows > 0 or liveLatest ~= 0 or liveError ~= nil then
+            liveRows, liveFlag, liveLatest, liveError, driversMap = {}, "", 0, nil, nil
+            liveSession, liveClock = nil, nil
+            f1feed.reset()
+            publishLive()
+        end
     end
 
     checkNotify(now)
@@ -733,6 +760,7 @@ local lastSourceF1 = false
 function onConfigChanged()
     if useF1Feed() ~= lastSourceF1 then
         lastSourceF1 = useF1Feed()
+        if not lastSourceF1 then stopF1Stream() end
         liveRows, liveFlag, liveLatest, liveError, driversMap = {}, "", 0, nil, nil
         liveSession, liveClock = nil, nil
         f1feed.reset()

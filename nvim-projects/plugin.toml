@@ -1,7 +1,7 @@
 id = "ashur-d/nvim-projects"
 name = "Neovim Projects"
-version = "1.0.1"
-plugin_api = 3
+version = "1.1.1"
+plugin_api = 24
 author = "Ashur-D"
 license = "MIT"
 icon = "folder-open"
@@ -32,6 +32,20 @@ label_key = "settings.terminal.label"
 description_key = "settings.terminal.description"
 default = ""
 
+[[setting]]
+key = "command"
+type = "string"
+label_key = "settings.command.label"
+description_key = "settings.command.description"
+default = "nvim"
+
+[[setting]]
+key = "run_in_terminal"
+type = "bool"
+label_key = "settings.run_in_terminal.label"
+description_key = "settings.run_in_terminal.description"
+default = true
+
 [[launcher_provider]]
 id = "provider"
 entry = "nvim_provider.luau"
@@ -39,3 +53,4 @@ prefix = "nvim"
 glyph = "terminal"
 include_in_global_search = false
 debounce_ms = 0
+

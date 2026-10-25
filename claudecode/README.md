@@ -38,8 +38,9 @@ older id `panel`.
 - `jq` and `curl` on `PATH`. The service checks for both and reports a status instead of
   running when either is missing.
 - `bash`, plus the usual base userland that `get-claude-usage` calls: `awk`, `grep`,
-  `date`, `cut`, `tr`, `wc`, `cat`, `head`, `find`, `basename` and `mktemp`. These ship
-  with coreutils, findutils and gawk on every supported distribution.
+  `date`, `cut`, `tr`, `wc`, `cat`, `head`, `find`, `xargs`, `basename`, `mktemp`,
+  `mkdir`, `mv`, `rm`, `seq` and `sort`. These ship with coreutils, findutils and gawk on
+  every supported distribution.
 
 ## Usage
 
@@ -138,6 +139,13 @@ arithmetic, so a card never reads calm while the vendor is calling it urgent.
 - Inside the panel and the desktop widget, progress is still linear (`ui.progress`).
 - The panel is a fixed 380×640 and scrolls; the DMS popout auto-sizes.
 
+## Token counting
+
+Token counts and costs come from the session transcripts in `~/.claude/projects`, over
+files modified in the last 31 days. Claude Code writes one API response as several
+transcript lines sharing a message id; each is counted once. Before 1.1.0 every line was
+summed, so week and month totals and costs read about twice as high as they were.
+
 ## Architecture
 
 - `get-claude-usage` — the data engine, a Bash script. The plugin runs it with `--json`;
@@ -163,7 +171,14 @@ What this plugin touches, so nothing is a surprise:
   HTTPS, on the refresh interval.
 - **Spawns** `get-claude-usage` through `bash`, and `noctalia theme` when the ring needs
   a wallpaper-derived palette.
-- **Writes** nothing outside the plugin's own data directory.
+- **Writes** small caches next to Claude Code's own files: `~/.claude/pricing-cache.json`
+  (refreshed daily), `~/.claude/usage-cache*.json` (the last usage response), and
+  `~/.claude/usage-cache*-refresh.json` (a remembered refresh failure). When the access
+  token has expired it also rewrites `~/.claude/.credentials.json` with the refreshed
+  token, the way Claude Code does.
+- **Caches** the rows it extracts from `~/.claude/projects/**/*.jsonl` under
+  `${XDG_CACHE_HOME:-~/.cache}/noctalia-claudecode/`, so a refresh re-reads only the
+  session files that changed. Deleting that directory is safe; the next run rebuilds it.
 
 Localized in English. Translations for other locales are welcome through
 [Noctalia Translate](https://i18n.noctalia.dev).

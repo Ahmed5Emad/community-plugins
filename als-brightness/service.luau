@@ -135,8 +135,7 @@ for k, v in pairs(policy.DEFAULTS) do CFG[k] = v end
 -- thresholds reload() saw instead of re-reading config mid-flight.
 --
 -- kbd is the keyboard-backlight bookkeeping keyboard.decide mutates through
--- adaptation.decide; its scale seeds from the profile at load and is written
--- back into it on kbd_learned.
+-- adaptation.decide; the threshold anchor is exact (no learned multiplier).
 local SESSION = {
   log = nil,            -- stabilised log10 reading
   last_written = nil,   -- percent we last commanded
@@ -147,7 +146,7 @@ local SESSION = {
   last_ms = nil,        -- injected clock, MILLISECONDS
   applied_k = nil,      -- night-light temperature we last wrote
   last_temp_s = nil,
-  kbd = { mode = nil, cmd_raw = nil, inhibit = false, changes = {}, scale = 1.0 },
+  kbd = { mode = nil, cmd_raw = nil, inhibit = false },
   profile = profile.new(),
   curve_settings = {},
   cs = nil,
@@ -163,9 +162,6 @@ local function load_profile()
     return
   end
   SESSION.profile = profile.sanitise(decoded)
-  -- The learned keyboard scale rides the same file; seed the keyboard's
-  -- bookkeeping from it (sanitise already clamped it to keyboard's bounds).
-  SESSION.kbd.scale = SESSION.profile.kbd_scale
 end
 
 local LAST_SAVE_S = nil
@@ -337,12 +333,6 @@ perform = function(actions)
       -- The owner's Fn press took over: the physical level stands until ambient
       -- crosses the band edge that would have changed it (keyboard.luau).
       log("keyboard: manual change adopted; auto adaptation held")
-    elseif kind == "kbd_learned" then
-      -- The scale was already folded into SESSION.profile (adaptation.decide's
-      -- pure half, exactly like record()); learning events are rare (a habit
-      -- burst), so unlike observations they are persisted immediately.
-      DIRTY = true
-      save_profile(action.now_s, true)
     end
   end
 end

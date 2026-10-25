@@ -26,6 +26,15 @@ local modelHeadlines, isCritical, dualMetrics = shared.modelHeadlines, shared.is
 local pace, SEVERITY_RANK = shared.pace, shared.SEVERITY_RANK
 local NO_FAILURE, asFailure = shared.NO_FAILURE, shared.asFailure
 local unavailable, warning = shared.unavailable, shared.warning
+local getTypography = shared.getTypography
+
+local function getBarTypography()
+    local barSetting = noctalia.getConfig("bar_font_scale")
+    if barSetting == nil or barSetting == "" or barSetting == "inherit" then
+        barSetting = noctalia.getConfig("font_scale")
+    end
+    return getTypography(barSetting)
+end
 
 local failure = NO_FAILURE
 local scrollOffset = 0
@@ -46,10 +55,29 @@ local function rank(entry)
     return SEVERITY_RANK[tostring(metric.severity or "")] or 0, tonumber(metric.percent) or 0
 end
 
+local function isPinnedHidden()
+    if vendor == "auto" then return false end
+    local wanted = wantedEntryId()
+    local base = baseProvider(wanted)
+    if shared.isModelHidden(wanted, wanted) or shared.isModelHidden(base, base) then
+        return true
+    end
+    if (wanted == "claude-oss" or wanted == "claude_oss" or vendor == "claude-oss" or vendor == "claude_oss")
+        and shared.isModelHidden("antigravity", "Claude & GPT OSS") then
+        return true
+    end
+    if (wanted == "gemini" or vendor == "gemini")
+        and shared.isModelHidden("antigravity", "Gemini") then
+        return true
+    end
+    return false
+end
+
 -- A pinned vendor shows only itself. "auto" ranks by severity then percentage,
 -- so the provider closest to running out is the one on the bar. `primary` breaks
 -- ties.
 local function shown()
+    if isPinnedHidden() then return {}, 0 end
     local all = entries()
     if vendor ~= "auto" then
         local wanted = wantedEntryId()
@@ -59,6 +87,14 @@ local function shown()
             if entry.id == wanted then
                 if unavailable(entry) and not shared.readFailure(entry) then return {}, 0 end
                 return { entry }, 0
+            end
+        end
+        if wanted == "gemini" or wanted == "claude-oss" or wanted == "claude_oss" then
+            for _, entry in ipairs(all) do
+                if baseProvider(entry.id) == "antigravity" then
+                    if unavailable(entry) and not shared.readFailure(entry) then return {}, 0 end
+                    return { entry }, 0
+                end
             end
         end
         return {}, 0
@@ -120,13 +156,22 @@ local function shown()
     return picked, #ready - #picked
 end
 
+local function rawReportEntries()
+    if type(report) ~= "table" or type(report.entries) ~= "table" then return {} end
+    return report.entries
+end
+
 -- The pinned entry when the report carries it and its source is down. `shown()`
 -- withholds its numbers; the tooltip is still the place that says why.
 local function pinnedDown()
-    if vendor == "auto" then return nil end
+    if vendor == "auto" or isPinnedHidden() then return nil end
     local wanted = wantedEntryId()
-    for _, entry in ipairs(entries()) do
+    for _, entry in ipairs(rawReportEntries()) do
         if entry.id == wanted and unavailable(entry) then return entry end
+        if (wanted == "gemini" or wanted == "claude-oss" or wanted == "claude_oss")
+            and baseProvider(entry.id) == "antigravity" and unavailable(entry) then
+            return entry
+        end
     end
     return nil
 end
@@ -142,6 +187,8 @@ end
 -- capsules on two accounts are the same product, and the suffix is what tells
 -- them apart. Fixed for that capsule, so it costs no width between reads.
 local function shortName(entry)
+    if vendor == "gemini" then return "Gemini" end
+    if vendor == "claude-oss" or vendor == "claude_oss" then return "Claude & GPT OSS" end
     local name = tostring(entry.display_name or entry.name or entry.id or "")
     if vendor ~= "auto" and account ~= "" then return name end
     -- Anywhere else it is the panel's business: under "auto" a name that gains
@@ -159,7 +206,7 @@ end
 
 -- Upper and bigger bar (height 6, radius 3): 5h limit (session window)
 -- Lower and thinner bar (height 3, radius 2): weekly limit (7-day rate limit)
-local function bars(mShort, mWeekly, width)
+local function bars(mShort, mWeekly, width, typo)
     if mShort == nil and mWeekly == nil then return nil end
 
     local pShort = mShort and tonumber(mShort.percent)
@@ -169,6 +216,9 @@ local function bars(mShort, mWeekly, width)
 
     local fShort = mShort and metricFill(mShort) or "primary"
     local fWeekly = mWeekly and metricFill(mWeekly) or "primary"
+
+    local factor = typo and typo.factor or 1.0
+    local w = math.floor(width * factor + 0.5)
 
     -- Upper / bigger bar (height 6): 5h limit (or the single available metric)
     local topProgress = pShort ~= nil and pShort or (pWeekly or 0)
@@ -180,7 +230,7 @@ local function bars(mShort, mWeekly, width)
             fill = topFill,
             track = "on_surface/0.14",
             radius = 3,
-            width = width,
+            width = w,
             height = 6,
         }),
     }
@@ -192,7 +242,7 @@ local function bars(mShort, mWeekly, width)
             fill = fWeekly,
             track = "on_surface/0.10",
             radius = 2,
-            width = width,
+            width = w,
             height = 3,
         })
     end
@@ -228,12 +278,14 @@ local function miniGauge(percent, tint)
     })
 end
 
-local function chip(entry, flagged, isVert)
+local function chip(entry, flagged, isVert, typo)
+    local fs = typo and typo.fontSize or function(s) return s end
+    local gs = typo and typo.glyphSize or function(s) return s end
     if shared.readFailure(entry) then
-        local nodes = { ui.label({ text = "—", fontSize = 11, color = "on_surface_variant" }) }
+        local nodes = { ui.label({ text = "—", fontSize = fs(11), color = "on_surface_variant" }) }
         if showGlyph then
             table.insert(nodes, glyphAfter and #nodes + 1 or 1,
-                ui.glyph({ name = providerGlyph(entry.id), size = 14, color = "error" }))
+                ui.glyph({ name = providerGlyph(entry.id), size = gs(14), color = "error" }))
         end
         if isVert then
             return ui.column({ gap = 2, align = "center" }, nodes)
@@ -254,10 +306,25 @@ local function chip(entry, flagged, isVert)
     -- would shove the neighbouring widget once per cycle. The tooltip still
     -- spells the failure out.
     local submodels = modelHeadlines(entry)
+    if vendor == "gemini" then
+        local filtered = {}
+        for _, m in ipairs(submodels) do
+            if m.model:lower():find("gemini") then filtered[#filtered + 1] = m end
+        end
+        submodels = filtered
+    elseif vendor == "claude-oss" or vendor == "claude_oss" then
+        local filtered = {}
+        for _, m in ipairs(submodels) do
+            if m.model:lower():find("claude") or m.model:lower():find("oss") then
+                filtered[#filtered + 1] = m
+            end
+        end
+        submodels = filtered
+    end
     local hasSubmodels = #submodels > 0
 
     local glyph = (showGlyph and not hasSubmodels)
-        and ui.glyph({ name = providerGlyph(entry.id), size = 14,
+        and ui.glyph({ name = providerGlyph(entry.id), size = gs(14),
                        color = flagged and "error" or "on_surface" }) or nil
     local pct = nil
     if showValue or hasSubmodels then
@@ -273,14 +340,14 @@ local function chip(entry, flagged, isVert)
                 local rowChildren = {}
                 local modelGlyph = showGlyph and ui.glyph({
                         name = item.glyph or providerGlyph(entry.id),
-                        size = 13,
+                        size = gs(13),
                         color = "on_surface",
                     }) or nil
                 if modelGlyph and not glyphAfter then rowChildren[#rowChildren + 1] = modelGlyph end
 
                 local mMetrics = type(item.metrics) == "table" and item.metrics or { item.metric }
                 local mShort, mWeekly = dualMetrics(mMetrics)
-                local barNode = bars(mShort, mWeekly, 22)
+                local barNode = bars(mShort, mWeekly, 22, typo)
 
                 if visualization == "gauge" and not isVert and not glyphAfter and barNode ~= nil then
                     rowChildren[#rowChildren + 1] = barNode
@@ -288,7 +355,7 @@ local function chip(entry, flagged, isVert)
                 if showValue then
                     rowChildren[#rowChildren + 1] = ui.label({
                         text = string.format("%d%%", mPct),
-                        fontSize = 11,
+                        fontSize = fs(11),
                         fontWeight = "semibold",
                         color = mTint,
                         maxLines = 1,
@@ -302,7 +369,7 @@ local function chip(entry, flagged, isVert)
                     if left ~= "" then
                         rowChildren[#rowChildren + 1] = ui.label({
                             text = left,
-                            fontSize = 10,
+                            fontSize = fs(10),
                             color = "on_surface_variant",
                             maxLines = 1,
                         })
@@ -314,7 +381,7 @@ local function chip(entry, flagged, isVert)
                         and ui.box({ width = 10, height = 1, fill = "on_surface_variant", opacity = 0.25 })
                         or ui.label({
                             text = "·",
-                            fontSize = 11,
+                            fontSize = fs(11),
                             color = "on_surface_variant",
                         })
                 end
@@ -330,7 +397,7 @@ local function chip(entry, flagged, isVert)
         else
             pct = ui.label({
                 text = text,
-                fontSize = 11,
+                fontSize = fs(11),
                 fontWeight = "semibold",
                 color = tint,
                 maxLines = 1,
@@ -349,7 +416,7 @@ local function chip(entry, flagged, isVert)
         return ui.column({ gap = 2, align = "center" }, vertNodes)
     end
 
-    local name = showName and ui.label({ text = shortName(entry), fontSize = 11,
+    local name = showName and ui.label({ text = shortName(entry), fontSize = fs(11),
                                          color = "on_surface_variant", maxLines = 1 }) or nil
 
     local nodes = {}
@@ -359,9 +426,9 @@ local function chip(entry, flagged, isVert)
     add(name)
     if visualization == "gauge" and not hasSubmodels then
         local mShort, mWeekly = dualMetrics(entry.metrics)
-        local barNode = bars(mShort, mWeekly, 32)
+        local barNode = bars(mShort, mWeekly, 32, typo)
         if barNode == nil and percent ~= nil then
-            barNode = bars({ percent = percent, severity = metric and metric.severity }, nil, 32)
+            barNode = bars({ percent = percent, severity = metric and metric.severity }, nil, 32, typo)
         end
         add(barNode)
     end
@@ -371,7 +438,7 @@ local function chip(entry, flagged, isVert)
     if (extras == "countdown" or extras == "both") and not hasSubmodels then
         local left = fixedCountdown(metric)
         if left ~= "" then
-            add(ui.label({ text = left, fontSize = 10, color = "on_surface_variant", maxLines = 1 }))
+            add(ui.label({ text = left, fontSize = fs(10), color = "on_surface_variant", maxLines = 1 }))
         end
     end
     if extras == "pace" or extras == "both" then
@@ -380,14 +447,14 @@ local function chip(entry, flagged, isVert)
             local ahead = word == "ahead"
             local role = ahead and "secondary" or "on_surface_variant"
             add(ui.row({ gap = 0, align = "center" }, {
-                ui.glyph({ name = ahead and "arrow-up" or "arrow-down", size = 10, color = role }),
-                ui.label({ text = tostring(points), fontSize = 10, color = role, maxLines = 1 }),
+                ui.glyph({ name = ahead and "arrow-up" or "arrow-down", size = gs(10), color = role }),
+                ui.label({ text = tostring(points), fontSize = fs(10), color = role, maxLines = 1 }),
             }))
         end
     end
 
     if entry.stale == true then
-        add(ui.glyph({ name = "clock-exclamation", size = 11, color = "secondary" }))
+        add(ui.glyph({ name = "clock-exclamation", size = gs(11), color = "secondary" }))
     end
     return ui.row({ gap = 5, align = "center" }, nodes)
 end
@@ -407,9 +474,21 @@ local function formatDualMetric(m1, m2)
     -- the shorter session reset would promise availability while the weekly
     -- limit still blocks the model.
     local blocking = shared.blockingMetric(m1 and { m1, m2 } or { m2 })
-    local left = blocking ~= nil and fixedCountdown(blocking) or ""
-    if left == "" and m1 ~= nil then left = fixedCountdown(m1) end
-    if left == "" and m2 ~= nil then left = fixedCountdown(m2) end
+    local c1 = m1 ~= nil and fixedCountdown(m1) or ""
+    local c2 = m2 ~= nil and fixedCountdown(m2) or ""
+
+    local left = ""
+    local p1Num = tonumber(p1) or 0
+    local p2Num = tonumber(p2) or 0
+    if blocking ~= nil and (p2Num >= 100 or p1Num < 100) then
+        left = fixedCountdown(blocking)
+    elseif c1 ~= "" and c2 ~= "" then
+        left = string.format("%s · 7d: %s", c1, c2)
+    elseif c1 ~= "" then
+        left = c1
+    elseif c2 ~= "" then
+        left = c2
+    end
 
     local val = str1
     if str2 ~= nil and str2 ~= "" then
@@ -433,7 +512,9 @@ local function tooltip(picked, hidden)
         -- config for a failure the CLI already worded.
         local down = pinnedDown()
         if down ~= nil then
-            return { { key = tostring(down.display_name or down.id), value = warning(down) } }
+            local warn = warning(down)
+            if warn == "" then warn = noctalia.tr("ui.unavailable") end
+            return { { key = tostring(down.display_name or down.id), value = warn } }
         end
         local waiting = vendor == "auto" and noctalia.tr("ui.waiting")
             or noctalia.tr("ui.not_configured", { vendor = wantedEntryId() })
@@ -447,6 +528,21 @@ local function tooltip(picked, hidden)
             rows[#rows + 1] = { key = title, value = tostring(entry.error or noctalia.tr("ui.unavailable")) }
         else
             local submodels = modelHeadlines(entry)
+            if vendor == "gemini" then
+                local filtered = {}
+                for _, m in ipairs(submodels) do
+                    if m.model:lower():find("gemini") then filtered[#filtered + 1] = m end
+                end
+                submodels = filtered
+            elseif vendor == "claude-oss" or vendor == "claude_oss" then
+                local filtered = {}
+                for _, m in ipairs(submodels) do
+                    if m.model:lower():find("claude") or m.model:lower():find("oss") then
+                        filtered[#filtered + 1] = m
+                    end
+                end
+                submodels = filtered
+            end
             if #submodels > 0 then
                 for _, item in ipairs(submodels) do
                     local mMetrics = type(item.metrics) == "table" and item.metrics or { item.metric }
@@ -494,12 +590,26 @@ local function tooltip(picked, hidden)
 end
 
 local function render()
+    if isPinnedHidden() then
+        if type(barWidget.setVisible) == "function" then
+            barWidget.setVisible(false)
+        end
+        return
+    end
+
+    if type(barWidget.setVisible) == "function" then
+        barWidget.setVisible(true)
+    end
+
     local isVert = type(barWidget.isVertical) == "function" and barWidget.isVertical() or false
     local picked, hidden = shown()
     -- A failed read does not erase the last one: the numbers stay, flagged,
     -- until a good report replaces them. Erasing them blanked the capsule over a
     -- transient spawn failure.
     local flagged = failure.code ~= "" and #picked > 0
+    local typo = getBarTypography()
+    local fs = typo.fontSize
+    local gs = typo.glyphSize
 
     local children = {}
     for _, entry in ipairs(picked) do
@@ -509,20 +619,24 @@ local function render()
         if #children > 0 then
             children[#children + 1] = isVert
                 and ui.box({ width = 12, height = 1, fill = "on_surface_variant", opacity = 0.3 })
-                or ui.label({ text = "·", fontSize = 11, color = "on_surface_variant" })
+                or ui.label({ text = "·", fontSize = fs(11), color = "on_surface_variant" })
         end
-        children[#children + 1] = chip(entry, flagged, isVert)
+        children[#children + 1] = chip(entry, flagged, isVert, typo)
     end
 
     if #children == 0 then
-        -- One glyph, coloured by the state. A second icon beside it would read as
-        -- a second problem.
+        -- One glyph, coloured by the state. A pinned provider that is down or
+        -- waiting uses its own glyph so the capsule remains identifiable.
+        local down = pinnedDown()
+        local glyphName = (down ~= nil and providerGlyph(down.id))
+            or (vendor ~= "auto" and providerGlyph(wantedEntryId()))
+            or "scale"
         children[1] = ui.glyph({
-            name = "brain", size = 14,
-            color = failure.code ~= "" and "error" or "on_surface_variant",
+            name = glyphName, size = gs(14),
+            color = (failure.code ~= "" or down ~= nil) and "error" or "on_surface_variant",
         })
     elseif hidden > 0 then
-        children[#children + 1] = ui.label({ text = "+" .. tostring(hidden), fontSize = 10,
+        children[#children + 1] = ui.label({ text = "+" .. tostring(hidden), fontSize = fs(10),
                                              color = "on_surface_variant", maxLines = 1 })
     end
 
@@ -552,7 +666,13 @@ end)
 function onClick()
     local picked = shown()
     -- One panel serves every capsule and is not told which one opened it.
-    noctalia.state.set("selected", picked[1] ~= nil and picked[1].id or wantedEntryId())
+    local targetId = picked[1] ~= nil and picked[1].id or wantedEntryId()
+    if vendor == "gemini" then
+        targetId = "gemini"
+    elseif vendor == "claude-oss" or vendor == "claude_oss" then
+        targetId = "claude-oss"
+    end
+    noctalia.state.set("selected", targetId)
     noctalia.togglePanel("miguelfm/ai-triage:panel")
 end
 

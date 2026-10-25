@@ -155,7 +155,12 @@ class TemplateEnforcementTests(unittest.TestCase):
     PULL_REQUEST_URL = "https://api.github.test/repos/noctalia-dev/community-plugins/pulls/123"
     GRAPHQL_URL = "https://api.github.test/graphql"
     COMMENT_URL = "https://api.github.test/repos/noctalia-dev/community-plugins/issues/comments/7"
+    OLDER_COMMENT_URL = (
+        "https://api.github.test/repos/noctalia-dev/community-plugins/issues/comments/5"
+    )
     NODE_ID = "PR_node123"
+    OWN_USER = {"login": "github-actions[bot]"}
+    FORMER_USER = {"login": "Noctalia-CI"}
 
     def event(self, body: str, *, draft: bool = False) -> dict[str, object]:
         return {
@@ -247,6 +252,7 @@ class TemplateEnforcementTests(unittest.TestCase):
                 converted=False,
             ),
             "url": self.COMMENT_URL,
+            "user": self.OWN_USER,
         }
         comment = enforce_pr_template.build_enforcement_comment(missing, converted=False)
         with mock.patch.object(
@@ -306,6 +312,7 @@ class TemplateEnforcementTests(unittest.TestCase):
                 converted=False,
             ),
             "url": self.COMMENT_URL,
+            "user": self.OWN_USER,
         }
         with mock.patch.object(
             enforce_pr_template,
@@ -321,6 +328,101 @@ class TemplateEnforcementTests(unittest.TestCase):
             request.call_args_list,
             [
                 self.comments_call(),
+                mock.call(
+                    self.COMMENT_URL,
+                    "token",
+                    method="PATCH",
+                    payload={"body": enforce_pr_template.RESOLVED_COMMENT},
+                ),
+            ],
+        )
+
+    def test_invalid_draft_replaces_comments_by_another_author(self) -> None:
+        """Marker comments by the hidden former bot account are deleted, not edited."""
+        body = "AI-generated replacement body"
+        missing = enforce_pr_template.missing_requirements(body)
+        comment = enforce_pr_template.build_enforcement_comment(missing, converted=False)
+        hidden = [
+            {
+                "body": enforce_pr_template.build_enforcement_comment(
+                    ["the template marker line"],
+                    converted=True,
+                ),
+                "url": url,
+                "user": self.FORMER_USER,
+            }
+            for url in (self.OLDER_COMMENT_URL, self.COMMENT_URL)
+        ]
+        with mock.patch.object(
+            enforce_pr_template,
+            "github_request",
+            side_effect=[hidden, None, None, {}],
+        ) as request:
+            self.assertEqual(
+                enforce_pr_template.enforce(self.event(body, draft=True), "token"),
+                missing,
+            )
+
+        self.assertEqual(
+            request.call_args_list,
+            [
+                self.comments_call(),
+                mock.call(self.OLDER_COMMENT_URL, "token", method="DELETE"),
+                mock.call(self.COMMENT_URL, "token", method="DELETE"),
+                mock.call(
+                    f"{self.ISSUE_URL}/comments",
+                    "token",
+                    method="POST",
+                    payload={"body": comment},
+                ),
+            ],
+        )
+
+    def test_valid_template_deletes_a_comment_by_another_author(self) -> None:
+        hidden = {
+            "body": enforce_pr_template.build_enforcement_comment(
+                ["the `## Testing` heading"],
+                converted=True,
+            ),
+            "url": self.COMMENT_URL,
+            "user": self.FORMER_USER,
+        }
+        with mock.patch.object(
+            enforce_pr_template,
+            "github_request",
+            side_effect=[[hidden], None],
+        ) as request:
+            self.assertEqual(
+                enforce_pr_template.enforce(self.event(ready_template()), "token"),
+                [],
+            )
+
+        self.assertEqual(
+            request.call_args_list,
+            [
+                self.comments_call(),
+                mock.call(self.COMMENT_URL, "token", method="DELETE"),
+            ],
+        )
+
+    def test_own_comment_is_updated_and_older_foreign_comment_deleted(self) -> None:
+        marker = enforce_pr_template.COMMENT_MARKER
+        comments = [
+            {"body": marker, "url": self.OLDER_COMMENT_URL, "user": self.FORMER_USER},
+            {"body": marker, "url": self.COMMENT_URL, "user": self.OWN_USER},
+        ]
+        with mock.patch.object(
+            enforce_pr_template,
+            "github_request",
+            side_effect=[comments, None, {}],
+        ) as request:
+            enforce_pr_template.enforce(self.event(ready_template()), "token")
+
+        self.assertEqual(
+            request.call_args_list,
+            [
+                self.comments_call(),
+                mock.call(self.OLDER_COMMENT_URL, "token", method="DELETE"),
                 mock.call(
                     self.COMMENT_URL,
                     "token",

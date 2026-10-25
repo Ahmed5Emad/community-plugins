@@ -8,7 +8,7 @@
 
 id = "gcap0n1/f1"
 name = "Formula 1"
-version = "0.1.0"
+version = "0.1.1"
 plugin_api = 31
 author = "gcap0n1"
 license = "MIT"
@@ -16,8 +16,9 @@ icon = "flag"
 description = "Next-race countdown, schedule, circuit map, live timing and standings for Formula 1."
 tags = ["bar", "panel", "indicator", "countdown"]
 # Requests go through noctalia.http. xdg-open opens Wikipedia links from table
-# rows; curl is used only by the optional, off-by-default F1 live-timing stream.
-dependencies = ["xdg-open", "curl"]
+# rows; curl is used only by the optional, off-by-default F1 live-timing stream, and
+# pkill stops that stream when the source is switched away.
+dependencies = ["xdg-open", "curl", "pkill"]
 
 # ── Plugin-level settings (shared by the poller, the capsule and the panel) ───
 

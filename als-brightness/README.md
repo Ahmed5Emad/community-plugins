@@ -259,13 +259,12 @@ change through the sysfs readback, adopts your level, and holds auto adaptation
 until ambient crosses the band edge that would have flipped the state — then it
 releases and adapts on that crossing, never stomping what you just set.
 
-**Habit learning.** Three or more manual changes within ten minutes nudge a
-learned threshold scale (EMA α = 0.125, clamped to [0.5×, 2×]) toward the
-ambient you made them at, so a habitually retuned keyboard moves its threshold
-where you actually want it. Nothing is learned while the session is idle. The
-scale (`kbd_scale` in `profile.json`) is the only learned keyboard state, and
-like the panel's learned thresholds it is applied at runtime only — never
-written back to settings.
+**The anchor is exact.** The flip lives inside the hysteresis band and nowhere
+else: `kbd_anchor_percent` is the panel brightness percent at which the keyboard
+changes state, full stop. (A learned threshold multiplier used to nudge the
+threshold out of place — it auto-lit the keyboard at panel ~65% under a 60%
+anchor and was removed in 0.7.0. A legacy `kbd_scale` in `profile.json` is
+ignored and dropped on the next save.)
 
 ## IPC
 
@@ -331,7 +330,7 @@ problem; the change callback is, and it fires for every writer.
 
 * **`profile.json`** and **`als-brightness.log`** in the plugin's data
   directory (`noctalia.pluginDataDir()`): the learned profile (panel threshold
-  observations plus the keyboard `kbd_scale`) and the log ring's output.
+  observations) and the log ring's output.
 * **The night-light splice:** with `colortemp` on, `[nightlight]
   temperature_night` in `~/.local/state/noctalia/settings.toml`, edited as text
   (comments and key order survive) and replaced atomically — written to a

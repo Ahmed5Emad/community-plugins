@@ -14,11 +14,13 @@ local NOTE_COLORS = {
 }
 
 local notes = {}
+local archived = {}
 local blurred = false
 local notesReady = false
 local editingId = nil
 local editingContent = nil
 local pendingDeleteId = nil
+local showArchive = false
 local editKey = 0
 local pendingNewNote = false
 local panelOpen = false
@@ -274,7 +276,10 @@ function onEditSubmit(_value)
   if editingId ~= nil then leaveEdit() end
 end
 
-local function notePreviewCard(note)
+-- Archived cards are read-only: no editing, pinning, dragging or link opening,
+-- and a click on the card does nothing. They exist to be read, restored or
+-- deleted, so the only actions they render are restore and delete.
+local function notePreviewCard(note, isArchived)
   local fill, textColor = noteStyle(note.color)
   local fontSize = noctalia.getConfig("font_size") or 13
   local dateText = formatDate(note.createdAt)
@@ -282,7 +287,7 @@ local function notePreviewCard(note)
   local isNoteBlurred = note.blurred == true
   local isHidden = blurred or isNoteBlurred
   -- Do not expose a hidden note's URL through the action-row tooltip or link.
-  local webLink = not isHidden and firstWebLink(note.content) or nil
+  local webLink = not isHidden and not isArchived and firstWebLink(note.content) or nil
   local tasks = checklistTasks(note.content)
   local completedTasks = 0
   for _, task in ipairs(tasks) do
@@ -296,23 +301,32 @@ local function notePreviewCard(note)
     local taskRows = {}
     for index, task in ipairs(tasks) do
       if index > 3 then break end
-      table.insert(taskRows, ui.row({ gap = 6, align = "center" }, {
-        -- ui.toggle is rendered as a wide on/off switch by the shell. A
-        -- compact outlined button reads as a familiar task checkbox instead.
-        ui.button({
-          text = task.done and "✓" or "",
-          variant = "outline",
-          width = 24,
-          height = 24,
-          onClick = function()
-            updateChecklistTask(note, task, not task.done)
-          end,
-        }),
-        ui.label({
-          text = task.text, fontSize = fontSize, color = textColor,
-          maxLines = 1,
-        }),
-      }))
+      if isArchived then
+        -- A static marker keeps the checklist readable without offering the
+        -- click-to-toggle editing that active cards have.
+        table.insert(taskRows, ui.label({
+          text = (task.done and "✓ " or "○ ") .. task.text,
+          fontSize = fontSize, color = textColor, maxLines = 1,
+        }))
+      else
+        table.insert(taskRows, ui.row({ gap = 6, align = "center" }, {
+          -- ui.toggle is rendered as a wide on/off switch by the shell. A
+          -- compact outlined button reads as a familiar task checkbox instead.
+          ui.button({
+            text = task.done and "✓" or "",
+            variant = "outline",
+            width = 24,
+            height = 24,
+            onClick = function()
+              updateChecklistTask(note, task, not task.done)
+            end,
+          }),
+          ui.label({
+            text = task.text, fontSize = fontSize, color = textColor,
+            maxLines = 1,
+          }),
+        }))
+      end
     end
     if #tasks > 3 then
       local moreTasks = noctalia.tr("panel.more-tasks", { count = #tasks - 3 })
@@ -363,7 +377,7 @@ local function notePreviewCard(note)
 
   return ui.column({
     key = "card-" .. note.id, fill = fill, radius = 8, padding = 10, gap = 6,
-    onClick = not isHidden and function()
+    onClick = (not isHidden and not isArchived) and function()
       editingId = note.id; editingContent = note.content or ""
       pendingDeleteId = nil; editKey += 1; render()
     end or nil,
@@ -372,32 +386,45 @@ local function notePreviewCard(note)
     ui.separator({}),
     ui.row({ align = "center", justify = "space_between" }, {
       ui.row({ gap = 6, align = "center" }, {
-        ui.dragSource({
-          key             = "grip-" .. note.id,
-          dragType        = DRAG_TYPE,
-          payload         = note.id,
-          -- Preview = the leading row (grip + date) so it stays inside the
-          -- panel. liftFromLayout MUST be false here: the drag source's
-          -- ancestor 1 has a sibling (the trailing action row), so lifting
-          -- it collapses the card's outer row and leaves the leading row
-          -- misplaced when the drag ends without a valid drop.
-          previewAncestor = 1,
-          liftFromLayout  = false,
-          width           = 20,
-          height          = 20,
-          align           = "center",
-          justify         = "center",
-          tooltip         = noctalia.tr("panel.drag-hint"),
-        }, {
-          ui.glyph({ name = "menu-2", size = 12, color = textColor }),
-        }),
+        isArchived
+          and ui.glyph({ name = "archive", size = 12, color = textColor })
+          or ui.dragSource({
+            key             = "grip-" .. note.id,
+            dragType        = DRAG_TYPE,
+            payload         = note.id,
+            -- Preview = the leading row (grip + date) so it stays inside the
+            -- panel. liftFromLayout MUST be false here: the drag source's
+            -- ancestor 1 has a sibling (the trailing action row), so lifting
+            -- it collapses the card's outer row and leaves the leading row
+            -- misplaced when the drag ends without a valid drop.
+            previewAncestor = 1,
+            liftFromLayout  = false,
+            width           = 20,
+            height          = 20,
+            align           = "center",
+            justify         = "center",
+            tooltip         = noctalia.tr("panel.drag-hint"),
+          }, {
+            ui.glyph({ name = "menu-2", size = 12, color = textColor }),
+          }),
         ui.label({ text = dateText, fontSize = 10, color = textColor }),
         #tasks > 0 and ui.label({
           text = completedTasks .. "/" .. #tasks,
           fontSize = 10, color = textColor,
         }) or ui.row({}, {}),
       }),
-      ui.row({ gap = 4, align = "center" }, {
+      ui.row({ gap = 4, align = "center" }, isArchived and {
+        ui.button({
+          glyph = "arrow-back-up", variant = "outline", controlSize = "sm",
+          tooltip = noctalia.tr("panel.restore"),
+          onClick = function() sendCmd({ op = "unarchive", id = note.id }) end,
+        }),
+        ui.button({
+          glyph = "trash", variant = "outline", controlSize = "sm",
+          tooltip = noctalia.tr("panel.delete"),
+          onClick = function() pendingDeleteId = note.id; render() end,
+        }),
+      } or {
         ui.button({
           glyph = isNoteBlurred and "eye" or "eye-off",
           variant = "outline",
@@ -417,6 +444,11 @@ local function notePreviewCard(note)
           variant = "outline", controlSize = "sm",
           tooltip = isPinned and noctalia.tr("panel.unpin") or noctalia.tr("panel.pin"),
           onClick = function() sendCmd({ op = "toggle_pin", id = note.id }) end,
+        }),
+        ui.button({
+          glyph = "archive", variant = "outline", controlSize = "sm",
+          tooltip = noctalia.tr("panel.archive"),
+          onClick = function() sendCmd({ op = "archive", id = note.id }) end,
         }),
         ui.button({
           glyph = "pencil", variant = "outline", controlSize = "sm",
@@ -488,6 +520,29 @@ local function listView()
     table.insert(items, insertionZone("u", i + 1))
   end
 
+  return ui.scroll({ flexGrow = 1, gap = 4, align = "stretch", justify = "start" }, items)
+end
+
+-- -------------------------------------------------------------------------
+-- Archive view — the same cards, read-only, plus restore and delete.
+-- -------------------------------------------------------------------------
+local function archiveView()
+  if #archived == 0 then
+    return ui.column({ flexGrow = 1, align = "center", justify = "center", gap = 14 }, {
+      ui.glyph({ name = "archive", size = 48, color = "on_surface_variant" }),
+      ui.label({ text = noctalia.tr("panel.empty-archive"), fontSize = 13,
+                  color = "on_surface_variant", textAlign = "center" }),
+    })
+  end
+
+  local items = {
+    ui.label({ text = noctalia.tr("panel.archived-hint"), fontSize = 11,
+                color = "on_surface_variant" }),
+  }
+  -- The service keeps the archive in its own order (newest first).
+  for _, note in ipairs(archived) do
+    table.insert(items, notePreviewCard(note, true))
+  end
   return ui.scroll({ flexGrow = 1, gap = 4, align = "stretch", justify = "start" }, items)
 end
 
@@ -608,6 +663,15 @@ local function editView(note)
   return ui.column({ flexGrow = 1, gap = 6, align = "stretch" }, { card, footer })
 end
 
+-- Header back control, shared by the editor and the archive sub-views.
+local function backButton(onClick)
+  return ui.button({
+    glyph = "arrow-left", variant = "ghost", controlSize = "sm",
+    tooltip = noctalia.tr("panel.back"),
+    onClick = onClick,
+  })
+end
+
 -- -------------------------------------------------------------------------
 -- Render
 -- -------------------------------------------------------------------------
@@ -619,18 +683,27 @@ function render()
     editingId = nil; editingContent = nil; pendingDeleteId = nil
   end
   local inEdit = editNote ~= nil
+  -- The archive is a sub-view of the list, like the editor: one back control
+  -- and a title that says which view is showing.
+  local inArchive = showArchive and not inEdit
+  local inList = not inEdit and not inArchive and notesReady
+
+  local leading, title
+  if inEdit then
+    leading = backButton(function() leaveEdit() end)
+    title = noctalia.tr("panel.editing")
+  elseif inArchive then
+    leading = backButton(function() showArchive = false; render() end)
+    title = noctalia.tr("panel.archived-title")
+  else
+    leading = ui.glyph({ name = "note", size = 20, color = "primary" })
+    title = noctalia.tr("panel.title")
+  end
 
   local header = ui.row({ align = "center", justify = "space_between" }, {
     ui.row({ gap = 8, align = "center", flexGrow = 1 }, {
-      inEdit
-        and ui.button({
-          glyph = "arrow-left", variant = "ghost", controlSize = "sm",
-          tooltip = noctalia.tr("panel.back"),
-          onClick = function() leaveEdit() end,
-        })
-        or ui.glyph({ name = "note", size = 20, color = "primary" }),
-      ui.label({ text = inEdit and noctalia.tr("panel.editing") or noctalia.tr("panel.title"),
-                  fontSize = 14, fontWeight = "bold" }),
+      leading,
+      ui.label({ text = title, fontSize = 14, fontWeight = "bold" }),
     }),
     ui.row({ gap = 2, align = "center" }, {
       ui.button({
@@ -640,7 +713,7 @@ function render()
         tooltip = blurred and noctalia.tr("panel.unblur") or noctalia.tr("panel.blur"),
         onClick = function() sendCmd({ op = "toggle_blur" }) end,
       }),
-      not inEdit and notesReady and ui.button({
+      inList and ui.button({
         glyph = "plus", variant = "ghost", controlSize = "sm",
         tooltip = noctalia.tr("panel.add"),
         onClick = function()
@@ -656,6 +729,11 @@ function render()
           sendCmd({ op = "add" })
         end,
       }) or ui.row({}, {}),
+      inList and ui.button({
+        glyph = "archive", variant = "ghost", controlSize = "sm",
+        tooltip = noctalia.tr("panel.archived-tooltip"),
+        onClick = function() showArchive = true; render() end,
+      }) or ui.row({}, {}),
       ui.button({
         glyph = "settings", variant = "ghost", controlSize = "sm",
         tooltip = noctalia.tr("panel.open-settings"),
@@ -668,7 +746,12 @@ function render()
     }),
   })
 
-  local body = inEdit and editView(editNote) or listView()
+  local body = listView()
+  if inEdit then
+    body = editView(editNote)
+  elseif inArchive then
+    body = archiveView()
+  end
 
   panel.render(ui.column({
     flexGrow = 1, gap = 8, padding = 8, justify = "start", align = "stretch",
@@ -697,6 +780,11 @@ wallpaperPalette.setOnChanged(function() render() end)
 
 noctalia.state.watch("sticky_notes.notes", function(value)
   notes = type(value) == "table" and value or {}
+  render()
+end)
+
+noctalia.state.watch("sticky_notes.archived", function(value)
+  archived = type(value) == "table" and value or {}
   render()
 end)
 
@@ -752,6 +840,8 @@ function onOpen(context)
     saveEditingDraft()
   end
   editingId = nil; editingContent = nil; pendingDeleteId = nil
+  -- Opening the panel always starts on the notes list, never in the archive.
+  showArchive = false
   -- A panel can be instantiated after the service's initial publish. Ask for
   -- the current snapshot so opening it never looks like an empty note list.
   sendCmd({ op = "sync" })

@@ -38,9 +38,11 @@ body:
         - ambient-sounds
         - anilist
         - arch-updater
+        - ask-claude
         - asus-fan
         - asus-fans-controller-ec
         - asus-gpu-mode
+        - audio-sticker
         - audio-switcher
         - awwwall
         - ayet-kosesi
@@ -53,7 +55,9 @@ body:
         - bazaarsearch
         - beeminder
         - better-clock
+        - binance
         - bitdjinn
+        - bloom
         - bookmarks
         - calculator
         - calculator-plus
@@ -75,6 +79,7 @@ body:
         - currency-exchange
         - cursor
         - custom-shortcut
+        - cutemonitor-ups
         - daily-wallpaper
         - deepseek-peak
         - deepseek_usage
@@ -115,6 +120,7 @@ body:
         - ideapad-conservation-mode
         - iio_lock
         - imagemagick-clock
+        - inhibit-idle-while-watching
         - input-echo-bar
         - inventory-manager
         - ip-monitor
@@ -123,7 +129,9 @@ body:
         - k8s-status
         - keybind-cheatsheet
         - keyboard-state
+        - keychron-battery
         - keymap
+        - keysmith
         - keyviz
         - kineticwe-layouts
         - kwallet-secrets
@@ -133,10 +141,12 @@ body:
         - lid-guard
         - link-ip-monitor
         - llamanager
+        - localsend
         - lrc
         - lunar-calendar
         - lunar-workspaces
         - lyrics
+        - maildir
         - mango-displays
         - mango_layouts
         - mangowm-keymode
@@ -148,6 +158,7 @@ body:
         - mimir
         - mini-docker
         - misr-quran-radio
+        - murattal
         - mx-control
         - nan-usage
         - ncs-visualizer
@@ -164,14 +175,17 @@ body:
         - niri-ribbon
         - niri-rules-studio
         - niri-workspace-preview
+        - niri-workspace-stack
         - nix-monitor
         - nix-search
         - nix-status
         - noctaproton-vpn
         - noctes
         - noctwhspr
+        - nothing-ear
         - nvim-projects
         - nvtop
+        - nwg-displays
         - obs-control
         - obs-integration
         - obsidian
@@ -180,15 +194,20 @@ body:
         - omp-launcher
         - opencode-companion
         - opencode-go-usage
+        - opencode-monitor
         - opencodex-bar
+        - openvpn3
         - opnsense
         - oppo-pods
         - owntone-control
         - paged-todo
         - palette-creator
+        - palettes
         - pass
+        - performance-plus
         - phone-connect
         - phone-operate
+        - pixel-buds
         - pixel-shift
         - podcasts
         - pomodoro
@@ -203,6 +222,7 @@ body:
         - pulsar-mouse
         - qr-share
         - qrcode
+        - quickask
         - quill
         - quranwidget
         - radio
@@ -216,22 +236,27 @@ body:
         - rum-updates
         - run-path
         - saved-desktop-widgets
+        - screen-capture
         - screen-toolkit
         - share-wifi
         - sharednd
         - shelf
         - shell-command
         - shelly
+        - shift
         - sing-box-status
         - sony_headphones
         - soundcore-buds
         - special-workspaces
         - speedtest-meter
+        - split-reset
         - spotify
         - spotify-lyrics
         - spotify-media
         - ssh-launcher
+        - stdout
         - sticky-notes
+        - super-caffeine
         - super-productivity
         - sway-mode
         - sway-scratchpad
@@ -243,6 +268,7 @@ body:
         - taildrop
         - tailnet
         - tailscale
+        - task-warrior
         - theme-switcher
         - thinkpad-fan
         - thinkpad-led
@@ -250,9 +276,13 @@ body:
         - timezone-hub
         - tmux-provider
         - todo
+        - todoist
+        - todoist-manager
+        - token-monitor
         - topgrade-wrapper
         - udiskie
         - um5606_fan_state
+        - umami
         - umbriel-displays
         - umbriel-monitor-control
         - undershell
@@ -274,12 +304,14 @@ body:
         - web-launcher
         - web-search
         - webapp-maker
+        - wfmu
         - wireview-pro-ii
         - wl-screen-mirror
         - world-radio
         - xwayland
         - youtube-search
         - yt-music
+        - zakker
         - zed-provider
 
     validations:

@@ -14,4 +14,7 @@ for entry in service panel; do
     "$plugin_dir/$entry.luau" > "$temp_dir/$entry.lua"
 done
 
-lua5.4 "$test_dir/new_note_test.lua" "$temp_dir/service.lua" "$temp_dir/panel.lua"
+# Tests load the transformed plugin copies plus this directory (for harness.lua).
+for test_file in "$test_dir"/*_test.lua; do
+  lua5.4 "$test_file" "$temp_dir/service.lua" "$temp_dir/panel.lua" "$test_dir"
+done

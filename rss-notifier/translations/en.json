@@ -32,6 +32,10 @@
       "description": "One RSS or Atom feed URL per entry (e.g. https://example.com/feed.xml).",
       "label": "Feed URLs"
     },
+    "feeds": {
+      "description": "List of feed URLs to monitor (can be set declaratively).",
+      "label": "Feeds"
+    },
     "glyph": {
       "description": "Icon shown in the bar for this widget.",
       "label": "Icon"

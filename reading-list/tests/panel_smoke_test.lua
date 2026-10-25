@@ -170,4 +170,57 @@ assert(visit(rendered, function(node) return node.props.text == "Import file" en
 assert(visit(rendered, function(node) return node.props.text == "Export file" end) ~= nil,
   "share view should render export actions")
 
+-- A fetched cover turns the artwork from a nested column into a keyed image, so
+-- the card's main row is rebuilt. Both siblings must be keyed, otherwise the
+-- reconciler can re-bind the keyless content column onto the artwork node and
+-- inherit its fixed 64x64 box, which squeezes the title until the panel is
+-- reopened.
+local function cardByKey(id, updatedAt, fetching)
+  local key = "card-" .. id .. "-" .. tostring(updatedAt or 0) .. "-" .. (fetching and "fetching" or "ready")
+  return assert(visit(rendered, function(node) return node.props.key == key end), "missing " .. key)
+end
+
+local function mainRowSiblings(id, updatedAt)
+  local card = cardByKey(id, updatedAt)
+  local row = card.children[1]
+  assert(row ~= nil and row.type == "row", "the card should lead with its main row")
+  local artworkNode, contentNode = row.children[1], row.children[2]
+  assert(artworkNode ~= nil and contentNode ~= nil,
+    "the main row should hold the artwork and the content column")
+  return artworkNode, contentNode
+end
+
+local function coverItem(image)
+  return {
+    id = "one", type = "article", title = "First article", url = "https://example.com/first",
+    source = "Example", author = "Writer", description = "Description", topics = { "testing" },
+    collections = {}, status = "unread", favorite = false, progress = 0, rating = 0, queueOrder = 1,
+    createdAt = 1789200000, updatedAt = 1789200200, icon = "", image = image or "",
+    notes = "", review = "", currentPage = 0, totalPages = 0, estimatedMinutes = 10,
+    notePath = "/library/Items/one.md", fetching = false,
+  }
+end
+
+onOpen()
+local savedFileExists = noctalia.fileExists
+noctalia.fileExists = function() return false end
+watchers["reading_list.items"]({ coverItem() })
+local placeholderArtwork, placeholderContent = mainRowSiblings("one", 1789200200)
+assert(placeholderContent.props.key ~= nil and placeholderContent.props.key ~= "",
+  "the content column needs a stable key so a rebuilt main row keeps its own node")
+assert(placeholderArtwork.props.key ~= nil and placeholderArtwork.props.key ~= "",
+  "the artwork needs a key so the content column cannot re-bind onto it")
+assert(placeholderContent.props.key ~= placeholderArtwork.props.key,
+  "the artwork and content column keys must differ")
+
+noctalia.fileExists = function(path) return tostring(path):match("%-cover") ~= nil end
+watchers["reading_list.items"]({ coverItem("/library/.assets/one-cover.webp") })
+local coverArtwork, coverContent = mainRowSiblings("one", 1789200200)
+assert(coverArtwork.type == "image", "a present cover should render as an image")
+assert(coverContent.props.key == placeholderContent.props.key,
+  "the content column key must not change when the artwork becomes an image")
+assert(coverArtwork.props.key ~= coverContent.props.key,
+  "the artwork and content column keys must still differ with a cover present")
+noctalia.fileExists = savedFileExists
+
 print("reading-list panel smoke tests: ok")

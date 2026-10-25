@@ -30,6 +30,16 @@ local PROVIDER_GLYPHS = {
     commandcode = "terminal-2",
     copilot = "brand-github-copilot",
     gemini = "brand-google",
+    deepinfra = "cloud",
+    grokbot = "brand-x",
+    ollama = "cloud",
+    orcarouter = "route",
+    modelstudio = "cloud",
+    lyceum = "book",
+    devin = "terminal-2",
+    cline = "terminal-2",
+    ["muse-code"] = "code",
+    synthetic = "flask",
 }
 
 local PROVIDER_DASHBOARDS = {
@@ -54,14 +64,25 @@ local PROVIDER_DASHBOARDS = {
     nous = "https://portal.nousresearch.com/",
     ["opencode-go"] = "https://opencode.ai/console/",
     commandcode = "https://commandcode.ai/signin",
+    deepinfra = "https://deepinfra.com/",
+    grokbot = "https://x.ai/bot",
+    ollama = "https://ollama.com/settings",
+    orcarouter = "https://www.orcarouter.ai/",
+    modelstudio = "https://modelstudio.console.alibabacloud.com/",
+    lyceum = "https://dashboard.lyceum.technology/",
+    devin = "https://app.devin.ai/",
+    cline = "https://app.cline.bot/",
+    ["muse-code"] = "https://dev.meta.ai/",
+    synthetic = "https://synthetic.new/",
 }
 
 function M.baseProvider(id)
     return (tostring(id or ""):match("^[^@]+") or "")
 end
 
-function M.providerGlyph(id)
-    return PROVIDER_GLYPHS[M.baseProvider(id)] or "brain"
+function M.providerGlyph(id, brand)
+    local mark = type(brand) == "string" and PROVIDER_GLYPHS[brand] or nil
+    return mark or PROVIDER_GLYPHS[M.baseProvider(id)] or "brain"
 end
 
 function M.providerDashboard(id)
@@ -162,8 +183,9 @@ function M.asFailure(value)
 end
 
 -- "2026-08-15T11:29:59.872624Z" -> unix seconds. The stamps are UTC and
--- os.time() reads its table as local, so the offset is measured at that same
--- instant and added back.
+-- os.time() reads its table as local, so the offset is measured and added back.
+-- Force standard time on both conversions: DST must not normalize the UTC
+-- fields through a nonexistent or ambiguous local wall time.
 function M.parseIso(value)
     if type(value) ~= "string" then return nil end
     local y, mo, d, h, mi, s = value:match("^(%d+)%-(%d+)%-(%d+)T(%d+):(%d+):(%d+)")
@@ -171,12 +193,10 @@ function M.parseIso(value)
     local asLocal = os.time({
         year = tonumber(y), month = tonumber(mo), day = tonumber(d),
         hour = tonumber(h), min = tonumber(mi), sec = tonumber(s),
+        isdst = false,
     })
     local utc = os.date("!*t", asLocal)
-    -- Let os.time resolve DST for these wall-clock fields. os.date marks a UTC
-    -- table as standard time, which is wrong when the same fields fall in the
-    -- local timezone's daylight-saving season.
-    utc.isdst = nil
+    utc.isdst = false
     local utcAsLocal = os.time(utc)
     return asLocal + (asLocal - utcAsLocal)
 end
@@ -229,7 +249,7 @@ end
 
 -- How much of the window is gone, out of "Resets in 1h 58m · 60% elapsed".
 function M.elapsedPercent(detail)
-    local value = tostring(detail or ""):match("(%d+)%%%s*elapsed")
+    local value = tostring(detail or ""):match("([%+%-]?[%d%.]+)%%%s*elapsed")
     return value ~= nil and tonumber(value) or nil
 end
 
@@ -274,9 +294,22 @@ function M.blockingMetric(metrics)
     return blocking
 end
 
+-- A model pool limits that model alone. Provider summaries use shared windows
+-- when present; a pool-only report still has useful quota to display.
+local function sharedMetrics(metrics)
+    local shared, pools = {}, {}
+    for _, metric in ipairs(metrics or {}) do
+        if type(metric) == "table" then
+            local target = metric.model_pool == true and pools or shared
+            target[#target + 1] = metric
+        end
+    end
+    return #shared > 0 and shared or pools
+end
+
 function M.headline(entry)
     if type(entry) ~= "table" or type(entry.metrics) ~= "table" then return nil end
-    local metrics = entry.metrics
+    local metrics = sharedMetrics(entry.metrics)
     if #metrics == 0 then return nil end
 
     local blocking = M.blockingMetric(metrics)
@@ -340,6 +373,60 @@ function M.balanceText(entry)
     return credit
 end
 
+-- Explicit pins require a real matching window; positional fallback would turn
+-- a missing monthly quota into a plausible but unrelated weekly reading.
+function M.metricWindow(metric)
+    if type(metric) ~= "table" then return nil end
+    local seconds = tonumber(metric.window_secs)
+    if seconds ~= nil then
+        if seconds > 0 and seconds <= 86400 then return "session" end
+        if seconds == 604800 then return "weekly" end
+        if seconds >= 2419200 and seconds <= 2678400 then return "monthly" end
+        return nil
+    end
+    local label = tostring(metric.label or ""):lower()
+    if label:find("month", 1, true) or label:find("30d", 1, true) then return "monthly" end
+    if label:find("week", 1, true) or label:find("7d", 1, true) then return "weekly" end
+    if label:find("session", 1, true) or label:find("hour", 1, true)
+        or label:match("%d+h") then return "session" end
+    return nil
+end
+
+function M.windowMetric(metrics, window)
+    if type(metrics) ~= "table" then return nil end
+    for _, metric in ipairs(metrics) do
+        if M.metricWindow(metric) == window then return metric end
+    end
+    return nil
+end
+
+function M.displayPercent(metric, display)
+    if type(metric) ~= "table" then return nil end
+    local percent = tonumber(metric.percent)
+    if percent == nil or percent ~= percent or percent == math.huge or percent == -math.huge then return nil end
+    if display == "remaining" then return math.max(0, 100 - percent) end
+    return percent
+end
+
+-- The report names the headline field: balances are already formatted and
+-- must not be inverted when the user chooses remaining percentages.
+function M.metricText(metric, display)
+    if type(metric) ~= "table" then return "—" end
+    if metric.headline == "value" then
+        local value = type(metric.value) == "string" and noctalia.string.trim(metric.value) or ""
+        return value ~= "" and value or "—"
+    end
+    local percent = M.displayPercent(metric, display)
+    return percent ~= nil and string.format("%d%%", percent) or "—"
+end
+
+function M.capsuleMetric(entry, window)
+    if type(entry) ~= "table" or type(entry.metrics) ~= "table" then return nil end
+    if window == nil or window == "auto" then return M.headline(entry) end
+    local metrics = sharedMetrics(entry.metrics)
+    return M.blockingMetric(metrics) or M.windowMetric(metrics, window)
+end
+
 function M.modelGlyph(label)
     local lower = tostring(label or ""):lower()
     if lower:find("oss", 1, true) or lower:find("claude", 1, true) then return "robot" end
@@ -351,7 +438,7 @@ end
 function M.modelDisplayName(label)
     local lower = tostring(label or ""):lower()
     if lower:find("oss", 1, true) or lower:find("claude", 1, true) then return tostring(label or "") end
-    if lower:find("gemini", 1, true) then return "Gemini" end
+    if lower:find("gemini", 1, true) then return tostring(label or "") end
     if lower:find("gpt", 1, true) or lower:find("openai", 1, true) then return "GPT" end
     return tostring(label or "")
 end
@@ -397,11 +484,7 @@ end
 -- session limit and weeklyMetric represents the 7-day rate limit.
 function M.dualMetrics(metrics)
     if type(metrics) ~= "table" then return nil, nil end
-    local valid = {}
-    for _, metric in ipairs(metrics) do
-        if type(metric) == "table" then valid[#valid + 1] = metric end
-    end
-    metrics = valid
+    metrics = sharedMetrics(metrics)
     if #metrics == 0 then return nil, nil end
     if #metrics == 1 then
         local m = metrics[1]

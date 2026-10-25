@@ -39,8 +39,10 @@ noctalia msg panel-toggle ahmedhossamdev/reading-list:panel
 
 - URLs can fetch their title, website, author, description, favicon, and preview
   automatically. YouTube and Vimeo use their lightweight oEmbed metadata;
-  other pages fall back through Open Graph, Twitter Card, standard meta,
-  itemprop, and HTML title fields.
+  other pages fall back through Open Graph, Twitter Card, JSON-LD, standard
+  meta, itemprop, and the visible HTML title or heading. When no field declares
+  a preview image, the first content image is used, and a page that cannot be
+  fetched still gets a readable title and its domain instead of staying empty.
 - Use **More details** in the editor to add a cover, reading progress, book
   pages, estimated reading time, rating, review, or private notes.
 - Covers and image entries can be selected with the desktop file picker. If

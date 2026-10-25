@@ -10,7 +10,10 @@
 # server answers "No Connection with that ID", and noctalia.http cannot read
 # response cookies. That is the only reason this is a shell script around curl.
 #
-# Usage: f1-live.sh <max-seconds>
+# Usage: f1-live.sh <max-seconds> [token]
+# <token> is not read here: it marks this process's command line, so the plugin can
+# stop exactly this stream with pkill -f when the user leaves the source. SIGTERM runs
+# the trap below, which also ends the background curl.
 # The stream is cut after <max-seconds>. A last line "closed" is printed when it
 # ends, for any reason, so the plugin knows to reconnect.
 

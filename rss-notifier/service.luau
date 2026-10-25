@@ -304,23 +304,29 @@ local function migrateFeeds()
       table.insert(list, url)
     end
   end
+  local function getFeedsConfig()
+    local cfg
+    local ok = pcall(function()
+      cfg = noctalia.getConfig("feeds")
+    end)
+    if not ok or type(cfg) ~= "table" then
+      ok = pcall(function()
+        cfg = noctalia.getConfig("feed_urls")
+      end)
+    end
+    return (ok and type(cfg) == "table") and cfg or nil
+  end
+  local configured = getFeedsConfig()
+  if configured then
+    for _, url in ipairs(configured) do
+      push(url)
+    end
+  end
   for _, url in ipairs(feeds) do
     push(url)
   end
   for url in pairs(seen) do
     push(url)
-  end
-  local configured
-  local ok = pcall(function()
-    configured = noctalia.getConfig("feed_urls")
-  end)
-  if not ok then
-    configured = nil -- the setting was removed from the manifest; ignore any legacy noise
-  end
-  if type(configured) == "table" then
-    for _, url in ipairs(configured) do
-      push(url)
-    end
   end
   feeds = list
 end
@@ -1000,6 +1006,8 @@ end
 
 function onConfigChanged()
   applyInterval()
+  migrateFeeds()
+  publishFeeds()
   fetchAll()
 end
 

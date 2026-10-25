@@ -15,6 +15,9 @@ local exportsDir = nil
 local collectionsPath = nil
 local collections = {}
 local fetching = {}
+local fetchStartedAt = {}
+-- Stale fetches (HTTP callback never fired) must not stick the UI on
+-- "Fetching details…" forever or block the periodic external sync.
 -- Sync polls still read each small note so external edits are detected, but
 -- unchanged notes keep their parsed item instead of spending the callback's
 -- CPU budget decoding the same frontmatter every 30 seconds.
@@ -462,13 +465,73 @@ end
 local function resolveUrl(base, candidate)
   candidate = trim(candidate)
   if candidate == "" then return "" end
+  if candidate:match("^data:") or candidate:match("^blob:") then return "" end
   if validWebUrl(candidate) then return candidate end
   local scheme, host = base:match("^(https?)://([^/%?#]+)")
   if scheme == nil then return "" end
   if candidate:sub(1, 2) == "//" then return scheme .. ":" .. candidate end
   if candidate:sub(1, 1) == "/" then return scheme .. "://" .. host .. candidate end
   local directory = base:match("^(https?://.*/)") or (scheme .. "://" .. host .. "/")
+  while candidate:sub(1, 3) == "../" do
+    candidate = candidate:sub(4)
+    local parent = directory:match("^(https?://.*/)[^/]+/$")
+    if parent ~= nil then directory = parent end
+  end
+  if candidate:sub(1, 2) == "./" then candidate = candidate:sub(3) end
   return directory .. candidate
+end
+
+local function fallbackTitleFromUrl(pageUrl)
+  local clean = trim(pageUrl:gsub("[%?#].*$", ""))
+  local slug = clean:match("([^/]+)/?$") or ""
+  slug = slug:gsub("%.[%a%d]+$", ""):gsub("[-_+]+", " "):gsub("%s+", " ")
+  slug = trim(slug)
+  if slug ~= "" then
+    if #slug > 120 then slug = slug:sub(1, 120) end
+    return slug
+  end
+  return domainFromUrl(pageUrl)
+end
+
+local function defaultFaviconUrl(pageUrl)
+  local scheme, host = pageUrl:match("^(https?)://([^/%?#]+)")
+  if scheme == nil then return "" end
+  return scheme .. "://" .. host .. "/favicon.ico"
+end
+
+-- Lightweight JSON-LD field lookup. Full JSON decoding per script block is
+-- wasteful and brittle (blogger/substack embed several large blocks), so match
+-- the few string fields our data model actually uses.
+local function jsonLdField(block, keys)
+  for _, key in ipairs(keys) do
+    local value = block:match("\"" .. key .. "\"%s*:%s*\"([^\"]+)\"")
+    if value ~= nil and trim(value) ~= "" then return htmlDecode(value) end
+  end
+  return ""
+end
+
+local function jsonLdAuthor(block)
+  local direct = block:match("\"author\"%s*:%s*\"([^\"]+)\"")
+  if direct ~= nil and trim(direct) ~= "" then return htmlDecode(direct) end
+  local nested = block:match("\"author\"%s*:%s*{.-\"name\"%s*:%s*\"([^\"]+)\"")
+  if nested ~= nil and trim(nested) ~= "" then return htmlDecode(nested) end
+  local listed = block:match("\"author\"%s*:%s*%[.-\"name\"%s*:%s*\"([^\"]+)\"")
+  if listed ~= nil and trim(listed) ~= "" then return htmlDecode(listed) end
+  return ""
+end
+
+local function jsonLdImage(block)
+  local direct = block:match("\"image\"%s*:%s*\"([^\"]+)\"")
+  if direct ~= nil and trim(direct) ~= "" then return trim(direct) end
+  local nested = block:match("\"image\"%s*:%s*{.-\"url\"%s*:%s*\"([^\"]+)\"")
+  if nested ~= nil and trim(nested) ~= "" then return trim(nested) end
+  local listed = block:match("\"image\"%s*:%s*%[.-\"(https?://[^\"]+)\"")
+  if listed ~= nil and trim(listed) ~= "" then return trim(listed) end
+  return ""
+end
+
+local function stripTags(value)
+  return trim(htmlDecode(value:gsub("<[^>]+>", " "):gsub("%s+", " ")))
 end
 
 local function pageMetadata(html, pageUrl)
@@ -476,6 +539,7 @@ local function pageMetadata(html, pageUrl)
   local values = {}
   local title = ""
   local iconUrl = ""
+  local jsonLdBlocks = {}
   local headEnd = html:find("</[hH][eE][aA][dD]%s*>") or #html
   local cursor = 1
 
@@ -512,15 +576,76 @@ local function pageMetadata(html, pageUrl)
       if closeAt ~= nil and closeAt <= headEnd then
         title = htmlDecode(html:sub(cursor, closeAt - 1):gsub("<[^>]+>", ""))
       end
+    elseif tagName == "script" and #jsonLdBlocks < 3 then
+      local scriptType = (tagAttribute(attributes, "type") or ""):lower()
+      if scriptType:find("ld%+json", 1) ~= nil then
+        local closeAt = html:find("</[sS][cC][rR][iI][pP][tT]%s*>", cursor)
+        if closeAt ~= nil and closeAt <= cursor + 60000 then
+          table.insert(jsonLdBlocks, html:sub(cursor, closeAt - 1))
+          cursor = closeAt + 9
+        end
+      end
+    end
+  end
+
+  for _, block in ipairs(jsonLdBlocks) do
+    if values["og:title"] == nil then
+      local headline = jsonLdField(block, { "headline", "name", "title" })
+      if headline ~= "" then values["og:title"] = headline end
+    end
+    if values["og:description"] == nil then
+      local summary = jsonLdField(block, { "description" })
+      if summary ~= "" then values["og:description"] = summary end
+    end
+    if values["author"] == nil then
+      local author = jsonLdAuthor(block)
+      if author ~= "" then values["author"] = author end
+    end
+    if values["og:site_name"] == nil then
+      local publisher = block:match("\"publisher\"%s*:%s*{.-\"name\"%s*:%s*\"([^\"]+)\"")
+      if publisher ~= nil and trim(publisher) ~= "" then
+        values["og:site_name"] = htmlDecode(publisher)
+      end
+    end
+    if values["og:image"] == nil then
+      local image = jsonLdImage(block)
+      if image ~= "" then values["og:image"] = image end
     end
   end
 
   local scheme, host = pageUrl:match("^(https?)://([^/%?#]+)")
   if iconUrl == "" and scheme ~= nil then iconUrl = scheme .. "://" .. host .. "/favicon.ico" end
   local metadataTitle = firstValue(values, { "og:title", "twitter:title", "title" })
+  if metadataTitle == "" then metadataTitle = title end
+  if metadataTitle == "" then
+    -- JS-heavy or meta-less pages (single-quote Blogger templates, minimal
+    -- landing pages) still carry a visible heading; prefer it over nothing.
+    local bodyStart = headEnd + 1
+    local bodyWindow = html:sub(bodyStart, math.min(#html, bodyStart + 100000))
+    local heading = bodyWindow:match("<[hH]1[^>]*>(.-)</[hH]1%s*>")
+    if heading ~= nil then metadataTitle = stripTags(heading):sub(1, 200) end
+  end
+  if metadataTitle == "" then metadataTitle = firstValue(values, { "name" }) end
+  local imageUrl = resolveUrl(pageUrl, firstValue(values, {
+    "og:image:secure_url", "og:image", "og:image:url", "twitter:image", "twitter:image:src",
+    "image", "thumbnailurl",
+  }))
+  if imageUrl == "" then
+    -- Last resort cover: first content image in the body window. Skip
+    -- data/blob URLs, tracking pixels are acceptable over no cover at all.
+    local bodyStart = headEnd + 1
+    local bodyWindow = html:sub(bodyStart, math.min(#html, bodyStart + 100000))
+    local scanAt = 1
+    for _ = 1, 20 do
+      local imgStart, imgEnd, attrs = bodyWindow:find("<%s*[iI][mM][gG]%s+([^>]*)>", scanAt)
+      if imgStart == nil then break end
+      scanAt = imgEnd + 1
+      local candidate = resolveUrl(pageUrl, htmlDecode(tagAttribute(attrs, "src") or ""))
+      if candidate ~= "" then imageUrl = candidate; break end
+    end
+  end
   return {
-    title = metadataTitle ~= "" and metadataTitle
-      or (title ~= "" and title or firstValue(values, { "name" })),
+    title = metadataTitle,
     source = firstValue(values, { "og:site_name", "application-name" }),
     author = firstValue(values, {
       "author", "article:author", "twitter:creator", "parsely-author", "dc.creator", "byl",
@@ -528,10 +653,7 @@ local function pageMetadata(html, pageUrl)
     description = firstValue(values, {
       "og:description", "twitter:description", "description",
     }),
-    imageUrl = resolveUrl(pageUrl, firstValue(values, {
-      "og:image:secure_url", "og:image", "og:image:url", "twitter:image", "twitter:image:src",
-      "image", "thumbnailurl",
-    })),
+    imageUrl = imageUrl,
     iconUrl = iconUrl,
   }
 end
@@ -574,6 +696,14 @@ local function assetExtension(url, fallback)
       return "." .. ext
     end
   end
+  -- Extensionless CDN URLs (image proxies, ?format=… variants) still carry a
+  -- usable hint; prefer a renderable image suffix over the opaque fallback.
+  local lowered = (url or ""):lower()
+  if lowered:find("webp", 1, true) then return ".webp" end
+  if lowered:find("png", 1, true) then return ".png" end
+  if lowered:find("jpe?g", 1) then return ".jpg" end
+  if lowered:find("gif", 1, true) then return ".gif" end
+  if fallback == ".img" then return ".jpg" end
   return fallback
 end
 
@@ -591,24 +721,74 @@ local function refreshMetadata(id)
   local item = findItem(id)
   if item == nil or not validWebUrl(item.url) or fetching[id] then return end
   fetching[id] = true
+  fetchStartedAt[id] = noctalia.nowMs()
   item.fetching = true
   publish()
 
-  local function fail()
+  local function clearFetching(current)
     fetching[id] = nil
+    fetchStartedAt[id] = nil
+    if current ~= nil then current.fetching = false end
+  end
+
+  local function downloadIconCover(current, metadata)
+    if trim(metadata.iconUrl) ~= "" then
+      downloadAsset(id, "favicon", metadata.iconUrl, function(path)
+        local target = findItem(id)
+        if target ~= nil and path ~= "" then
+          target.icon = path
+          saveItem(target)
+        end
+        if target ~= nil then publish() end
+      end)
+    end
+    if noctalia.getConfig("download_previews") ~= false
+        and trim(current.image) == "" and trim(metadata.imageUrl) ~= "" then
+      downloadAsset(id, "cover", metadata.imageUrl, function(path)
+        local target = findItem(id)
+        if target ~= nil and path ~= "" then
+          target.image = path
+          saveItem(target)
+        end
+        if target ~= nil then publish() end
+      end)
+    end
+  end
+
+  local function fail()
     local current = findItem(id)
+    clearFetching(current)
     if current == nil then return end
-    current.fetching = false
+    -- Even a blocked page still yields useful data: the domain source and a
+    -- favicon attempt, so "any link" never ends up empty and stuck.
+    if trim(current.source) == "" then current.source = domainFromUrl(current.url) end
+    if trim(current.title) == "" then current.title = fallbackTitleFromUrl(current.url) end
+    saveItem(current)
     lastError = noctalia.tr("errors.metadata")
     publish()
+    if trim(current.icon) == "" then
+      local favicon = defaultFaviconUrl(current.url)
+      if favicon ~= "" then
+        downloadAsset(id, "favicon", favicon, function(path)
+          local target = findItem(id)
+          if target ~= nil and path ~= "" then
+            target.icon = path
+            local kept = lastError
+            saveItem(target)
+            lastError = kept
+            publish()
+          end
+        end)
+      end
+    end
   end
 
   local function apply(metadata)
-    fetching[id] = nil
     local current = findItem(id)
+    clearFetching(current)
     if current == nil then return end
-    current.fetching = false
     if trim(current.title) == "" and trim(metadata.title) ~= "" then current.title = trim(metadata.title) end
+    if trim(current.title) == "" then current.title = fallbackTitleFromUrl(current.url) end
     if trim(current.source) == "" or trim(current.source) == domainFromUrl(current.url) then
       current.source = trim(metadata.source) ~= "" and trim(metadata.source) or domainFromUrl(current.url)
     end
@@ -616,62 +796,61 @@ local function refreshMetadata(id)
     if trim(current.description) == "" and trim(metadata.description) ~= "" then
       current.description = trim(metadata.description)
     end
+    if trim(metadata.iconUrl) == "" then metadata.iconUrl = defaultFaviconUrl(current.url) end
 
-    local pending = 0
-    local function done()
-      pending -= 1
-      if pending <= 0 then saveItem(current); publish() end
-    end
-    if trim(metadata.iconUrl) ~= "" then
-      pending += 1
-      downloadAsset(id, "favicon", metadata.iconUrl, function(path)
-        if path ~= "" then current.icon = path end
-        done()
-      end)
-    end
-    if noctalia.getConfig("download_previews") ~= false
-        and trim(current.image) == "" and trim(metadata.imageUrl) ~= "" then
-      pending += 1
-      downloadAsset(id, "cover", metadata.imageUrl, function(path)
-        if path ~= "" then current.image = path end
-        done()
-      end)
-    end
-    if pending == 0 then saveItem(current); publish() end
+    -- Persist text metadata immediately so the card updates even when the
+    -- favicon/cover downloads hang or fail; each asset then publishes its own
+    -- arrival instead of gating the whole card behind both downloads.
+    lastError = ""
+    saveItem(current)
+    publish()
+    downloadIconCover(current, metadata)
   end
 
   local function fetchPage()
-    local started = noctalia.http({
+    local ok, started = pcall(noctalia.http, {
       url = item.url,
       method = "GET",
       follow_redirects = true,
       headers = {
         "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/140.0.0.0 Safari/537.36",
         "Accept: text/html,application/xhtml+xml",
+        "Accept-Language: en-US,en;q=0.9",
       },
     }, function(response)
+      local body = type(response) == "table" and response.body or ""
+      if type(body) ~= "string" then body = "" end
       local success = type(response) == "table" and response.ok == true
         and type(response.status) == "number" and response.status >= 200 and response.status < 400
+        and body ~= ""
       if not success then
         fail()
         return
       end
-      apply(pageMetadata(response.body, item.url))
+      local okParse, metadata = pcall(pageMetadata, body, item.url)
+      if not okParse or type(metadata) ~= "table" then
+        fail()
+        return
+      end
+      apply(metadata)
     end)
-    if not started then fail() end
+    if not ok or not started then fail() end
   end
 
   local providerUrl = providerMetadataUrl(item.url)
   if providerUrl == "" then fetchPage(); return end
-  local started = noctalia.http({
+  local okProvider, started = pcall(noctalia.http, {
     url = providerUrl,
     method = "GET",
     follow_redirects = true,
     headers = { "Accept: application/json" },
   }, function(response)
+    local body = type(response) == "table" and response.body or ""
+    if type(body) ~= "string" then body = "" end
     local success = type(response) == "table" and response.ok == true
       and type(response.status) == "number" and response.status >= 200 and response.status < 400
-    local ok, data = pcall(noctalia.json.decode, success and response.body or "")
+      and body ~= ""
+    local ok, data = pcall(noctalia.json.decode, success and body or "")
     if ok and type(data) == "table" and trim(data.title) ~= "" then
       local scheme, host = item.url:match("^(https?)://([^/%?#]+)")
       apply({
@@ -686,7 +865,7 @@ local function refreshMetadata(id)
       fetchPage()
     end
   end)
-  if not started then fetchPage() end
+  if not okProvider or not started then fetchPage() end
 end
 
 local function parseTopics(value)
@@ -912,6 +1091,8 @@ local function deleteItemFiles(item)
 end
 
 local function removeItem(id)
+  fetching[id] = nil
+  fetchStartedAt[id] = nil
   for index, item in ipairs(items) do
     if item.id == id then
       if deleteItemFiles(item) then
@@ -937,7 +1118,10 @@ local function removeCollection(value, deleteItems)
       if collection:lower() == key then belongs = true; break end
     end
     if belongs and deleteItems == true then
-      if deleteItemFiles(item) then table.remove(items, index)
+      if deleteItemFiles(item) then
+        table.remove(items, index)
+        fetching[item.id] = nil
+        fetchStartedAt[item.id] = nil
       else operationOk = false end
     elseif belongs then
       local remaining = {}
@@ -1011,6 +1195,8 @@ local function bulkUpdate(ids, action, value)
       if selected[item.id] then
         if deleteItemFiles(item) then
           table.remove(items, index)
+          fetching[item.id] = nil
+          fetchStartedAt[item.id] = nil
           changed += 1
         else operationOk = false end
       end
@@ -1331,6 +1517,27 @@ noctalia.state.watch("reading_list.cmd", function(cmd)
 end)
 
 function update()
+  -- Expire fetches whose HTTP callback never fired so one hung website can
+  -- neither stick its card on "Fetching details…" nor block external sync.
+  local now = 0
+  local okNow, clock = pcall(noctalia.nowMs)
+  if okNow and type(clock) == "number" then now = clock end
+  if now > 0 then
+    for id, active in pairs(fetching) do
+      if active and type(fetchStartedAt[id]) == "number" and now - fetchStartedAt[id] > 45000 then
+        fetching[id] = nil
+        fetchStartedAt[id] = nil
+        local stale = findItem(id)
+        if stale ~= nil then
+          stale.fetching = false
+          if trim(stale.source) == "" then stale.source = domainFromUrl(stale.url) end
+          if trim(stale.title) == "" then stale.title = fallbackTitleFromUrl(stale.url) end
+          saveItem(stale)
+          lastError = noctalia.tr("errors.metadata")
+        end
+      end
+    end
+  end
   local metadataBusy = false
   for _, active in pairs(fetching) do if active then metadataBusy = true; break end end
   if ready and not metadataBusy and noctalia.getConfig("sync_external_changes") ~= false then

@@ -421,20 +421,24 @@ local function topicText(item)
   return table.concat(shown, "  ")
 end
 
+-- The artwork and the content column sit side by side in the card's main row.
+-- Both must carry a key: the artwork switches from a keyless-looking box to the
+-- keyed cover image when a fetched cover lands, and an unkeyed content column
+-- would be re-bound onto the artwork's node (and inherit its fixed 64x64 box).
 local function artwork(item)
   if item.image ~= "" and noctalia.fileExists(item.image) then
     return ui.image({ key = "cover-" .. item.id, path = item.image, width = 64, height = 64,
       radius = 8, fit = "cover", border = "outline/0.35", borderWidth = 1 })
   end
   if item.icon ~= "" and noctalia.fileExists(item.icon) then
-    return ui.column({ width = 64, height = 64, align = "center", justify = "center",
-      fill = "surface_variant", radius = 8 }, {
+    return ui.column({ key = "artwork-" .. item.id, width = 64, height = 64, align = "center",
+      justify = "center", fill = "surface_variant", radius = 8 }, {
       ui.image({ key = "icon-" .. item.id, path = item.icon, width = 32, height = 32,
         radius = 6, fit = "contain" }),
     })
   end
-  return ui.column({ width = 64, height = 64, align = "center", justify = "center",
-    fill = "surface_variant", radius = 8 }, {
+  return ui.column({ key = "artwork-" .. item.id, width = 64, height = 64, align = "center",
+    justify = "center", fill = "surface_variant", radius = 8 }, {
     ui.glyph({ name = typeGlyph(item.type), size = 27, color = "primary" }),
   })
 end
@@ -485,7 +489,8 @@ local function itemCard(item, queueIndex, queueIds)
         tooltip = tr("bulk.select", "Select item"), onClick = function() toggleSelected(item.id) end }))
   end
   table.insert(mainChildren, artwork(item))
-  table.insert(mainChildren, ui.column({ flexGrow = 1, gap = 3, align = "stretch" }, contentChildren))
+  table.insert(mainChildren, ui.column({ key = "content-" .. item.id, flexGrow = 1, gap = 3,
+    align = "stretch" }, contentChildren))
 
   local actionChildren = {
     ui.button({ glyph = item.favorite and "star-filled" or "star", variant = "ghost",

@@ -25,7 +25,10 @@ The `new-note` service event uses the `noctalia` command to open the editor.
 5. Use the star to pin a note, and drag its `≡` handle to reorder it.
 6. Use a note's eye button to hide only that note, or the header eye to hide
    every note at once.
-7. Use the settings button in the panel header to open the plugin's settings.
+7. Use a note's archive button to put it away, then the header archive button
+   to open the archive. Archived notes are read-only: **Restore** returns one
+   to the notes list, **Delete** removes it for good.
+8. Use the settings button in the panel header to open the plugin's settings.
 
 Open or close the panel directly:
 
@@ -66,6 +69,13 @@ checkboxes on a note card, with a completion count beside its timestamp.
 - [x] Send the report
 ```
 
+### Archive
+
+The archive keeps reference notes out of the notes list without deleting them.
+Archived notes cannot be edited, pinned, reordered, or blurred: restore one
+first and it returns to the top of the unpinned notes. The archive is stored in
+the same notes file, so it travels with your notes.
+
 ## Settings
 
 | Setting | Type | Default | Description |
@@ -87,7 +97,14 @@ checkboxes on a note card, with a completion count beside its timestamp.
   save folder. The plugin creates that folder when needed and writes only that
   file.
 - The Markdown file includes note metadata in HTML comments; preserve those
-  comments if you edit the file outside Noctalia.
+  comments if you edit the file outside Noctalia. An archived note carries an
+  `"archived":true` flag in that metadata, and in the JSON format.
+- A plain text file written by this version adds an `archived:` field to each
+  note header. Older plugin versions cannot read that field and would show an
+  empty list, so back the file up before downgrading.
+- Archived notes stay in the notes file. They are not included in the notes
+  list and not counted by the bar badge.
+- Archiving a blank note deletes it, like leaving any empty note.
 - Wallpaper-color mode changes only how colors are rendered. It uses
   `noctalia msg wallpaper-get` to locate the active wallpaper when the plugin
   API does not provide it, then runs the local `noctalia theme` command to

@@ -303,6 +303,68 @@ assertEqual(fallback.title, "Fallback title", "Twitter metadata should fall back
 assertEqual(fallback.source, "Example Docs", "Open Graph site name should be collected")
 assertEqual(fallback.description, "Useful & resilient", "HTML entities should be decoded")
 assert(fallback.image:find("%-cover%.webp$") ~= nil, "relative preview URLs should resolve and download")
+
+local substackUrl = "https://map.example.com/p/resist-summary"
+command({ op = "add", item = { url = substackUrl } })
+local substack = assert(findByUrl(substackUrl), "substack-style item should be added")
+command({ op = "refresh_metadata", id = substack.id })
+pendingHttp({ ok = true, status = 200, body = "<html><head>"
+  .. '<title data-rh="true">Resist Summary - by Simon Sarris</title>'
+  .. '<meta data-rh="true" property="og:title" content="Resist Summary"/>'
+  .. '<meta data-rh="true" property="og:description" content="painfully quick thoughts about AI"/>'
+  .. '<meta data-rh="true" property="og:image" content="https://cdn.example.com/cover.png"/>'
+  .. '<link rel="shortcut icon" href="https://cdn.example.com/favicon-16x16.png"/>'
+  .. "</head><body></body></html>" })
+substack = assert(findByUrl(substackUrl))
+assertEqual(substack.title, "Resist Summary", "extra meta attributes should not block Open Graph parsing")
+assertEqual(substack.description, "painfully quick thoughts about AI", "Open Graph description should be collected")
+assert(substack.image:find("%-cover%.png$") ~= nil, "absolute preview URLs should download")
+assert(substack.icon:find("%-favicon%.png$") ~= nil, "shortcut icons should download")
+
+local bloggerUrl = "https://example-blog.blogspot.com/2026/08/safest-job.html"
+command({ op = "add", item = { url = bloggerUrl } })
+local blogger = assert(findByUrl(bloggerUrl), "blogger-style item should be added")
+command({ op = "refresh_metadata", id = blogger.id })
+pendingHttp({ ok = true, status = 200, body = "<html><head>"
+  .. "<title>The Safest Job from AI may be Writing</title>"
+  .. "<meta content='The Safest Job from AI may be Writing' property='og:title'/>"
+  .. "<meta content='Today tech folk are scrambling' property='og:description'/>"
+  .. '<link href=\'https://example-blog.blogspot.com/favicon.ico\' rel=\'icon\' type=\'image/x-icon\'/>'
+  .. '<script type="application/ld+json">{"@type":"BlogPosting","headline":"LD Headline",'
+  .. '"author":{"@type":"Person","name":"Murat"}}</script>'
+  .. "</head><body></body></html>" })
+blogger = assert(findByUrl(bloggerUrl))
+assertEqual(blogger.title, "The Safest Job from AI may be Writing",
+  "single-quoted reversed meta attributes should parse")
+assertEqual(blogger.author, "Murat", "JSON-LD author should backfill missing meta author")
+assert(blogger.icon:find("%-favicon%.ico$") ~= nil, "blogger favicon should download")
+
+local bareUrl = "https://example.net/minimal-page"
+command({ op = "add", item = { url = bareUrl } })
+local bare = assert(findByUrl(bareUrl), "minimal item should be added")
+command({ op = "refresh_metadata", id = bare.id })
+pendingHttp({ ok = true, status = 200, body = "<html><head><title></title></head>"
+  .. "<body><h1>  Minimal <span>Heading</span> </h1>"
+  .. '<p>text</p><img src="/images/hero.jpg"/></body></html>' })
+bare = assert(findByUrl(bareUrl))
+assertEqual(bare.title, "Minimal Heading", "visible H1 should backfill a missing title")
+assert(bare.image:find("%-cover%.jpg$") ~= nil, "first body image should backfill a missing cover")
+
+local blockedUrl = "https://example.com/blocked/article-slug"
+command({ op = "add", item = { url = blockedUrl } })
+local blocked = assert(findByUrl(blockedUrl), "blocked item should be added")
+command({ op = "refresh_metadata", id = blocked.id })
+pendingHttp(nil)
+blocked = assert(findByUrl(blockedUrl))
+assertEqual(blocked.fetching, false, "a failed fetch must not stay fetching")
+assertEqual(blocked.title, "article slug", "a failed fetch should fall back to a readable slug title")
+assertEqual(blocked.source, "example.com", "a failed fetch should keep the domain source")
+assertEqual(stateValues["reading_list.error"], "errors.metadata", "a failed fetch should be reported")
+
+command({ op = "remove", id = substack.id })
+command({ op = "remove", id = blogger.id })
+command({ op = "remove", id = bare.id })
+command({ op = "remove", id = blocked.id })
 command({ op = "remove", id = youtube.id })
 command({ op = "remove", id = fallback.id })
 

@@ -6,6 +6,11 @@ local common = require("./lib/common.luau")
 
 local t = common.t
 
+-- 栏位方向在脚本根部读取一次（pomodoro/procmon 同款模式）：isVertical()
+-- 只在入口渲染上下文里有效，从 state.watch 回调里调用返回 false；若每次
+-- 渲染都重新读取，垂直栏会在 row/column 间来回切换，部件内容持续抖动。
+local isVertical = barWidget.isVertical()
+
 local function render()
 	local backend = noctalia.state.get("pc.backend") or { available = false }
 	local d = common.selectedDevice()
@@ -77,7 +82,7 @@ local function render()
 		children = kids
 	end
 
-	local container = barWidget.isVertical() and ui.column or ui.row
+	local container = isVertical and ui.column or ui.row
 	barWidget.render(container({ gap = 5, align = "center" }, children))
 end
 

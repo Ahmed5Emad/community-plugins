@@ -17,8 +17,6 @@
 --               cmd_raw   raw level of our last command, or the adopted
 --                         sysfs readback (number|nil)
 --               inhibit   auto-adaptation held off after a manual change
---               changes   manual-change instants in SECONDS inside the window
---               scale     learned threshold multiplier (default 1.0)
 --   observed  the IO snapshot the decision reads:
 --               log      stabilised log10(raw + 1) reading (policy.log_of
 --                        domain) or nil
@@ -27,8 +25,8 @@
 --                        or nil
 --               idle, locked        session state (bool)
 --               guards   {dpms=, lid_closed=} -- hardware.guard_state output
---   cfg       enabled / anchor_percent / buffer_percent / dark_percent plus
---             the learning constants (wrong types fall back to DEFAULTS)
+--   cfg       enabled / anchor_percent / buffer_percent / dark_percent
+--             (wrong types fall back to DEFAULTS)
 --   opts      the injected context:
 --               now_s      the clock reading, in SECONDS
 --               anchor_raw T0: the ambient raw level where the live panel
@@ -41,7 +39,6 @@
 --   {kind="log", line}                   append to the log ring
 --   {kind="warn_once", key, line}        log once per run
 --   {kind="kbd_manual", now_s}           a manual change was adopted
---   {kind="kbd_learned", now_s}          state.scale moved; persist it
 --
 -- Manual changes (the owner's Fn keys, detected by the caller from the sysfs
 -- readback) are respected: the physical state is adopted and adaptation is
@@ -81,15 +78,6 @@ M.DEFAULTS = {
 
   -- 0 means automatic: the lowest non-off level (see kbd_auto_percent).
   dark_percent = 0,
-
-  -- Habit learning: too many Fn presses inside a short window mean the anchor
-  -- is in the wrong place; the learned scale nudges it toward the ambient the
-  -- owner changed it at. EMA alpha matches the profile learning's.
-  learn_window_s = 600,
-  learn_count = 3,
-  learn_alpha = 0.125,
-  scale_min = 0.5,
-  scale_max = 2.0,
 }
 
 M.WINDOWS = {
@@ -190,17 +178,17 @@ function M.decide(state, observed, cfg, opts)
     } }
   end
 
-  local scale = state.scale
-  if not is_finite(scale) then scale = 1.0 end
-
+  -- The threshold is anchor_raw EXACTLY (the anchor contract: the flip lives in
+  -- the buffer band and nowhere else). A learned scale used to multiply it --
+  -- it moved the flip from 60% to 65.7% panel brightness and auto-lit the
+  -- keyboard in a bright room (2026-10-16); nothing may scale T0 again.
   local b = number_setting(cfg, "buffer_percent") / 100
   if b > 0.9 then b = 0.9 end
 
   -- Band edges in the LOG domain: multiplicative in raw counts is additive
   -- here, which is the domain the stabilised reading lives in.
-  local t_eff = anchor_raw * scale
-  local log_low = policy.log_of(t_eff * (1 - b))
-  local log_high = policy.log_of(t_eff * (1 + b))
+  local log_low = policy.log_of(anchor_raw * (1 - b))
+  local log_high = policy.log_of(anchor_raw * (1 + b))
 
   local actions = {}
 
@@ -216,40 +204,7 @@ function M.decide(state, observed, cfg, opts)
     state.mode = (kbd_raw > 0) and "dark" or "light"
     state.cmd_raw = kbd_raw
     state.inhibit = true
-
-    local window = number_setting(cfg, "learn_window_s")
-    local now_s = opts.now_s
-    local kept = {}
-    for _, t in ipairs(type(state.changes) == "table" and state.changes or {}) do
-      if is_finite(t) and (now_s - t) <= window then
-        kept[#kept + 1] = t
-      end
-    end
-    kept[#kept + 1] = now_s
-    state.changes = kept
-    actions[#actions + 1] = { kind = "kbd_manual", now_s = now_s }
-
-    if #kept >= number_setting(cfg, "learn_count") then
-      -- Habit learning: nudge the multiplicative scale toward the ambient the
-      -- change happened at (ratio 1 when the reading is unknown -- a no-op),
-      -- clamped so a single odd corner cannot drag the threshold away.
-      local ratio = 1.0
-      if is_finite(observed.raw) and t_eff > 0 then
-        ratio = observed.raw / t_eff
-      end
-      local alpha = number_setting(cfg, "learn_alpha")
-      local smin = number_setting(cfg, "scale_min")
-      local smax = number_setting(cfg, "scale_max")
-      local next_scale = scale + alpha * (ratio - scale)
-      if next_scale < smin then next_scale = smin end
-      if next_scale > smax then next_scale = smax end
-      state.scale = next_scale
-      state.changes = {}
-      actions[#actions + 1] = { kind = "kbd_learned", now_s = now_s }
-      actions[#actions + 1] = {
-        kind = "log", line = string.format("keyboard: learned threshold scale %.3f", next_scale),
-      }
-    end
+    actions[#actions + 1] = { kind = "kbd_manual", now_s = opts.now_s }
 
     -- The change is at most one tick old: it must stand this tick even if
     -- ambient is already past the release edge, or a manual change made in a

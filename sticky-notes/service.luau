@@ -7,12 +7,16 @@
 --   3. pluginDataDir()           (last-resort fallback).
 --
 -- File format controlled by the "file_format" setting:
---   json -> notes.json  (array of notes, full metadata)
+--   json -> notes.json  (one array of notes, full metadata)
 --   md   -> notes.md    (markdown, one ## section per note)
 --   txt  -> notes.txt   (plain text, notes separated by ---)
+-- Archived notes are stored in the same file as active ones, marked with an
+-- "archived" flag (a metadata key in JSON and Markdown, a header field in
+-- plain text).
 --
 -- State:
 --   sticky_notes.notes      -> { { id, content, color, createdAt, pinned, blurred }, ... }
+--   sticky_notes.archived   -> { { id, content, color, createdAt, pinned, blurred }, ... }
 --   sticky_notes.blurred    -> bool
 --   sticky_notes.ready      -> bool (saved notes have finished loading)
 --   sticky_notes.save_path  -> string (resolved absolute dir, informational)
@@ -25,17 +29,21 @@
 --   { op = "toggle_pin", id = "..." }
 --   { op = "toggle_note_blur", id = "..." }
 --   { op = "move",       id = "...", group = "p" | "u", index = N }
+--   { op = "archive",    id = "..." }
+--   { op = "unarchive",  id = "..." }
 --   { op = "toggle_blur" }
 --   { op = "set_blur", value = true | false }
 --   { op = "sync" }
 --
 -- Storage invariant: `notes` is kept in display order — pinned notes first
 -- (newest-first within each group). All mutations preserve this so the
--- panel can render `notes` directly without re-sorting.
+-- panel can render `notes` directly without re-sorting. `archived` holds the
+-- read-only archive in its own stable order: most recently archived first.
 
 noctalia.setUpdateInterval(60000)
 
 local notes = {}
+local archived = {}
 local blurred = false
 local resolvedDir = nil
 local loaded = false
@@ -90,43 +98,76 @@ end
 -- Serialisation helpers per format
 -- -------------------------------------------------------------------------
 local function serializeJson()
-  return noctalia.json.encode({ notes = notes, blurred = blurred })
+  -- Notes live in one array, as in the other formats: an archived note carries
+  -- an `archived` flag instead of moving to its own array, so a file written
+  -- here still loads every note on an older plugin version (archived notes
+  -- simply reappear in the list).
+  local entries = {}
+  local function append(list, isArchived)
+    for _, n in ipairs(list) do
+      table.insert(entries, {
+        id        = n.id,
+        content   = n.content,
+        color     = n.color,
+        createdAt = n.createdAt,
+        pinned    = n.pinned == true,
+        blurred   = n.blurred == true,
+        archived  = isArchived and true or nil,
+      })
+    end
+  end
+  append(notes, false)
+  append(archived, true)
+  return noctalia.json.encode({ notes = entries, blurred = blurred })
 end
 
 local function serializeMd()
   local parts = {}
-  for i, n in ipairs(notes) do
-    local meta = noctalia.json.encode({
-      id = n.id,
-      color = n.color,
-      createdAt = n.createdAt,
-      pinned = n.pinned == true,
-      blurred = n.blurred == true,
-    })
-    table.insert(parts, string.format(
-      "## Note %d\n\n<!-- sticky-notes %s -->\n\n%s\n",
-      i,
-      meta or "{}",
-      n.content or ""
-    ))
+  -- Sections are written in list order: active notes (already in display
+  -- order), then the archive. Archived sections carry an `archived` flag in
+  -- their metadata comment; active notes keep their previous metadata shape.
+  local function append(list, isArchived, offset)
+    for i, n in ipairs(list) do
+      local meta = noctalia.json.encode({
+        id        = n.id,
+        color     = n.color,
+        createdAt = n.createdAt,
+        pinned    = n.pinned == true,
+        blurred   = n.blurred == true,
+        archived  = isArchived and true or nil,
+      })
+      table.insert(parts, string.format(
+        "## Note %d\n\n<!-- sticky-notes %s -->\n\n%s\n",
+        offset + i,
+        meta or "{}",
+        n.content or ""
+      ))
+    end
   end
+  append(notes, false, 0)
+  append(archived, true, #notes)
   local header = blurred and "<!-- blurred: true -->\n\n" or ""
   return header .. table.concat(parts, "\n---\n\n")
 end
 
 local function serializeTxt()
   local parts = {}
-  for i, n in ipairs(notes) do
-    table.insert(parts, string.format(
-      "[Note %d | id:%s color:%s pinned:%s blurred:%s]\n%s",
-      i,
-      n.id,
-      n.color,
-      n.pinned == true and "true" or "false",
-      n.blurred == true and "true" or "false",
-      n.content or ""
-    ))
+  local function append(list, isArchived, offset)
+    for i, n in ipairs(list) do
+      table.insert(parts, string.format(
+        "[Note %d | id:%s color:%s pinned:%s blurred:%s archived:%s]\n%s",
+        offset + i,
+        n.id,
+        n.color,
+        n.pinned == true and "true" or "false",
+        n.blurred == true and "true" or "false",
+        isArchived and "true" or "false",
+        n.content or ""
+      ))
+    end
   end
+  append(notes, false, 0)
+  append(archived, true, #notes)
   local header = blurred and "[blurred:true]\n\n" or ""
   return header .. table.concat(parts, "\n\n---\n\n")
 end
@@ -140,7 +181,7 @@ local function parseJson(raw)
   if type(decoded.notes) == "table" then
     for _, n in ipairs(decoded.notes) do
       if type(n) == "table" and type(n.id) == "string" and n.id ~= "" then
-        table.insert(notes, {
+        table.insert(n.archived == true and archived or notes, {
           id        = n.id,
           content   = type(n.content) == "string" and n.content or "",
           color     = type(n.color) == "string" and n.color or "yellow",
@@ -161,7 +202,7 @@ local function parseMd(raw)
   for metaJson, body in (raw .. "\n---"):gmatch("<!%-%- sticky%-notes (%b{}) %-%->(.-)\n%-%-%-") do
     local meta = noctalia.json.decode(metaJson)
     if type(meta) == "table" and type(meta.id) == "string" then
-      table.insert(notes, {
+      table.insert(meta.archived == true and archived or notes, {
         id        = meta.id,
         content   = noctalia.string.trim(body),
         color     = type(meta.color) == "string" and meta.color or "yellow",
@@ -175,8 +216,8 @@ end
 
 local function parseTxt(raw)
   if raw:match("%[blurred:true%]") then blurred = true end
-  local function insertTxt(id, color, pinnedStr, blurredStr, body)
-    table.insert(notes, {
+  local function insertTxt(id, color, pinnedStr, blurredStr, archivedStr, body)
+    table.insert(archivedStr == "true" and archived or notes, {
       id        = id,
       content   = noctalia.string.trim(body),
       color     = color,
@@ -188,26 +229,35 @@ local function parseTxt(raw)
   -- The serializer omits a separator after the final note. Add one only for
   -- parsing so each format loop handles every section, including the last.
   local terminated = raw .. "\n\n---\n"
-  -- Current format with pinned and per-note blur flags.
-  for sectionId, sectionColor, sectionPinned, sectionBlurred, sectionBody in terminated:gmatch(
-    "%[Note %d+ | id:([%w_]+) color:([%a]+) pinned:(%a+) blurred:(%a+)%]\n(.-)\n\n%-%-%-%\n"
+  -- Current format with pinned, per-note blur and archive flags.
+  for sectionId, sectionColor, sectionPinned, sectionBlurred, sectionArchived, sectionBody in terminated:gmatch(
+    "%[Note %d+ | id:([%w_]+) color:([%a]+) pinned:(%a+) blurred:(%a+) archived:(%a+)%]\n(.-)\n\n%-%-%-%\n"
   ) do
-    insertTxt(sectionId, sectionColor, sectionPinned, sectionBlurred, sectionBody)
+    insertTxt(sectionId, sectionColor, sectionPinned, sectionBlurred, sectionArchived, sectionBody)
   end
-  if #notes == 0 then
+  -- Every fallback below predates archives, so its notes are active ones.
+  if #notes + #archived == 0 then
+    -- Previous format with pinned and per-note blur flags.
+    for sectionId, sectionColor, sectionPinned, sectionBlurred, sectionBody in terminated:gmatch(
+      "%[Note %d+ | id:([%w_]+) color:([%a]+) pinned:(%a+) blurred:(%a+)%]\n(.-)\n\n%-%-%-%\n"
+    ) do
+      insertTxt(sectionId, sectionColor, sectionPinned, sectionBlurred, "false", sectionBody)
+    end
+  end
+  if #notes + #archived == 0 then
     -- Previous format with a pinned flag (per-note blur defaults to false).
     for sectionId, sectionColor, sectionPinned, sectionBody in terminated:gmatch(
       "%[Note %d+ | id:([%w_]+) color:([%a]+) pinned:(%a+)%]\n(.-)\n\n%-%-%-%\n"
     ) do
-      insertTxt(sectionId, sectionColor, sectionPinned, "false", sectionBody)
+      insertTxt(sectionId, sectionColor, sectionPinned, "false", "false", sectionBody)
     end
   end
-  if #notes == 0 then
+  if #notes + #archived == 0 then
     -- Legacy format without pinned flag (defaults to unpinned).
     for sectionId, sectionColor, sectionBody in terminated:gmatch(
       "%[Note %d+ | id:([%w_]+) color:([%a]+)%]\n(.-)\n\n%-%-%-%\n"
     ) do
-      insertTxt(sectionId, sectionColor, "false", "false", sectionBody)
+      insertTxt(sectionId, sectionColor, "false", "false", "false", sectionBody)
     end
   end
 end
@@ -234,6 +284,7 @@ end
 
 local function loadData()
   notes = {}
+  archived = {}
   blurred = false
   local path = notesFilePath()
   if path == nil then return end
@@ -254,6 +305,7 @@ end
 -- -------------------------------------------------------------------------
 local function publish()
   noctalia.state.set("sticky_notes.notes", notes)
+  noctalia.state.set("sticky_notes.archived", archived)
   noctalia.state.set("sticky_notes.blurred", blurred)
   noctalia.state.set("sticky_notes.ready", loaded)
 end
@@ -320,13 +372,17 @@ local function addNote()
   noctalia.state.set("sticky_notes.edit_note", { id = note.id, created = true })
 end
 
+-- Deleting works from either list: the archive view exposes the same delete
+-- flow as the active list.
 local function removeNote(id)
-  for i, n in ipairs(notes) do
-    if n.id == id then
-      table.remove(notes, i)
-      saveData()
-      publish()
-      return
+  for _, list in ipairs({ notes, archived }) do
+    for i, n in ipairs(list) do
+      if n.id == id then
+        table.remove(list, i)
+        saveData()
+        publish()
+        return
+      end
     end
   end
 end
@@ -417,6 +473,45 @@ local function moveTo(id, group, index)
   publish()
 end
 
+-- Archiving moves a note out of the active list and to the top of the archive
+-- list, where it stays readable but cannot be edited. The pin flag is cleared
+-- so a restored note returns to the top of the unpinned group instead of
+-- silently coming back pinned.
+local function archiveNote(id)
+  for i, n in ipairs(notes) do
+    if n.id == id then
+      -- A blank note holds nothing to keep as a reference, so archiving it
+      -- follows the existing empty-note rule and deletes it instead.
+      if noctalia.string.trim(n.content or "") == "" then
+        removeNote(id)
+        return
+      end
+      local note = table.remove(notes, i)
+      note.pinned = false
+      table.insert(archived, 1, note)
+      saveData()
+      publish()
+      return
+    end
+  end
+end
+
+-- Restoring puts a note back at the top of the unpinned group, the same place
+-- a newly created note lands. Archived notes keep their text, colour and
+-- privacy flag; only the pin state is dropped (archiving clears it).
+local function unarchiveNote(id)
+  for i, n in ipairs(archived) do
+    if n.id == id then
+      local note = table.remove(archived, i)
+      note.pinned = false
+      table.insert(notes, pinnedCount() + 1, note)
+      saveData()
+      publish()
+      return
+    end
+  end
+end
+
 -- -------------------------------------------------------------------------
 -- Commands from the panel
 -- -------------------------------------------------------------------------
@@ -435,6 +530,10 @@ noctalia.state.watch("sticky_notes.cmd", function(cmd)
     toggleNoteBlur(cmd.id)
   elseif op == "move" then
     moveTo(cmd.id, cmd.group, cmd.index)
+  elseif op == "archive" then
+    archiveNote(cmd.id)
+  elseif op == "unarchive" then
+    unarchiveNote(cmd.id)
   elseif op == "toggle_blur" then
     toggleBlur()
   elseif op == "set_blur" then

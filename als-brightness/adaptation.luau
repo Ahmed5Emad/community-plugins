@@ -45,9 +45,7 @@
 --                              source strings the log lines quote)
 --               kbd            the keyboard-backlight bookkeeping
 --                              keyboard.decide mutates ({mode=, cmd_raw=,
---                              inhibit=, changes=, scale=}; scale seeds from
---                              profile.kbd_scale and is written back into it
---                              on kbd_learned)
+--                              inhibit=})
 --   tick      the tick counter, or nil for an event-time call (onIpc): events
 --             are processed either way, the tick body only when tick ~= nil.
 --   observed  the IO snapshot the decision reads (numbers or nil):
@@ -82,7 +80,6 @@
 --   {kind="apply_temperature", kelvin, now_s}     run the settings splice
 --   {kind="set_keyboard",  percent, raw}          command the keyboard backlight
 --   {kind="kbd_manual",    now_s}                 the owner's Fn press took over
---   {kind="kbd_learned",   now_s}                 kbd.scale moved; persist it
 --
 -- Every log line this module returns is byte-identical to the line service.luau
 -- used to write at the same point -- they are the maintainer's evidence stream.
@@ -267,7 +264,7 @@ function M.decide(session, tick, observed, events, cfg, opts)
     end
 
     if session.kbd == nil then
-      session.kbd = { mode = nil, cmd_raw = nil, inhibit = false, changes = {}, scale = 1.0 }
+      session.kbd = { mode = nil, cmd_raw = nil, inhibit = false }
     end
 
     local kbd_actions = keyboard.decide(session.kbd, {
@@ -283,11 +280,6 @@ function M.decide(session, tick, observed, events, cfg, opts)
       kbd_max = opts.kbd_max,
     })
     for _, action in ipairs(kbd_actions) do
-      if action.kind == "kbd_learned" then
-        -- Pure bookkeeping, exactly like record() folds observations into the
-        -- profile: the learned scale lands here; the executor persists it.
-        session.profile.kbd_scale = session.kbd.scale
-      end
       actions[#actions + 1] = action
     end
   end

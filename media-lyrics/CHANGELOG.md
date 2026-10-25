@@ -4,6 +4,38 @@ All notable changes to **Media Lyrics** are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.8] — 2026-10-13
+
+A **desktop widget** — the now-playing view as a tile pinned to the desktop and shown on
+the lockscreen, independent of any panel — an **audio-reactive bar chip**, and tooltips.
+
+### Added
+
+- **Desktop widget** (`[[desktop_widget]] id = "desktop"`) — the same now-playing /
+  lyrics view as a background layer-shell tile: album cover, title, artist, the lyric
+  window and the transport controls, pinned to the desktop and visible on the lockscreen.
+  A *persistent* panel still disappears once no panel surface is up; a desktop widget
+  does not, which is what "pin it to the desktop" actually needed. Long lyric lines wrap
+  inside the tile, the lyric band keeps a constant height whatever the track does, and
+  the tile is borderless by default, like the built-in desktop widgets. Settings:
+  `lines`, `width`, `height`, `padding`, `background`, `show_artist`, `show_cover`.
+  Available at `plugin_api 20`, so no API bump was needed.
+- **Audio-reactive chip** — the bar-widget settings `audio_spectrum` and
+  `audio_spectrum_bands` make the chip draw a live band meter fed by the host from the
+  PipeWire monitor. Off by default; 1–64 bands, the bars thinning to 1 px above 16 so a
+  high count still fits in the chip.
+- **Tooltips** on the transport controls and on the lyric rows, where a row shows the
+  timestamp it seeks to.
+- **A written report** of the Noctalia 5.2 capability work — `docs/reports/noctalia-52-report.html` —
+  with the measurements, diagrams and screenshots behind the desktop widget, the chip and
+  the tooltips, and what the host does and does not allow.
+
+### Changed
+
+- **`lines` on the desktop widget is a minimum, not a cap.** The band reserves the worst
+  case for that many rows and fills whatever is left with more lyrics, so a track whose
+  lines do not wrap shows more of them instead of leaving a gap above the transport.
+
 ## [0.9.7] — 2026-10-02
 
 A seekable progress bar, a pinned mini panel, and two display fixes: the seek

@@ -19,6 +19,10 @@
       "description": "Icon glyph name.",
       "label": "Glyph"
     },
+    "history_size": {
+      "description": "Size of the history stored.",
+      "label": "History size in MB"
+    },
     "notify_on_copy": {
       "description": "Send a notification whenever an expression or result is copied to the clipboard.",
       "label": "Notify on copy"

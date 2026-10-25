@@ -132,6 +132,7 @@ SETTING_TYPES = {
 }
 PANEL_PLACEMENTS = {"attached", "floating"}
 PANEL_KEYBOARD_FOCUS = {"on_demand", "exclusive", "none"}
+PANEL_LAYERS = {"top", "overlay"}
 WIDGET_GESTURES = {
     "left",
     "right",
@@ -163,7 +164,7 @@ ROOT_FIELDS = set(ROOT_STRING_FIELDS) | set(ROOT_ARRAY_FIELDS) | set(ENTRY_TYPES
 }
 BASE_ENTRY_FIELDS = {"id", "entry"}
 ENTRY_FIELDS = {
-    "widget": BASE_ENTRY_FIELDS | {"setting", "actions"},
+    "widget": BASE_ENTRY_FIELDS | {"setting", "actions", "hover_highlight"},
     "panel": BASE_ENTRY_FIELDS
     | {
         "setting",
@@ -171,6 +172,7 @@ ENTRY_FIELDS = {
         "height",
         "placement",
         "position",
+        "layer",
         "open_near_click",
         "dismiss_on_outside_click",
         "keyboard_focus",
@@ -777,6 +779,13 @@ class Validator:
         if "open_near_click" in entry and not isinstance(entry["open_near_click"], bool):
             self.add_context_error(manifest_path, context, "open_near_click must be a bool")
 
+        if "layer" in entry:
+            if not is_int(plugin_api) or plugin_api < 30:
+                self.add_context_error(manifest_path, context, "layer requires plugin_api >= 30")
+            elif not isinstance(entry["layer"], str) or entry["layer"] not in PANEL_LAYERS:
+                valid = ", ".join(sorted(PANEL_LAYERS))
+                self.add_context_error(manifest_path, context, f"layer must be one of: {valid}")
+
         if "dismiss_on_outside_click" in entry:
             if not is_int(plugin_api) or plugin_api < 8:
                 self.add_context_error(
@@ -817,6 +826,12 @@ class Validator:
         entry: dict[str, Any],
         plugin_api: Any,
     ) -> None:
+        if "hover_highlight" in entry:
+            if not is_int(plugin_api) or plugin_api < 34:
+                self.add_context_error(manifest_path, context, "hover_highlight requires plugin_api >= 34")
+            elif not isinstance(entry["hover_highlight"], bool):
+                self.add_context_error(manifest_path, context, "hover_highlight must be a bool")
+
         if "actions" not in entry:
             return
 

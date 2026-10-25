@@ -25,7 +25,9 @@ Install `xdg-open` (from `xdg-utils`) on `PATH`. It is only used to open a
 Wikipedia page when you click a driver, team or race row.
 
 Install `curl` only if you turn on the experimental F1 live-timing stream below.
-Everything else goes through `noctalia.http`.
+That stream is stopped with `pkill` (from `procps-ng`, present on most systems)
+when you switch to another source or no session is near. Everything else goes
+through `noctalia.http`.
 
 ### Live timing sources
 
@@ -157,9 +159,11 @@ Files: the plugin writes small SVG files of the circuit outline into its own
 data directory (`noctalia.pluginDataDir()`), one per circuit and colour. It
 reads `tracks.txt` from its own directory. It spawns `xdg-open` only when you
 click a link, and only for `https` links to Wikipedia. With `live_source =
-f1_feed` it also runs `sh f1-live.sh <seconds>` (a script in the plugin
+f1_feed` it also runs `sh f1-live.sh <seconds> <token>` (a script in the plugin
 directory) which runs `curl` against `livetiming.formula1.com`, keeps a cookie
-jar in a temporary file, and removes it when it ends.
+jar in a temporary file, and removes it when it ends. When you leave that source,
+or no session is near, it runs `pkill -TERM -f` with a pattern anchored to that
+one script's command line and token, so no other process is signalled.
 
 Everything fetched is length-limited and stripped of control and bidirectional
 characters before it is shown.

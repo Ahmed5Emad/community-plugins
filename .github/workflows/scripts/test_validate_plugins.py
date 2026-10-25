@@ -425,6 +425,46 @@ class WidgetActionsTests(unittest.TestCase):
         self.assertIn("actions", validate_plugins.ENTRY_FIELDS["widget"])
 
 
+class PanelLayerTests(unittest.TestCase):
+    def validate_layer(self, entry: dict, plugin_api: object = 30) -> list[str]:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            plugin_dir = root / "example"
+            plugin_dir.mkdir()
+            (plugin_dir / "panel.luau").write_text("", encoding="utf-8")
+            validator = validate_plugins.Validator(root)
+            validator.validate_entries(
+                plugin_dir / "plugin.toml",
+                {
+                    "plugin_api": plugin_api,
+                    "panel": [{"id": "panel", "entry": "panel.luau", **entry}],
+                },
+                {},
+            )
+            return validator.errors
+
+    def test_accepts_supported_layers_from_api_30(self) -> None:
+        for api in (30, 31):
+            for layer in ("top", "overlay"):
+                with self.subTest(api=api, layer=layer):
+                    self.assertEqual(self.validate_layer({"layer": layer}, api), [])
+
+    def test_rejects_layer_below_api_30_or_invalid_api(self) -> None:
+        for api in (29, None, "30", True):
+            with self.subTest(api=api):
+                errors = self.validate_layer({"layer": "overlay"}, api)
+                self.assertTrue(any("requires plugin_api >= 30" in error for error in errors))
+
+    def test_rejects_invalid_layers_and_types(self) -> None:
+        for layer in ("background", "bottom", "Overlay", "", 1, True, [], {}):
+            with self.subTest(layer=layer):
+                errors = self.validate_layer({"layer": layer})
+                self.assertTrue(any("layer must be one of:" in error for error in errors))
+
+    def test_layer_remains_optional_on_older_api(self) -> None:
+        self.assertEqual(self.validate_layer({}, 29), [])
+
+
 class PluginFileCountTests(unittest.TestCase):
     def validate_file_count(self, files: dict[str, int], directories: int = 0) -> list[str]:
         """`files` maps a directory inside the plugin ("" for its root) to how many it holds."""

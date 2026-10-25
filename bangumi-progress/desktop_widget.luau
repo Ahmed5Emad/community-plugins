@@ -5,13 +5,14 @@ local snapshot = noctalia.state.get("bgm_snapshot") or {}
 
 local COVER_WIDTH = 40
 local COVER_HEIGHT = 56
-local ROW_HEIGHT = 62
-local ROW_GAP = 4
+local ROW_HEIGHT = 64
+local ROW_GAP = 6
 local HEADER_HEIGHT = 28
 local ROOT_PADDING = 12
 local ROOT_GAP = 8
 local OPEN_BUTTON_SIZE = 28
 local pageOffset = 0
+local coverRequestSignature = nil
 
 local function tr(key, subst)
   return noctalia.tr("desktop." .. key, subst)
@@ -31,7 +32,9 @@ local function errorText(code)
   if code == "not_configured" then
     return tr("not_configured")
   elseif code == "unauthorized" then
-    return tr("unauthorized")
+    return tr(if snapshot.authSource == "oauth" then "oauth_unauthorized" else "unauthorized")
+  elseif code == "forbidden" then
+    return tr("forbidden")
   elseif code == "network" then
     return tr("network_error")
   elseif code == "parse" then
@@ -131,12 +134,22 @@ local function renderRow(row, showCovers, rowWidth)
   if showCovers then
     detailWidth = detailWidth - COVER_WIDTH - 8
   end
-  table.insert(children, ui.column({ width = detailWidth, minWidth = 0, gap = 4, justify = "center" }, {
-    ui.label({ text = row.title or "?", fontSize = 12, maxLines = 1, color = titleColor }),
-    ui.row({ width = detailWidth, gap = 8, align = "center" }, {
-      ui.progress({ progress = progressRatio(row), flexGrow = 1, height = 5, radius = 2 }),
-      ui.label({ text = progressText(row), fontSize = 10, color = "on_surface_variant" }),
+  detailWidth = math.max(0, detailWidth)
+  table.insert(children, ui.column({ width = detailWidth, minWidth = 0, gap = 2, align = "stretch", justify = "center" }, {
+    ui.label({
+      text = row.title or "?",
+      fontSize = 13,
+      fontWeight = "medium",
+      maxLines = 2,
+      color = titleColor,
     }),
+    ui.label({
+      text = progressText(row),
+      fontSize = 10,
+      color = "on_surface_variant",
+      maxLines = 1,
+    }),
+    ui.progress({ progress = progressRatio(row), width = detailWidth, height = 5, radius = 2 }),
   }))
 
   local subjectId = row.subjectId
@@ -174,6 +187,26 @@ local function render()
   local maxOffset = math.max(0, #rows - visibleItems)
   pageOffset = math.max(0, math.min(maxOffset, pageOffset))
   local lastIndex = math.min(#rows, pageOffset + visibleItems)
+  if showCovers and lastIndex > pageOffset then
+    local viewer = snapshot.viewer or {}
+    local fetchedAt
+    for _, collection in ipairs(snapshot.collections or {}) do
+      if collection.type == 3 then fetchedAt = collection.fetchedAt; break end
+    end
+    local ids, parts = {}, {tostring(snapshot.authSource), tostring(snapshot.authMode),
+      tostring(viewer.id or viewer.username or ""), tostring(pageOffset), tostring(fetchedAt)}
+    for index = pageOffset + 1, lastIndex do
+      table.insert(ids, rows[index].subjectId)
+      table.insert(parts, tostring(rows[index].subjectId))
+    end
+    local signature = table.concat(parts, ":")
+    if signature ~= coverRequestSignature then
+      coverRequestSignature = signature
+      sendCommand("load_covers", { type = 3, subjectIds = ids })
+    end
+  else
+    coverRequestSignature = nil
+  end
   local rootHeight = nil
   local headerChildren = {
     ui.label({
@@ -182,6 +215,7 @@ local function render()
       fontWeight = "bold",
       color = "primary",
       flexGrow = 1,
+      maxLines = 1,
     }),
   }
   if #rows > visibleItems then
@@ -189,10 +223,13 @@ local function render()
       text = tr("page_range", { first = pageOffset + 1, last = lastIndex, total = #rows }),
       fontSize = 10,
       color = "on_surface_variant",
+      maxLines = 1,
     }))
     table.insert(headerChildren, ui.button({
       glyph = "chevron-left",
       variant = "ghost",
+      width = OPEN_BUTTON_SIZE,
+      height = OPEN_BUTTON_SIZE,
       tooltip = tr("previous_page"),
       onClick = function()
         pageOffset = math.max(0, pageOffset - visibleItems)
@@ -202,6 +239,8 @@ local function render()
     table.insert(headerChildren, ui.button({
       glyph = "chevron-right",
       variant = "ghost",
+      width = OPEN_BUTTON_SIZE,
+      height = OPEN_BUTTON_SIZE,
       tooltip = tr("next_page"),
       onClick = function()
         pageOffset = math.min(maxOffset, pageOffset + visibleItems)
@@ -210,7 +249,7 @@ local function render()
     }))
   end
   local children = {
-    ui.row({ height = HEADER_HEIGHT, align = "center", gap = 4 }, headerChildren),
+    ui.row({ width = widgetWidth - ROOT_PADDING * 2, height = HEADER_HEIGHT, align = "center", gap = 4 }, headerChildren),
   }
 
   if snapshot.loading and #rows == 0 then
@@ -231,7 +270,7 @@ local function render()
     table.insert(children, ui.column({
       width = rowWidth,
       height = viewportHeight,
-      gap = ROW_GAP,
+      gap = ROW_GAP, align = "stretch",
     }, rowNodes))
   end
 
@@ -239,7 +278,7 @@ local function render()
     width = widgetWidth,
     height = rootHeight,
     gap = ROOT_GAP,
-    padding = ROOT_PADDING,
+    padding = ROOT_PADDING, align = "stretch",
   }, children))
 end
 
@@ -256,6 +295,7 @@ end
 
 function onConfigChanged()
   pageOffset = 0
+  coverRequestSignature = nil
   render()
 end
 

@@ -36,18 +36,71 @@ local CATEGORIES = {
   { id = "flags",    label = "Flags",            glyph = "flag" },
 }
 
--- Layout tiers, selected by the focused output's logical width. The
--- thresholds pair with the [[panel]] entries in plugin.toml: bind the
--- entry whose size suits the output you open it on. cols fills the
--- manifest panel width at `cell` px + 6px gaps + 16px padding + ~10px
--- scrollbar slack.
+local M = {}
+
+-- Layout tiers, one per [[panel]] entry (panel = that entry's manifest
+-- width in plugin.toml — the entry IS the size signal; see the Layout note
+-- below). cols/cell are the PREFERRED grid; fitGrid below re-derives the
+-- effective values from the panel width actually available (rendered tile
+-- size included).
 local TIERS = {
-  { min = 2560, cols = 9, cell = 72, glyph = 34 }, -- 3440×1440 ultrawide
-  { min = 1600, cols = 8, cell = 66, glyph = 30 }, -- 1920×1080 class
-  { min = 0,    cols = 6, cell = 58, glyph = 26 }, -- laptop panels
+  { cols = 9, cell = 72, glyph = 34, panel = 780 }, -- wide
+  { cols = 8, cell = 66, glyph = 30, panel = 640 }, -- desktop
+  { cols = 6, cell = 58, glyph = 26, panel = 480 }, -- compact
 }
 
 local GAP = 6
+
+-- Grid fit constants. TILE_CHROME is the out-of-box width a tile adds to
+-- its declared width/height. Measured 2026-10-12 as ZERO for the former
+-- ui.button tile (66 logical rendered 83px at scale 1.25, ≈66.4 logical,
+-- border included; rows pitch at cell+GAP), and the column tile declares
+-- the same box with its border inside it. Kept as a knob only in case a
+-- theme ever adds out-of-box chrome; budgeting it non-zero silently costs whole
+-- columns (it did: 5 → 4 on compact). The ui.scroll scrollbar is an
+-- overlay that reserves no width, so rows reserve SCROLLBAR_GUTTER — the
+-- rows are inset half of it on each side (scroll paddingH), which keeps
+-- the left/right margins equal while the right inset always clears the
+-- overlay scrollbar.
+local TILE_CHROME = 0
+local SCROLLBAR_GUTTER = 24
+local ROOT_PADDING = 8
+-- The host-owned card also insets the plugin content around the root
+-- column (measured live 2026-10-12: card 600px, root box 560px at scale
+-- 1.25 → 16 logical per side). The fit budget must subtract BOTH insets,
+-- or rows can overflow the real content box into the scrollbar band.
+local HOST_PADDING = 16
+
+-- Pure row-fit math: given the content width actually available (panel
+-- width minus the host card inset minus root padding) and a preferred
+-- (cols, cell) pair, return the (cols, cell) to render. Always satisfies
+--   cols*cell + (cols-1)*gap + SCROLLBAR_GUTTER <= availableWidth
+local function fitGrid(availableWidth, gap, wantCols, wantCell)
+  local budget = availableWidth - SCROLLBAR_GUTTER
+  local cell = wantCell + TILE_CHROME
+  local cols = math.min(wantCols, math.floor((budget + gap) / (cell + gap)))
+  if cols < 1 then
+    cols = 1
+  end
+  -- Grow the tile to fill the row area: preferred cells under-fill the
+  -- available width and leave fat margins around the grid (compact: 5
+  -- tiles of 66 in a 392-wide row area). The fill is always >= the
+  -- preferred cell (the col count above only shrinks), so tiles never
+  -- get smaller than the tier asked for — margins just go to ~zero.
+  cell = math.floor((budget - (cols - 1) * gap) / cols)
+  return cols, cell
+end
+
+-- ── Layout ──────────────────────────────────────────────────────────────────
+-- Each [[panel]] entry binds this module through a tiny shim (wide.luau /
+-- desktop.luau / compact.luau) that passes its manifest width: the entry IS
+-- the size signal. (The API offers none — panel.* has no size query,
+-- togglePanel takes no context, and onOpen's context is the USER's string —
+-- so guessing from the focused output only pairs correctly when the bound
+-- entry matches the output and misfits everywhere else: the wide entry on a
+-- 2304-logical output rendered 5 columns and a massive margin.)
+local PANEL_WIDTH_BY_ID = { wide = 780, desktop = 640, compact = 480 }
+local fitWidth = PANEL_WIDTH_BY_ID.compact -- replaced by the shim's width at onOpen
 local MAX_SEARCH_RESULTS = 300
 local RECENCY_HALF_LIFE_DAYS = 14.0
 
@@ -60,6 +113,21 @@ local usage = nil -- { [emoji] = { c = count, t = last_used_epoch_s } }
 local usagePath = nil
 
 local tier = TIERS[1]
+
+-- Effective grid geometry for the current (fitWidth, tier) pair — gridCell
+-- is the tile's declared width (== rendered width; see TILE_CHROME above).
+-- gridRowWidth is the row AREA width (content minus the reserved gutter):
+-- rows are sized to it and `justify = "center"` keeps the left/right
+-- margins equal. Derived once at load and re-derived by applyGridFit()
+-- whenever fitWidth or tier changes (pickTier/onOpen).
+local gridCols, gridCell, gridRowWidth
+local function applyGridFit()
+  local avail = fitWidth - 2 * (HOST_PADDING + ROOT_PADDING)
+  gridCols, gridCell = fitGrid(avail, GAP, tier.cols, tier.cell)
+  gridRowWidth = avail - SCROLLBAR_GUTTER
+end
+applyGridFit()
+
 local cat = "smileys" -- browse category; "all" renders every section (slower)
 local query = ""
 local inputKey = 0 -- bump to recreate the input (clears its host-owned buffer)
@@ -454,8 +522,8 @@ local function buildView()
   rowOfItem = {}
 
   local function addSection(entries)
-    for base = 1, #entries, tier.cols do
-      local len = math.min(tier.cols, #entries - base + 1)
+    for base = 1, #entries, gridCols do
+      local len = math.min(gridCols, #entries - base + 1)
       local rowIndex = #rows + 1
       rows[rowIndex] = { base = #items + 1, len = len }
       for i = base, base + len - 1 do
@@ -468,7 +536,7 @@ local function buildView()
   if searchActive() then
     addSection(search(nowSec()))
   else
-    local recent = recents(nowSec(), tier.cols * 2)
+    local recent = recents(nowSec(), gridCols * 2)
     if #recent > 0 then
       addSection(recent)
     end
@@ -564,24 +632,46 @@ end
 -- ── Rendering ──────────────────────────────────────────────────────────
 local render -- forward declaration (closures below call it)
 
+-- `sel` owns the one fill for mouse and keyboard: a native ui.button hover
+-- would add an independent tint, so the tile paints itself as a column.
+-- The footer supplies the name instead of a tooltip.
 local function tile(entry, idx)
-  return ui.button({
+  local selected = idx == sel
+  return ui.column({
     key = "t" .. tostring(idx),
-    text = entry.e,
-    fontSize = tier.glyph,
-    width = tier.cell,
-    height = tier.cell,
-    contentAlign = "center",
-    tooltip = entry.n,
+    width = gridCell - TILE_CHROME,
+    height = gridCell - TILE_CHROME,
+    align = "center",
+    justify = "center",
+    fill = if selected then "primary" else "surface_variant",
+    border = if selected then "primary" else "outline",
+    borderWidth = 1,
+    radius = 6,
     onClick = function()
       commit(entry)
     end,
-    onHover = function()
-      if sel ~= idx then
+    -- Hover callbacks arrive as the STRINGS "true" / "false" (and the key),
+    -- and "false" is truthy in Luau, so compare explicitly. Only entering
+    -- selects: a leave must not undo a keyboard move made while the
+    -- pointer rested on this tile.
+    onHover = function(state)
+      if state == "true" and sel ~= idx then
         sel = idx
         render()
       end
     end,
+  }, {
+    ui.label({
+      key = "e",
+      text = entry.e,
+      -- Keep each tier's designed glyph/tile ratio as the tile grows to
+      -- fill the row area (tier.glyph was sized for tier.cell).
+      fontSize = math.floor(gridCell * tier.glyph / (tier.cell + TILE_CHROME)),
+      maxLines = 1,
+      -- Monochrome symbols take the label colour, so it must contrast
+      -- with the fill; colour-font emoji ignore it.
+      color = if selected then "on_primary" else "on_surface",
+    }),
   })
 end
 
@@ -596,6 +686,11 @@ local function sectionBlock(label, entries, startIndex, budget)
     table.insert(children, ui.label({
       key = "h" .. label,
       text = label,
+      -- Same box as the tile rows: with the scroll centering its children,
+      -- section labels stay flush with the grid block on panels wider
+      -- than the fitted row area (wide/desktop entries).
+      width = gridRowWidth,
+      textAlign = "left",
       fontSize = 11,
       fontWeight = "semibold",
       color = "on_surface_variant",
@@ -604,18 +699,20 @@ local function sectionBlock(label, entries, startIndex, budget)
   if #entries == 0 then
     return children
   end
-  for base = 1, #entries, tier.cols do
+  for base = 1, #entries, gridCols do
     if budget.remaining <= 0 then
       break
     end
     local rowChildren = {}
-    for i = base, math.min(base + tier.cols - 1, #entries) do
+    for i = base, math.min(base + gridCols - 1, #entries) do
       table.insert(rowChildren, tile(entries[i], startIndex + i - 1))
     end
     table.insert(children, ui.row({
       key = "r" .. tostring(startIndex) .. "-" .. tostring(base),
+      width = gridRowWidth,
       gap = GAP,
       align = "center",
+      justify = "center",
     }, rowChildren))
     budget.remaining -= 1
   end
@@ -647,7 +744,13 @@ local function categoryStrip()
   for _, c in ipairs(CATEGORIES) do
     catButton(c.id, c.glyph, c.label)
   end
-  return ui.row({ key = "cats", gap = 2, align = "center" }, buttons)
+  -- Centered by stretching: the root column is align="stretch", so the row
+  -- fills the same content box the search input spans and justify="center"
+  -- centers the buttons in the REAL width. No width estimate here — a
+  -- computed width (even the fitted contentWidth) anchors left of the input
+  -- by the estimate's error, which shows up as a few px of drift.
+  return ui.row({ key = "cats", gap = 2, align = "center",
+    justify = "center" }, buttons)
 end
 
 local function gridArea()
@@ -700,7 +803,7 @@ local function gridArea()
   else
     -- Browse view: Frequently Used + category sections.
     local startIndex = 1
-    local recent = recents(nowSec(), tier.cols * 2)
+    local recent = recents(nowSec(), gridCols * 2)
     if #recent > 0 then
       for _, b in ipairs(sectionBlock("Frequently Used", recent, startIndex, budget)) do
         table.insert(children, b)
@@ -728,11 +831,21 @@ local function gridArea()
   end
 
   return ui.scroll({
-    key = "grid",
+    -- The key tracks the VIEW identity (search vs. each browse tab):
+    -- switching tabs recreates the scroll container, so the new category
+    -- opens at its top instead of inheriting the old tab's scroll offset.
+    -- Within one view re-renders keep the key and preserve the position.
+    key = "grid-" .. (if searchActive() then "search" else cat),
     flexGrow = 1,
     gap = GAP,
-    align = "start",
-    paddingH = 2,
+    -- Children (row boxes of gridRowWidth) center in the scroll's inner
+    -- width: on the compact entry the box fills it, on wider entries the
+    -- grid block sits mid-panel instead of hugging the left edge.
+    align = "center",
+    -- Half the reserved gutter on each side: the overlay scrollbar (which
+    -- reserves no width) then always paints over the gutter, never over a
+    -- tile, while left/right margins stay equal.
+    paddingH = SCROLLBAR_GUTTER / 2,
     -- Grow the render budget as the user scrolls near the bottom — the
     -- first paint only builds INITIAL_RENDER_ROWS, so opening a large
     -- category (500+ emoji) stays fast; scrolling fills in the rest.
@@ -777,59 +890,70 @@ local function footer()
 end
 
 render = function()
+  -- The host-owned panel surface already paints the card background,
+  -- rounded corners, outline and drop shadow (the shadow lands INSIDE
+  -- the surface). A root fill here would double-paint the background and
+  -- expose that inside shadow as a black band around the card, so the
+  -- root carries layout only.
+  -- Children accumulate with table.insert: the tab strip is conditional,
+  -- and a nil hole in an array constructor would truncate the child list
+  -- for any ipairs-style consumer.
+  local children = {}
+  -- NB: no flexGrow on the input — it sits directly in a column, where
+  -- flexGrow would stretch it VERTICALLY into a giant field. Width comes
+  -- from the column's cross-axis stretch.
+  table.insert(children, ui.input({
+    key = "q-" .. tostring(inputKey),
+    value = query,
+    placeholder = "Search Emoji & Symbols…",
+    fontSize = 15,
+    focus = true,
+    controlSize = "lg",
+    onChange = function(value)
+      query = if type(value) == "string" then value else ""
+      sel = 1
+      buildView()
+      render()
+    end,
+  }))
+  -- Category tabs belong to the browse view only: a query searches the
+  -- whole dataset, so the strip (and its space) disappears while typing.
+  if not searchActive() then
+    table.insert(children, categoryStrip())
+  end
+  table.insert(children, gridArea())
+  table.insert(children, footer())
   panel.render(ui.column({
     key = "root",
     flexGrow = 1,
     align = "stretch",
     gap = 10,
-    padding = 16,
-    fill = "surface",
-    radius = 16,
-  }, {
-    -- NB: no flexGrow here — this input sits directly in a column, where
-    -- flexGrow would stretch it VERTICALLY into a giant field. Width comes
-    -- from the column's cross-axis stretch.
-    ui.input({
-      key = "q-" .. tostring(inputKey),
-      value = query,
-      placeholder = "Search Emoji & Symbols…",
-      fontSize = 15,
-      focus = true,
-      controlSize = "lg",
-      onChange = function(value)
-        query = if type(value) == "string" then value else ""
-        sel = 1
-        buildView()
-        render()
-      end,
-    }),
-    gridArea(),
-    footer(),
-  }))
+    padding = ROOT_PADDING,
+  }, children))
 end
 
 -- ── Lifecycle ──────────────────────────────────────────────────────────
-local function pickTier()
-  local width = 0
-  for _, out in ipairs(noctalia.outputs()) do
-    if out.focused then
-      width = tonumber(out.width) or 0
-      break
-    end
-  end
+-- The tier follows the entry width the shim passed (wide→9 columns,
+-- desktop→8, compact→6). The old focused-output heuristic is gone: it
+-- paired entry and output only when the binding matched the tier comment,
+-- and misfit everywhere else.
+local function tierForWidth(width)
   for _, t in ipairs(TIERS) do
-    if width >= t.min then
-      tier = t
-      return
+    if t.panel == width then
+      return t
     end
   end
-  tier = TIERS[#TIERS]
+  return TIERS[#TIERS]
 end
 
-function onOpen(_context)
+function M.onOpen(entryWidth)
   ensureData()
   loadUsage()
-  pickTier()
+  -- The entry shim passes its manifest width: the entry is the size signal.
+  fitWidth = if type(entryWidth) == "number" then entryWidth
+    else PANEL_WIDTH_BY_ID.compact
+  tier = tierForWidth(fitWidth)
+  applyGridFit()
   query = ""
   cat = "smileys"
   inputKey += 1 -- fresh input: empty buffer, immediate focus
@@ -838,7 +962,7 @@ function onOpen(_context)
   render()
 end
 
-function onKey(chord, pressed)
+function M.onKey(chord, pressed)
   if not pressed then
     return
   end
@@ -856,3 +980,5 @@ function onKey(chord, pressed)
   end
   render()
 end
+
+return M

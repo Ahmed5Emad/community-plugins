@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -46,8 +47,8 @@ class MarkReadyTests(unittest.TestCase):
     def test_author_reply_marks_pr_ready(self) -> None:
         pull_request = FakePullRequest(comments=[marker_comment()])
         with mock.patch.object(plugin_author, "plugin_author", return_value=(1, "tordex")):
-            code = pr_mark_ready.mark_ready(None, pull_request, "tordex")
-        self.assertEqual(code, 0)
+            marked = pr_mark_ready.mark_ready(None, pull_request, "tordex")
+        self.assertTrue(marked)
         pull_request.mark_ready_for_review.assert_called_once()
 
     def test_notification_comment_does_not_mark_pr_ready(self) -> None:
@@ -73,7 +74,8 @@ class MarkReadyTests(unittest.TestCase):
     def test_non_author_comment_does_nothing(self) -> None:
         pull_request = FakePullRequest(comments=[marker_comment()])
         with mock.patch.object(plugin_author, "plugin_author", return_value=(1, "tordex")):
-            pr_mark_ready.mark_ready(None, pull_request, "someone-else")
+            marked = pr_mark_ready.mark_ready(None, pull_request, "someone-else")
+        self.assertFalse(marked)
         pull_request.mark_ready_for_review.assert_not_called()
 
     def test_without_notification_marker_does_nothing(self) -> None:
@@ -100,6 +102,36 @@ class MarkReadyTests(unittest.TestCase):
         with mock.patch.object(plugin_author, "plugin_author", return_value=(1, "tordex")):
             pr_mark_ready.mark_ready(None, pull_request, "tordex")
         pull_request.mark_ready_for_review.assert_not_called()
+
+    def run_main(self, pull_request: FakePullRequest) -> str:
+        env = {
+            "GITHUB_TOKEN": "token",
+            "REPOSITORY": "noctalia-dev/community-plugins",
+            "PULL_REQUEST_NUMBER": "42",
+            "COMMENT_AUTHOR": "tordex",
+            "COMMENT_BODY": "Looks good to me.",
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            output_path = Path(directory) / "output"
+            env["GITHUB_OUTPUT"] = str(output_path)
+            with (
+                mock.patch.dict("os.environ", env),
+                mock.patch.object(pr_mark_ready, "Github") as github,
+                mock.patch.object(plugin_author, "plugin_author", return_value=(1, "tordex")),
+            ):
+                github.return_value.get_repo.return_value.get_pull.return_value = pull_request
+                self.assertEqual(pr_mark_ready.main([]), 0)
+            return output_path.read_text()
+
+    def test_main_reports_marked_so_the_workflow_runs_the_template_check(self) -> None:
+        # Events from the built-in token trigger no workflows, so the ready_for_review
+        # event cannot re-run enforce-pr-template.yml on its own.
+        output = self.run_main(FakePullRequest(comments=[marker_comment()]))
+        self.assertEqual(output, "marked=true\n")
+
+    def test_main_reports_unmarked_when_nothing_changed(self) -> None:
+        output = self.run_main(FakePullRequest(draft=False, comments=[marker_comment()]))
+        self.assertEqual(output, "marked=false\n")
 
 
 if __name__ == "__main__":

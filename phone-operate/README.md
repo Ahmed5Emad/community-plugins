@@ -102,6 +102,19 @@ noctalia msg plugin icefish/phone-operate:core all cast '{"device":"<serial>","s
 noctalia msg plugin icefish/phone-operate:core all stop_cast '{"device":"<serial>","seq":1}'
 ```
 
+## Development tests
+
+The mocked regression checks run the plugin's Lua-compatible code with Lua 5.4,
+without Noctalia, a phone, filesystem writes, or spawned commands:
+
+```sh
+lua phone-operate/tests/regressions.lua phone-operate widget
+lua phone-operate/tests/regressions.lua phone-operate panel
+```
+
+They cover the bar widget layout on vertical bars and panel cards with a
+charging battery, an unnamed favorite contact, and an empty SMS destination.
+
 ## Notes
 
 - Casting spawns `scrcpy` per device; the plugin only starts and tracks the

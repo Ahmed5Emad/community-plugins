@@ -4,6 +4,10 @@
       "description": "Optional named account label from ai-usagebar. Leave empty for the default account. Ignored when the provider is Automatic.",
       "label": "Account label"
     },
+    "bar_font_scale": {
+      "description": "Adjusts font and icon sizes for this specific bar capsule.",
+      "label": "Capsule font size"
+    },
     "color_by_usage": {
       "description": "Tints the reading as the quota gets tight. Off keeps the capsule in the bar's own colour.",
       "label": "Color by usage"
@@ -18,6 +22,37 @@
         "pace": "Pace against the clock"
       }
     },
+    "font_scale": {
+      "description": "Adjusts font and icon sizes proportionally across the panel and bar.",
+      "label": "Font size",
+      "option": {
+        "compact": "Compact (85%)",
+        "huge": "Huge (130%)",
+        "inherit": "Inherit (from plugin settings)",
+        "large": "Large (115%)",
+        "normal": "Normal (100%)"
+      }
+    },
+    "gearing_anthropic": {
+      "description": "Estimated full 5h sessions per weekly quota for Claude Pro. The panel displays whole numbers; calculations and automatic calibration retain decimal precision.",
+      "label": "Gearing ratio: Claude Pro (sessions/wk)"
+    },
+    "gearing_claude_oss": {
+      "description": "Estimated full 5h sessions per weekly quota for Claude & GPT OSS. The panel displays whole numbers; calculations and automatic calibration retain decimal precision.",
+      "label": "Gearing ratio: Claude & GPT OSS (sessions/wk)"
+    },
+    "gearing_default": {
+      "description": "Estimated full 5h sessions per weekly quota for unlisted models. The panel displays whole numbers; calculations and automatic calibration retain decimal precision.",
+      "label": "Gearing ratio: Default (sessions/wk)"
+    },
+    "gearing_gemini": {
+      "description": "Estimated full 5h sessions per weekly quota for Gemini. The panel displays whole numbers; calculations and automatic calibration retain decimal precision.",
+      "label": "Gearing ratio: Gemini (sessions/wk)"
+    },
+    "gearing_openai": {
+      "description": "Estimated full 5h sessions per weekly quota for OpenAI / Codex. The panel displays whole numbers; calculations and automatic calibration retain decimal precision.",
+      "label": "Gearing ratio: Codex / OpenAI (sessions/wk)"
+    },
     "glyph_position": {
       "description": "Which side of the reading the icon sits on.",
       "label": "Icon position",
@@ -26,6 +61,18 @@
         "before": "Before"
       }
     },
+    "hidden_services": {
+      "description": "Comma-separated list of provider or model IDs to hide from both the bar and panel (e.g. claude-oss, moonshot).",
+      "label": "Hidden services & models"
+    },
+    "hide_claude_oss": {
+      "description": "Hides the Claude & GPT OSS tier from Antigravity in both the bar and panel, keeping Gemini active.",
+      "label": "Hide Claude & GPT OSS"
+    },
+    "meal_pause_hours": {
+      "description": "Estimated inactive hours during daytime for lunch, dinner, or rest breaks.",
+      "label": "Daily meal & break pause (hours)"
+    },
     "provider_limit": {
       "description": "How many providers one capsule shows, busiest first, with a +N for the rest. Only applies when the provider is Automatic.",
       "label": "Providers in the capsule"
@@ -33,6 +80,10 @@
     "refresh_minutes": {
       "description": "How often the CLI is asked for fresh usage. Countdowns tick locally between calls.",
       "label": "Refresh interval (minutes)"
+    },
+    "schedule_aware_triage": {
+      "description": "Discount sleep, meals, and off-hours to pace quota consumption against real active working hours.",
+      "label": "Schedule-aware triage"
     },
     "show_glyph": {
       "description": "The provider's icon. Off leaves the reading on its own.",
@@ -45,6 +96,14 @@
     "show_value": {
       "description": "The percentage as text. Off leaves the gauge to say it.",
       "label": "Show value"
+    },
+    "sleep_end_hour": {
+      "description": "Hour when active usage resumes in the morning on weekdays (e.g. 8 for 8 AM).",
+      "label": "Wake / active hours resume (weekdays)"
+    },
+    "sleep_start_hour": {
+      "description": "Hour when sleep or off-hours begin on weekdays (e.g. 0 for midnight, 23 for 11 PM).",
+      "label": "Sleep / off-hours start (weekdays)"
     },
     "style": {
       "description": "How this capsule looks in the bar.",
@@ -64,10 +123,12 @@
         "anthropic_api": "Anthropic API",
         "antigravity": "Antigravity",
         "auto": "Automatic (primary)",
+        "claude_oss": "Claude & GPT OSS",
         "commandcode": "Command Code",
         "copilot": "GitHub Copilot",
         "cursor": "Cursor",
         "deepseek": "DeepSeek",
+        "gemini": "Gemini",
         "grok": "Grok",
         "kilo": "Kilo",
         "kimi": "Kimi",
@@ -90,6 +151,14 @@
         "gauge": "Quota bar",
         "none": "Nothing"
       }
+    },
+    "weekend_sleep_end_hour": {
+      "description": "Hour when active usage resumes on weekends (e.g. 9 for 9 AM).",
+      "label": "Wake / active hours resume (weekends)"
+    },
+    "weekend_sleep_start_hour": {
+      "description": "Hour when sleep or off-hours begin on weekends (e.g. 1 for 1 AM).",
+      "label": "Sleep / off-hours start (weekends)"
     }
   },
   "ui": {
@@ -113,6 +182,7 @@
     "last_reading": "Last reading, {minutes} min ago",
     "last_reading_now": "Last reading, moments ago",
     "loading": "Loading…",
+    "no_providers": "No providers configured or reachable",
     "no_usage": "No usage reported",
     "not_configured": "`{vendor}` is not configured in ai-usagebar",
     "now": "now",
