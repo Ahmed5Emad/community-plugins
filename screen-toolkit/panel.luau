@@ -183,7 +183,7 @@ local function headerActions(includeClose)
   local actions = {}
   if recording then
     table.insert(actions, ui.button({
-      key = "header-stop-btn", glyph = "circle", variant = "destructive", controlSize = "sm", width = 24, height = 24, glyphSize = 12, tooltip = tr("panel.stop"),
+      key = "header-stop-btn", glyph = "circle", width = 24, height = 24, glyphSize = 12, tooltip = tr("panel.stop"),
       onClick = function() hoveredStop = false; send("recordStop") end,
     }))
   end
