@@ -112,6 +112,7 @@ body:
         - geoip-monitor
         - git_companion
         - github-activity
+        - github-contributions-desktop
         - github-kanban
         - github-notifications
         - github-prs
