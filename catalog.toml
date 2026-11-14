@@ -6003,3 +6003,16 @@ icon = "device-tablet"
 description = "Use an Android tablet or iPad as an extended or mirrored display, streamed by Sunshine to Moonlight."
 plugin_api = 43
 tags = ["bar", "panel", "service", "shortcut", "hardware", "utility", "niri", "hyprland", "sway", "mangowc"]
+
+[[plugin]]
+id = "darulqutni-q/github-contributions-desktop"
+name = "GitHub Contributions"
+version = "1.0.0"
+updated_at = 1794666615
+added_at = 1794666615
+author = "DarulQutni-Q"
+license = "MIT"
+icon = "brand-github"
+description = "A GitHub contribution calendar as a Noctalia desktop widget."
+plugin_api = 43
+tags = ["desktop", "service", "development", "productivity", "utility", "network"]
