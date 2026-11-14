@@ -4945,8 +4945,8 @@ rev = "a8e7a7160126e75943bd63a225599a2a16715c6e"
 [[plugin]]
 id = "nightwatch75/keysmith"
 name = "keysmith"
-version = "0.1.1"
-updated_at = 1792983494
+version = "0.2.0"
+updated_at = 1794666754
 added_at = 1792694825
 author = "nightwatch75"
 license = "MIT"
@@ -5713,8 +5713,8 @@ tags = ["bar", "panel", "service", "shortcut", "network", "privacy"]
 [[plugin]]
 id = "kaler/synced-lyrics"
 name = "Synced Lyrics"
-version = "1.1.3"
-updated_at = 1794499819
+version = "1.1.4"
+updated_at = 1794666792
 added_at = 1794237263
 author = "kaler"
 license = "MIT"
