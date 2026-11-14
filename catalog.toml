@@ -6022,3 +6022,16 @@ icon = "brand-github"
 description = "A GitHub contribution calendar as a Noctalia desktop widget."
 plugin_api = 43
 tags = ["desktop", "service", "development", "productivity", "utility", "network"]
+
+[[plugin]]
+id = "ylxc/easytier"
+name = "EasyTier Status"
+version = "1.0.0"
+updated_at = 1794667134
+added_at = 1794667134
+author = "ylxc"
+license = "MIT"
+icon = "network"
+description = "Shows EasyTier mesh VPN status in the bar, with per-peer latency, loss, traffic, routes and connectors in the panel."
+plugin_api = 43
+tags = ["network", "indicator", "bar", "panel"]
