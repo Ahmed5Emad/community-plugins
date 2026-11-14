@@ -3820,13 +3820,13 @@ rev = "a4e31fa3f3ac6817b448e725f8ee4bc3489fe2ff"
 [[plugin]]
 id = "cmoro-deusto/nan-usage"
 name = "NaN Usage"
-version = "1.0.1"
-updated_at = 1792983494
+version = "2.0.0"
+updated_at = 1794665446
 added_at = 1790201471
 author = "cmoro-deusto"
 license = "MIT"
 icon = "brain"
-description = "Your NaN (nan.builders) quota in the bar: usage per model, time to the reset, and a warning if the burn rate is risky."
+description = "Your NaN (nan.builders) credits in the bar: allowance used, cache share, where the credits went, and pace warnings."
 plugin_api = 43
 tags = ["bar", "panel", "ai", "indicator", "utility"]
 
